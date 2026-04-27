@@ -8,7 +8,7 @@ Este repositório contém uma **spec executável** que bootstrapa qualquer proje
 
 - **Spec Layer** — INSTRUCTIONS, skills, rules, docs
 - **Harness Layer** — settings.json, hooks, sub-agents, symlinks
-- **Memory Layer** — STATE.md, RFCs, CONVENTIONS.md
+- **Memory Layer** — STATE.md, CONVENTIONS.md
 
 Conceito completo em [FRAMEWORK.md](../FRAMEWORK.md).
 
@@ -16,14 +16,14 @@ Conceito completo em [FRAMEWORK.md](../FRAMEWORK.md).
 
 ### Cenário 1 — Usuário pede para bootstrapar um projeto
 
-1. Carregue o skill [`spec-harness-bootstrap`](skills/spec-harness-bootstrap/SKILL.md)
+1. Carregue o skill [`axis-bootstrap`](skills/axis-bootstrap/SKILL.md)
 2. Siga o `PLANNER.md` em ordem rigorosa
 3. **Não pule fases.** Cada fase tem um gate explícito que precisa ser confirmado pelo usuário antes da próxima começar
 4. Use os templates de `references/TEMPLATES.md` ao gerar artefatos — não invente formatos
 
 ### Cenário 2 — Usuário pede para auditar um projeto existente
 
-1. Carregue o skill `spec-harness-bootstrap`
+1. Carregue o skill `axis-bootstrap`
 2. Pule Fase 1 (discovery) se já há `INSTRUCTIONS.md` legível
 3. Aplique apenas `PHASE-5-VALIDATION.md` para identificar lacunas
 4. Reporte o que está faltando por camada (Spec / Harness / Memory)
@@ -44,9 +44,9 @@ Conceito completo em [FRAMEWORK.md](../FRAMEWORK.md).
 
 ## Skills Disponíveis
 
-| Skill | Quando usar |
-| ----- | ----------- |
-| [`spec-harness-bootstrap`](skills/spec-harness-bootstrap/SKILL.md) | Bootstrapar novo projeto, migrar de CLAUDE.md monolítico, ou auditar projeto existente para infra de IA |
+| Skill                                              | Quando usar                                                                                             |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| [`axis-bootstrap`](skills/axis-bootstrap/SKILL.md) | Bootstrapar novo projeto, migrar de CLAUDE.md monolítico, ou auditar projeto existente para infra de IA |
 
 ## Convenções de Manutenção
 

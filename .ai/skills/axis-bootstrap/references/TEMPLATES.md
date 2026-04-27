@@ -31,9 +31,9 @@ Todos os templates copy-paste usados pelo bootstrap. Cada um tem âncora linkáv
 
 ## Arquitetura
 
-| Componente | Responsabilidade | Tecnologia | Localização |
-| ---------- | ---------------- | ---------- | ----------- |
-| <ex: API> | <ex: HTTP REST> | <ex: NestJS> | <ex: src/api> |
+| Componente | Responsabilidade | Tecnologia   | Localização   |
+| ---------- | ---------------- | ------------ | ------------- |
+| <ex: API>  | <ex: HTTP REST>  | <ex: NestJS> | <ex: src/api> |
 
 Detalhes: [docs/architecture.md](docs/architecture.md)
 
@@ -52,8 +52,8 @@ Resumo aqui; detalhes em [.ai/rules/](rules/):
 
 ## Skills Disponíveis
 
-| Skill | Quando usar |
-| ----- | ----------- |
+| Skill                                  | Quando usar   |
+| -------------------------------------- | ------------- |
 | [<skill-1>](skills/<skill-1>/SKILL.md) | <quando usar> |
 | [<skill-2>](skills/<skill-2>/SKILL.md) | <quando usar> |
 
@@ -93,7 +93,7 @@ description: <2-4 linhas>. Use when implementando X, debugando Y,
 
 | Item | Valor | Observação |
 | ---- | ----- | ---------- |
-| ... | ... | ... |
+| ...  | ...   | ...        |
 
 ## Referências
 
@@ -137,42 +137,13 @@ paths:
 
 ---
 
-## RFC
-
-```markdown
-# RFC-NNN: <Título da Decisão>
-
-**Status:** Aceito | Em discussão | Descontinuado
-**Data:** YYYY-MM-DD
-
-## Contexto
-
-<Problema ou necessidade que motivou a decisão.>
-
-## Decisão
-
-<O que foi decidido, em 1-3 frases claras.>
-
-## Consequências
-
-- **Positivas:** <benefícios esperados>
-- **Negativas:** <trade-offs aceitos>
-
-## Alternativas Consideradas
-
-- **Alternativa A:** <descrição> — rejeitada porque <motivo>
-- **Alternativa B:** <descrição> — rejeitada porque <motivo>
-```
-
----
-
 ## STATE.md
 
 ```markdown
 # Estado do Projeto
 
 ## Decisões Ativas
-<!-- [YYYY-MM-DD] Decisão X tomada porque Y (link para RFC se existir) -->
+<!-- [YYYY-MM-DD] Decisão X tomada porque Y -->
 
 ## Em Progresso
 <!-- Feature Z: 70% completa, falta integração com API X -->
@@ -229,7 +200,6 @@ Para adicionar nova IDE: editar `setup-ide-links.sh` (3-4 linhas) e rodar.
 
 - **Nova skill:** copiar `<skill>/SKILL.md` de qualquer skill existente como base
 - **Nova rule:** copiar formato de `code-style.md`
-- **Novo RFC:** ver formato em RFC-001
 
 ## Regras para o Agente
 
@@ -250,12 +220,11 @@ Antes de afirmar:
 
 ## Manutenção
 
-| Evento | Ação |
-| ------ | ---- |
+| Evento                     | Ação                           |
+| -------------------------- | ------------------------------ |
 | Mudança de fluxo no código | Atualizar skill correspondente |
-| Decisão arquitetural | Criar RFC |
-| Sessão pausada | Atualizar STATE.md |
-| Nova integração | Avaliar nova skill |
+| Sessão pausada             | Atualizar STATE.md             |
+| Nova integração            | Avaliar nova skill             |
 ```
 
 ---
@@ -321,17 +290,17 @@ Antes de afirmar:
 
 Substituir `<build-tool>` por:
 
-| Stack | Comando |
-| ----- | ------- |
-| Node.js | `Bash(npm *)`, `Bash(npx *)` |
-| Python | `Bash(pip *)`, `Bash(pytest *)`, `Bash(poetry *)` |
-| Go | `Bash(go *)` |
-| Java/Maven | `Bash(mvn *)` |
-| Java/Gradle | `Bash(gradle *)`, `Bash(./gradlew *)` |
-| Ruby | `Bash(bundle *)`, `Bash(rake *)` |
-| PHP | `Bash(composer *)` |
-| Rust | `Bash(cargo *)` |
-| .NET | `Bash(dotnet *)` |
+| Stack       | Comando                                           |
+| ----------- | ------------------------------------------------- |
+| Node.js     | `Bash(npm *)`, `Bash(npx *)`                      |
+| Python      | `Bash(pip *)`, `Bash(pytest *)`, `Bash(poetry *)` |
+| Go          | `Bash(go *)`                                      |
+| Java/Maven  | `Bash(mvn *)`                                     |
+| Java/Gradle | `Bash(gradle *)`, `Bash(./gradlew *)`             |
+| Ruby        | `Bash(bundle *)`, `Bash(rake *)`                  |
+| PHP         | `Bash(composer *)`                                |
+| Rust        | `Bash(cargo *)`                                   |
+| .NET        | `Bash(dotnet *)`                                  |
 
 ---
 
@@ -455,7 +424,7 @@ echo "Symlinks criados/atualizados com sucesso."
 
 | Componente | Responsabilidade | Tecnologia | Localização |
 | ---------- | ---------------- | ---------- | ----------- |
-| ... | ... | ... | ... |
+| ...        | ...              | ...        | ...         |
 
 ## Decisões Arquiteturais Chave
 
@@ -478,8 +447,8 @@ echo "Symlinks criados/atualizados com sucesso."
 
 | Coluna | Tipo | Nullable | Descrição |
 | ------ | ---- | -------- | --------- |
-| id | UUID | N | PK gerado |
-| ... | ... | ... | ... |
+| id     | UUID | N        | PK gerado |
+| ...    | ...  | ...      | ...       |
 
 **Índices:** `idx_xxx` (col1, col2) — usado em <query>
 **Constraints:** `uq_xxx` (col) — garante <invariante>

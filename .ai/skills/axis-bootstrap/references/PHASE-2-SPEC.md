@@ -24,7 +24,7 @@
 ## Passo 1 — Estrutura de Pastas
 
 ```bash
-mkdir -p .ai/{skills,rules,docs,docs/RFC,docs/stories}
+mkdir -p .ai/{skills,rules,docs,docs/stories}
 ```
 
 Para projetos não-técnicos, ainda criar a estrutura — `rules/` pode ser usada para "protocolos", `docs/` para referências de domínio. A homogeneidade simplifica a manutenção.
@@ -252,12 +252,11 @@ Algum nome a ajustar?
 - **Composabilidade** — skills devem se referenciar, não duplicar conteúdo
 - **Documente fluxos em skills, estado em docs** — distinção crítica:
 
-| Tipo | Onde | Exemplo |
-| ---- | ---- | ------- |
-| Fluxo de trabalho | `skills/<nome>/SKILL.md` | "Como coletar dados da API" |
-| Algoritmo/lógica | `skills/<nome>/references/GUIDE.md` | "Lógica de deduplicação" |
-| Schema/contrato | `docs/database-schema.md` | "Tabela transactions" |
-| Decisão arquitetural | `docs/RFC/RFC-NNN.md` | "Por que PostgreSQL" |
-| Estado atual | `docs/STATE.md` | "Feature X em progresso" |
+| Tipo              | Onde                                | Exemplo                     |
+| ----------------- | ----------------------------------- | --------------------------- |
+| Fluxo de trabalho | `skills/<nome>/SKILL.md`            | "Como coletar dados da API" |
+| Algoritmo/lógica  | `skills/<nome>/references/GUIDE.md` | "Lógica de deduplicação"    |
+| Schema/contrato   | `docs/database-schema.md`           | "Tabela transactions"       |
+| Estado atual      | `docs/STATE.md`                     | "Feature X em progresso"    |
 
 Padrões adicionais (Progressive Disclosure budget, KVC, auto-sizing) em [PATTERNS.md](PATTERNS.md).

@@ -55,7 +55,7 @@ Pergunte ao usuário qual modo se aplica caso a detecção seja ambígua.
 
 **Geração nesta ordem:**
 
-1. `mkdir -p .ai/{skills,rules,docs/RFC}` no projeto-alvo
+1. `mkdir -p .ai/{skills,rules,docs}` no projeto-alvo
 2. `INSTRUCTIONS.md` (100-180 linhas) usando template adaptado ao tipo
 3. Esqueletos de skills (uma SKILL.md por domínio identificado, sem references/ ainda)
 4. 3-7 rules iniciais com `applyTo` apropriado (omitir se não-técnico — usar protocolos)
@@ -103,8 +103,7 @@ Pergunte ao usuário qual modo se aplica caso a detecção seja ambígua.
 **Geração:**
 
 1. `.ai/docs/STATE.md` com seções: Decisões Ativas, Em Progresso, Blockers, Ideias Adiadas, Lições Aprendidas, TODOs
-2. `.ai/docs/RFC/RFC-001-spec-harness-adoption.md` documentando a adoção do framework
-3. `.ai/CONVENTIONS.md` com mapa de symlinks e regras de manutenção
+2. `.ai/CONVENTIONS.md` com mapa de symlinks e regras de manutenção
 
 **Gate de saída:**
 
@@ -145,13 +144,13 @@ Se uma fase falhar (usuário recusa o output, surge informação contraditória)
 
 ## Mapa de Decisões Frequentes
 
-| Pergunta da fase | Resposta padrão |
-| ---------------- | --------------- |
-| Tipo desconhecido na Fase 1 | Tratar como "outro" e usar UNIVERSAL-MAP para inferir |
-| Stack não está em TEMPLATES.md | Usar template Node.js como base e adaptar — registrar como follow-up |
-| Usuário não sabe quais skills criar | Sugerir 3 baseadas no domínio descrito + 1 skill universal de qualidade (lint/test) |
-| Usuário não usa nenhuma IDE específica | Criar apenas symlinks raiz (CLAUDE.md, AGENTS.md) e `.agents/` |
-| Projeto não-técnico | Pular Fase 3 (hooks) parcialmente; manter bloqueio destrutivo + permissões |
+| Pergunta da fase                       | Resposta padrão                                                                     |
+| -------------------------------------- | ----------------------------------------------------------------------------------- |
+| Tipo desconhecido na Fase 1            | Tratar como "outro" e usar UNIVERSAL-MAP para inferir                               |
+| Stack não está em TEMPLATES.md         | Usar template Node.js como base e adaptar — registrar como follow-up                |
+| Usuário não sabe quais skills criar    | Sugerir 3 baseadas no domínio descrito + 1 skill universal de qualidade (lint/test) |
+| Usuário não usa nenhuma IDE específica | Criar apenas symlinks raiz (CLAUDE.md, AGENTS.md) e `.agents/`                      |
+| Projeto não-técnico                    | Pular Fase 3 (hooks) parcialmente; manter bloqueio destrutivo + permissões          |
 
 ---
 
@@ -168,8 +167,7 @@ projeto-alvo/
 │   ├── rules/                  (3-7 rules — se aplicável)
 │   └── docs/
 │       ├── architecture.md     (se software)
-│       ├── STATE.md
-│       └── RFC/RFC-001-*.md
+        └── STATE.md
 ├── .claude/                    (symlinks)
 ├── .cursor/, .agents/, .github/ (conforme IDEs declaradas)
 ├── CLAUDE.md, AGENTS.md        (symlinks)

@@ -6,11 +6,11 @@ O framework foi originalmente concebido para projetos de software, mas suas trê
 
 ## Princípio de Tradução
 
-| Camada | Universalidade | O que muda |
-| ------ | -------------- | ---------- |
-| **Spec** | 100% universal | Apenas vocabulário (rules → protocolos) |
+| Camada      | Universalidade | O que muda                                                    |
+| ----------- | -------------- | ------------------------------------------------------------- |
+| **Spec**    | 100% universal | Apenas vocabulário (rules → protocolos)                       |
 | **Harness** | ~70% universal | Hooks de lint/test não se aplicam; permissões e bloqueios sim |
-| **Memory** | 100% universal | Idêntico — STATE, RFCs, CONVENTIONS funcionam igual |
+| **Memory**  | 100% universal | Idêntico — STATE, CONVENTIONS funcionam igual                 |
 
 A camada que mais varia é a **Harness**, e mesmo lá o núcleo (versionamento de comportamento, bloqueio destrutivo, sub-agents) se mantém.
 
@@ -18,25 +18,25 @@ A camada que mais varia é a **Harness**, e mesmo lá o núcleo (versionamento d
 
 ## Mapeamento Conceito a Conceito
 
-| Conceito Técnico | Equivalente Universal |
-| ---------------- | --------------------- |
-| Stack tecnológica | Ferramentas e plataformas |
-| Linguagem de programação | Formato de output (markdown, planilha, deck) |
-| Framework | Metodologia (PBL, BSC, OKR, ABNT) |
-| Banco de dados | Repositório de dados (planilha, CMS, base de fontes) |
-| API externa | Fonte oficial / stakeholder / fornecedor |
-| Rules de código | Protocolos de qualidade |
-| Code style | Tom de voz / formatting |
-| Test suite | Critérios de validação |
-| CI/CD | Pipeline de revisão / aprovação |
-| Hook de lint | Checklist automático |
-| Hook de bloqueio | Validação pré-publicação |
-| Branches/commits | Versões / revisões |
-| PR review | Revisão por pares |
-| Bug | Inconsistência / erro factual |
-| Refactoring | Reorganização / clarificação |
-| Deploy | Publicação / entrega |
-| Production | Ambiente final / cliente |
+| Conceito Técnico         | Equivalente Universal                                |
+| ------------------------ | ---------------------------------------------------- |
+| Stack tecnológica        | Ferramentas e plataformas                            |
+| Linguagem de programação | Formato de output (markdown, planilha, deck)         |
+| Framework                | Metodologia (PBL, BSC, OKR, ABNT)                    |
+| Banco de dados           | Repositório de dados (planilha, CMS, base de fontes) |
+| API externa              | Fonte oficial / stakeholder / fornecedor             |
+| Rules de código          | Protocolos de qualidade                              |
+| Code style               | Tom de voz / formatting                              |
+| Test suite               | Critérios de validação                               |
+| CI/CD                    | Pipeline de revisão / aprovação                      |
+| Hook de lint             | Checklist automático                                 |
+| Hook de bloqueio         | Validação pré-publicação                             |
+| Branches/commits         | Versões / revisões                                   |
+| PR review                | Revisão por pares                                    |
+| Bug                      | Inconsistência / erro factual                        |
+| Refactoring              | Reorganização / clarificação                         |
+| Deploy                   | Publicação / entrega                                 |
+| Production               | Ambiente final / cliente                             |
 
 ---
 
@@ -61,7 +61,6 @@ A camada que mais varia é a **Harness**, e mesmo lá o núcleo (versionamento d
     ├── glossary.md         (termos técnicos do campo)
     ├── fontes.md           (bibliografia anotada)
     ├── STATE.md            (decisões metodológicas, dados coletados, lacunas)
-    └── RFC/RFC-001-*.md    (decisão de método)
 ```
 
 **Hooks aplicáveis:**
@@ -89,7 +88,6 @@ A camada que mais varia é a **Harness**, e mesmo lá o núcleo (versionamento d
     ├── glossary.md
     ├── personas.md
     ├── STATE.md            (calendário editorial, drafts, em revisão)
-    └── RFC/                (decisões de tom, posicionamento)
 ```
 
 **Hooks aplicáveis:**
@@ -118,7 +116,6 @@ A camada que mais varia é a **Harness**, e mesmo lá o núcleo (versionamento d
     ├── glossary.md           (termos do negócio)
     ├── stakeholders.md       (mapa, expectativas)
     ├── STATE.md              (deals em andamento, OKRs do trimestre)
-    └── RFC/                  (decisões estratégicas)
 ```
 
 ---
@@ -141,7 +138,6 @@ A camada que mais varia é a **Harness**, e mesmo lá o núcleo (versionamento d
     ├── glossary.md
     ├── jurisprudencias.md    (precedentes relevantes)
     ├── STATE.md              (casos ativos, prazos)
-    └── RFC/                  (decisões de tese, estratégia)
 ```
 
 **Hooks especialmente relevantes:**
@@ -165,8 +161,7 @@ A camada que mais varia é a **Harness**, e mesmo lá o núcleo (versionamento d
 │   └── padrao-pedagogico.md
 └── docs/
     ├── personas-aluno.md
-    ├── STATE.md
-    └── RFC/                  (decisões metodológicas)
+    └── STATE.md
 ```
 
 ---
@@ -193,12 +188,12 @@ Independente do tipo:
 
 ### Substituições de pasta
 
-| Tradicional | Alternativa universal |
-| ----------- | --------------------- |
-| `.ai/rules/` | `.ai/protocols/` |
-| `.ai/docs/architecture.md` | `.ai/docs/components.md` |
+| Tradicional                   | Alternativa universal                             |
+| ----------------------------- | ------------------------------------------------- |
+| `.ai/rules/`                  | `.ai/protocols/`                                  |
+| `.ai/docs/architecture.md`    | `.ai/docs/components.md`                          |
 | `.ai/docs/database-schema.md` | `.ai/docs/data-model.md` ou `.ai/docs/sources.md` |
-| `setup-ide-links.sh` | mantém o nome — ainda relevante |
+| `setup-ide-links.sh`          | mantém o nome — ainda relevante                   |
 
 ### Hooks que sempre valem
 

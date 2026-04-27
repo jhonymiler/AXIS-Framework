@@ -23,9 +23,7 @@ projeto-alvo/
 │       ├── architecture.md                        (se software)
 │       ├── database-schema.md                     (se software)
 │       ├── glossary.md                            (se domínio especializado)
-│       ├── STATE.md
-│       └── RFC/
-│           └── RFC-001-spec-harness-adoption.md
+        └── STATE.md
 │
 ├── CLAUDE.md           → .ai/INSTRUCTIONS.md
 ├── AGENTS.md           → .ai/INSTRUCTIONS.md
@@ -111,32 +109,6 @@ Seções obrigatórias:
 - **Lições Aprendidas** (com contexto)
 - **TODOs Pendentes** (checkbox)
 
-### `.ai/docs/RFC/RFC-001-spec-harness-adoption.md`
-
-```markdown
-# RFC-001: Adoção do AXIS Framework
-
-**Status:** Aceito
-**Data:** YYYY-MM-DD
-
-## Contexto
-<Por que este projeto adotou o framework — problema que resolve>
-
-## Decisão
-Adotar AXIS com as seguintes camadas:
-- Spec: <skills criadas, rules, docs>
-- Harness: <hooks, sub-agents, IDEs suportadas>
-- Memory: STATE.md + RFCs versionados
-
-## Consequências
-- **Positivas:** <esperadas>
-- **Negativas:** <trade-offs aceitos>
-
-## Alternativas Consideradas
-- CLAUDE.md monolítico — rejeitado porque <motivo>
-- <Outras se houver>
-```
-
 ### `.claude/settings.json` (ou equivalente)
 
 ```json
@@ -165,7 +137,6 @@ Antes de declarar bootstrap completo:
 - [ ] Cada SKILL.md tem `description` com 2-4 linhas e termos-gatilho
 - [ ] `.ai/CONVENTIONS.md` contém mapa de symlinks
 - [ ] `.ai/docs/STATE.md` tem todas as 6 seções (mesmo que algumas estejam vazias)
-- [ ] `.ai/docs/RFC/RFC-001-*.md` documenta a adoção
 - [ ] Symlinks resolvem corretamente (`ls -la` mostra os targets)
 - [ ] `settings.json` está versionado (`git status` confirma)
 - [ ] Hooks executam (smoke test em arquivo dummy) — se software
@@ -189,10 +160,9 @@ Estrutura criada:
 
 Próximos passos sugeridos:
 1. Detalhar a primeira skill (popule references/GUIDE.md em <skill>)
-2. Adicionar primeira RFC de domínio (decisão arquitetural pendente?)
-3. Validar settings.json com seu time
-4. Rodar `bash setup-ide-links.sh` em qualquer máquina nova do time
-5. Configurar CI para verificar resolução de symlinks (opcional)
+2. Validar settings.json com seu time
+3. Rodar `bash setup-ide-links.sh` em qualquer máquina nova do time
+4. Configurar CI para verificar resolução de symlinks (opcional)
 
 Para entender o framework: leia FRAMEWORK.md neste repo.
 Para auditar o que foi gerado: invoque novamente este skill em modo "auditoria".

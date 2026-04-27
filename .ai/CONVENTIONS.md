@@ -46,16 +46,16 @@ Spec-Harness/                                    ← raiz (humanos leem README/F
 
 ## Quando Modificar Cada Arquivo
 
-| Mudança | Onde | Não onde |
-| ------- | ---- | -------- |
-| Novo conceito conceitual | `FRAMEWORK.md` | `SKILL.md` |
-| Nova fase no bootstrap | novo `PHASE-N.md` + atualizar `PLANNER.md` + `SKILL.md` | mover para outro skill |
-| Novo template (artefato gerado) | `references/TEMPLATES.md` | inline em PHASE-N.md |
-| Novo padrão (PD, KVC, etc.) | `references/PATTERNS.md` | espalhado em PHASEs |
-| Suporte a novo tipo de projeto | `references/UNIVERSAL-MAP.md` + `TEMPLATES.md` | criar skill paralela |
-| Quick start, instalação | `README.md` | `INSTRUCTIONS.md` |
-| Como a IA opera no framework | `INSTRUCTIONS.md` | `README.md` |
-| Mapa de manutenção | este arquivo | qualquer outro |
+| Mudança                         | Onde                                                    | Não onde               |
+| ------------------------------- | ------------------------------------------------------- | ---------------------- |
+| Novo conceito conceitual        | `FRAMEWORK.md`                                          | `SKILL.md`             |
+| Nova fase no bootstrap          | novo `PHASE-N.md` + atualizar `PLANNER.md` + `SKILL.md` | mover para outro skill |
+| Novo template (artefato gerado) | `references/TEMPLATES.md`                               | inline em PHASE-N.md   |
+| Novo padrão (PD, KVC, etc.)     | `references/PATTERNS.md`                                | espalhado em PHASEs    |
+| Suporte a novo tipo de projeto  | `references/UNIVERSAL-MAP.md` + `TEMPLATES.md`          | criar skill paralela   |
+| Quick start, instalação         | `README.md`                                             | `INSTRUCTIONS.md`      |
+| Como a IA opera no framework    | `INSTRUCTIONS.md`                                       | `README.md`            |
+| Mapa de manutenção              | este arquivo                                            | qualquer outro         |
 
 ---
 
@@ -115,7 +115,6 @@ Ao operar dentro deste repositório:
 - **Mantenha SKILL.md ≤ 60 linhas** — se passar, mova detalhes para `references/`
 - **Ao adicionar uma fase**, atualize: `PLANNER.md`, `SKILL.md`, e crie o `PHASE-N.md` correspondente
 - **Ao mudar um template**, mantenha consistência com exemplos em `PATTERNS.md`
-- **Toda decisão de design** que altere o modelo (3 camadas, gates, recursividade) requer um RFC — abrir discussão antes de implementar
 
 ---
 
@@ -132,4 +131,4 @@ Antes de afirmar qualquer coisa sobre o framework:
 
 ## Protocolo de Evolução
 
-Mudanças não-triviais ao framework devem ser registradas como RFCs (em `RFC/`, ainda não criado neste repo — criar quando a primeira mudança não-trivial surgir). Formato em `references/TEMPLATES.md`.
+Mudanças não-triviais ao framework devem ser documentadas com uma nota em `STATE.md` descrevendo o que mudou e por quê.

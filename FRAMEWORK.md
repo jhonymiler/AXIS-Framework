@@ -50,7 +50,6 @@ A literatura convergia em spec-first (GitHub Spec Kit, Kiro, Tessl). Mas a evid�
 ┌─────────────────────────────────────────────────────────┐
 │  MEMORY LAYER ─ A continuidade (O QUE persiste)         │
 │  • STATE.md         — estado, blockers, lições          │
-│  • RFCs             — decisões com rationale            │
 │  • CONVENTIONS.md   — como manter a estrutura           │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -110,11 +109,11 @@ projeto/
 
 Skills carregam em três momentos distintos para minimizar tokens:
 
-| Camada | Quando carrega | Conteúdo | Tamanho |
-| ------ | -------------- | -------- | ------- |
-| **1 — Discovery** | Sempre (startup) | `name` + `description` do frontmatter | ~3 linhas/skill |
-| **2 — Index** | Quando relevante | `SKILL.md` completo | ~40-60 linhas |
-| **3 — On-demand** | Quando necessário | `references/*.md` específicos | sob demanda |
+| Camada            | Quando carrega    | Conteúdo                              | Tamanho         |
+| ----------------- | ----------------- | ------------------------------------- | --------------- |
+| **1 — Discovery** | Sempre (startup)  | `name` + `description` do frontmatter | ~3 linhas/skill |
+| **2 — Index**     | Quando relevante  | `SKILL.md` completo                   | ~40-60 linhas   |
+| **3 — On-demand** | Quando necessário | `references/*.md` específicos         | sob demanda     |
 
 ---
 
@@ -134,11 +133,11 @@ A spec define o que o agente sabe. O harness define como ele se comporta — ind
 
 Inspirado em **AgentProp-Bench** ([arxiv 2604.16706](https://arxiv.org/html/2604.16706)) e **ReliabilityBench**, o AXIS não mede só se o agente passou — localiza onde falhou:
 
-| Categoria de Falha | Causa Raiz | Sinal no Harness |
-| ------------------ | ---------- | ---------------- |
-| **Planning** | Spec vaga, objetivo ambíguo | Hook PreToolUse rejeita tasks sem critério de aceitação |
-| **Execution** | Tool call inválida, permissão negada | Hook PostToolUse registra tentativa + contexto |
-| **Response** | Output correto mas formato errado | Gate de validação na Fase 5 |
+| Categoria de Falha | Causa Raiz                           | Sinal no Harness                                        |
+| ------------------ | ------------------------------------ | ------------------------------------------------------- |
+| **Planning**       | Spec vaga, objetivo ambíguo          | Hook PreToolUse rejeita tasks sem critério de aceitação |
+| **Execution**      | Tool call inválida, permissão negada | Hook PostToolUse registra tentativa + contexto          |
+| **Response**       | Output correto mas formato errado    | Gate de validação na Fase 5                             |
 
 ### Padrão Anthropic dos Três Agentes
 
@@ -166,11 +165,10 @@ O paper **ACE (Agentic Context Engineering)** ([arxiv 2510.04618](https://arxiv.
 
 ### Três tipos de memória, três artefatos
 
-| Tipo | Artefato | Atualização |
-| ---- | -------- | ----------- |
-| **Estado vivo (playbook)** | `STATE.md` | A cada sessão — curado, não apenas appendado |
-| **Decisões frias** | `RFC-NNN.md` | A cada decisão arquitetural não-óbvia |
-| **Meta** | `CONVENTIONS.md` | Quando a estrutura do `.ai/` muda |
+| Tipo                       | Artefato         | Atualização                                  |
+| -------------------------- | ---------------- | -------------------------------------------- |
+| **Estado vivo (playbook)** | `STATE.md`       | A cada sessão — curado, não apenas appendado |
+| **Meta**                   | `CONVENTIONS.md` | Quando a estrutura do `.ai/` muda            |
 
 ### Session Handoff Protocol
 
@@ -183,15 +181,15 @@ Ao final de cada sessão com mudanças relevantes, o agente:
 
 ## Posicionamento Competitivo
 
-| Framework | Stars (approx.) | Ângulo Principal | Lacuna vs AXIS |
-| --------- | --------------- | ---------------- | -------------- |
-| **Spec Kit (GitHub)** | ~3k | Spec-first para coding | Sem harness; sem memória; contexto esquecido entre sessões (issue #75: "cria ilusão de trabalho") |
-| **BMAD-METHOD** | ~8k | Agile AI-driven development | Focado em software; não resolve divergência multi-IDE |
-| **SuperClaude** | ~2k | Personas especializadas para Claude | Específico para Claude; sem camada de memória estruturada |
-| **LangGraph** | ~45k | Runtime de grafos de agentes | Runtime, não infra de projeto; lock-in de framework; complexidade alta |
-| **CrewAI** | ~28k | Multi-agent role-based | Sem gestão de contexto entre IDEs; SQLite3 limita escala |
-| **DSPy** | ~22k | Programar (não promptar) LLMs | Focado em otimização de prompts; não é infra de projeto |
-| **AXIS** | — | **Harness + Spec + Memory** | Multi-IDE, stack-agnóstico, 3 camadas integradas |
+| Framework             | Stars (approx.) | Ângulo Principal                    | Lacuna vs AXIS                                                                                    |
+| --------------------- | --------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Spec Kit (GitHub)** | ~3k             | Spec-first para coding              | Sem harness; sem memória; contexto esquecido entre sessões (issue #75: "cria ilusão de trabalho") |
+| **BMAD-METHOD**       | ~8k             | Agile AI-driven development         | Focado em software; não resolve divergência multi-IDE                                             |
+| **SuperClaude**       | ~2k             | Personas especializadas para Claude | Específico para Claude; sem camada de memória estruturada                                         |
+| **LangGraph**         | ~45k            | Runtime de grafos de agentes        | Runtime, não infra de projeto; lock-in de framework; complexidade alta                            |
+| **CrewAI**            | ~28k            | Multi-agent role-based              | Sem gestão de contexto entre IDEs; SQLite3 limita escala                                          |
+| **DSPy**              | ~22k            | Programar (não promptar) LLMs       | Focado em otimização de prompts; não é infra de projeto                                           |
+| **AXIS**              | —               | **Harness + Spec + Memory**         | Multi-IDE, stack-agnóstico, 3 camadas integradas                                                  |
 
 **Posição única de AXIS:** é a única estrutura que resolve simultaneamente (1) divergência multi-IDE via symlinks, (2) comportamento não-determinístico via harness versionado, e (3) regressão entre sessões via memory como playbook.
 
@@ -203,7 +201,7 @@ Ao final de cada sessão com mudanças relevantes, o agente:
 
 - Spec: `INSTRUCTIONS.md` tem 100-180 linhas? Skills têm description forte?
 - Harness: hooks executam? Permissões fazem sentido? Symlinks resolvem?
-- Memory: `STATE.md` tem seções obrigatórias? Há ao menos um RFC? Foi curado?
+- Memory: `STATE.md` tem seções obrigatórias? Foi curado?
 
 ### 2. O framework é recursivo
 
@@ -221,15 +219,15 @@ Spec Kit revelou ([issue #75](https://github.com/github/spec-kit/issues/75)) que
 
 ## Benefícios Mensuráveis
 
-| Métrica | Antes (CLAUDE.md monolítico) | Depois (AXIS) |
-| ------- | ---------------------------- | ------------- |
-| Tokens fixos por sessão | ~8.000-12.000 | ~800-1.500 + on-demand |
-| Divergência entre IDEs | comum em semanas | impossível (symlinks) |
-| Tempo de onboarding | varia por dev | <10 min com `INSTRUCTIONS.md` |
-| Comportamento entre máquinas | inconsistente | idêntico (`settings.json` no git) |
-| Ações destrutivas acidentais | risco real | bloqueadas por hook |
-| Continuidade entre sessões | manual e frágil | automática via `STATE.md` curado |
-| Localização de falhas | pass/fail opaco | atribuída por camada (planning/exec/response) |
+| Métrica                      | Antes (CLAUDE.md monolítico) | Depois (AXIS)                                 |
+| ---------------------------- | ---------------------------- | --------------------------------------------- |
+| Tokens fixos por sessão      | ~8.000-12.000                | ~800-1.500 + on-demand                        |
+| Divergência entre IDEs       | comum em semanas             | impossível (symlinks)                         |
+| Tempo de onboarding          | varia por dev                | <10 min com `INSTRUCTIONS.md`                 |
+| Comportamento entre máquinas | inconsistente                | idêntico (`settings.json` no git)             |
+| Ações destrutivas acidentais | risco real                   | bloqueadas por hook                           |
+| Continuidade entre sessões   | manual e frágil              | automática via `STATE.md` curado              |
+| Localização de falhas        | pass/fail opaco              | atribuída por camada (planning/exec/response) |
 
 ---
 
@@ -260,16 +258,16 @@ Pipelines podem não resolver symlinks. **Mitigação:** clone completo ou `core
 
 ## Onde Cada Detalhe Está Documentado
 
-| Você quer... | Vá para |
-| ------------ | ------- |
-| Entender a visão geral | este documento |
-| Quick start | [README.md](README.md) |
-| Bootstrap em 5 minutos | [.ai/skills/axis-bootstrap/references/QUICKSTART.md](.ai/skills/axis-bootstrap/references/QUICKSTART.md) |
-| Bootstrapar um projeto | [.ai/skills/axis-bootstrap/SKILL.md](.ai/skills/axis-bootstrap/SKILL.md) |
-| Aprender padrões (PD, KVC, ACE, k-trial) | [.ai/skills/axis-bootstrap/references/PATTERNS.md](.ai/skills/axis-bootstrap/references/PATTERNS.md) |
-| Ver templates copy-paste | [.ai/skills/axis-bootstrap/references/TEMPLATES.md](.ai/skills/axis-bootstrap/references/TEMPLATES.md) |
-| Aplicar a projeto não-técnico | [.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md](.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md) |
-| Manter o framework | [.ai/CONVENTIONS.md](.ai/CONVENTIONS.md) |
+| Você quer...                             | Vá para                                                                                                        |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Entender a visão geral                   | este documento                                                                                                 |
+| Quick start                              | [README.md](README.md)                                                                                         |
+| Bootstrap em 5 minutos                   | [.ai/skills/axis-bootstrap/references/QUICKSTART.md](.ai/skills/axis-bootstrap/references/QUICKSTART.md)       |
+| Bootstrapar um projeto                   | [.ai/skills/axis-bootstrap/SKILL.md](.ai/skills/axis-bootstrap/SKILL.md)                                       |
+| Aprender padrões (PD, KVC, ACE, k-trial) | [.ai/skills/axis-bootstrap/references/PATTERNS.md](.ai/skills/axis-bootstrap/references/PATTERNS.md)           |
+| Ver templates copy-paste                 | [.ai/skills/axis-bootstrap/references/TEMPLATES.md](.ai/skills/axis-bootstrap/references/TEMPLATES.md)         |
+| Aplicar a projeto não-técnico            | [.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md](.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md) |
+| Manter o framework                       | [.ai/CONVENTIONS.md](.ai/CONVENTIONS.md)                                                                       |
 
 ---
 

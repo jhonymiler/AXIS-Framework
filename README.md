@@ -14,11 +14,11 @@ Um framework executável que bootstrapa qualquer projeto — técnico ou não �
 Projeto Aumentado por IA = Spec Layer + Harness Layer + Memory Layer
 ```
 
-| Camada | Responde | Artefatos | Por que importa |
-| ------ | -------- | --------- | --------------- |
-| **Spec** | O QUÊ o projeto é e precisa | INSTRUCTIONS.md, skills, rules, docs | Contexto mínimo, sem ruído |
-| **Harness** | COMO o agente se comporta | settings.json, hooks, sub-agents, symlinks | **Confiabilidade real — não o modelo** |
-| **Memory** | O QUE persiste entre sessões | STATE.md, RFCs, CONVENTIONS.md | Antifragilidade ao tempo |
+| Camada      | Responde                     | Artefatos                                  | Por que importa                        |
+| ----------- | ---------------------------- | ------------------------------------------ | -------------------------------------- |
+| **Spec**    | O QUÊ o projeto é e precisa  | INSTRUCTIONS.md, skills, rules, docs       | Contexto mínimo, sem ruído             |
+| **Harness** | COMO o agente se comporta    | settings.json, hooks, sub-agents, symlinks | **Confiabilidade real — não o modelo** |
+| **Memory**  | O QUE persiste entre sessões | STATE.md, CONVENTIONS.md                   | Antifragilidade ao tempo               |
 
 > **Insight-chave:** LangChain moveu um agente do fora-do-top-30 para top-5 no Terminal Bench 2.0 mudando apenas o harness — **mesmo modelo**. A camada de maior alavancagem não é o prompt, é o harness.
 
@@ -58,19 +58,18 @@ Em ~30 minutos de interação:
 - Hooks de formatação, bloqueio destrutivo e testes automáticos
 - Symlinks multi-IDE (Claude Code, Cursor, Windsurf, Copilot, etc.)
 - `STATE.md` para continuidade entre sessões
-- `RFC-001` documentando a adoção
 
 ---
 
 ## Por que AXIS e Não Outro Framework
 
-| Framework | Ângulo | Limitação |
-| --------- | ------ | --------- |
-| **Spec Kit (GitHub)** | Spec-first | Sem harness, sem memória persistente; contexto perdido entre sessões |
-| **BMAD-METHOD** | Agile multi-agent | Focado em software; pesado para projetos menores |
-| **LangChain/LangGraph** | Runtime de agentes | Runtime, não infra de projeto; lock-in de framework |
-| **CrewAI** | Orquestração role-based | Sem gestão de contexto entre IDEs |
-| **AXIS** | **Harness + Spec + Memory** | Stack-agnóstico, multi-IDE, 3 camadas integradas |
+| Framework               | Ângulo                      | Limitação                                                            |
+| ----------------------- | --------------------------- | -------------------------------------------------------------------- |
+| **Spec Kit (GitHub)**   | Spec-first                  | Sem harness, sem memória persistente; contexto perdido entre sessões |
+| **BMAD-METHOD**         | Agile multi-agent           | Focado em software; pesado para projetos menores                     |
+| **LangChain/LangGraph** | Runtime de agentes          | Runtime, não infra de projeto; lock-in de framework                  |
+| **CrewAI**              | Orquestração role-based     | Sem gestão de contexto entre IDEs                                    |
+| **AXIS**                | **Harness + Spec + Memory** | Stack-agnóstico, multi-IDE, 3 camadas integradas                     |
 
 AXIS resolve o que os outros ignoram: **a divergência de contexto entre IDEs, a fragilidade entre sessões e a ausência de permissões versionadas**.
 

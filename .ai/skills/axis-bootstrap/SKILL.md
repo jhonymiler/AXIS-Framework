@@ -23,7 +23,7 @@ Spec executável para bootstrapar projetos com infraestrutura completa de IA. Or
 | **1 — Discovery** | Entrevistar para entender o projeto | Resumo confirmado pelo usuário |
 | **2 — Spec Layer** | Gerar INSTRUCTIONS, skills, rules, docs | Estrutura `.ai/` populada e validada |
 | **3 — Harness Layer** | Configurar settings, hooks, failure attribution, symlinks | Permissões e automações em vigor |
-| **4 — Memory Layer** | Criar STATE (playbook), CONVENTIONS, RFC-001 | Memória curada pronta para primeira sessão |
+| **4 — Memory Layer** | Criar STATE (playbook), CONVENTIONS | Memória curada pronta para primeira sessão |
 | **5 — Validation** | Quality gates, k-trial smoke test, handoff | Bootstrap entregue |
 
 A orquestração detalhada está em [PLANNER.md](PLANNER.md). O contrato de output final está em [PROMPT-TEMPLATE.md](PROMPT-TEMPLATE.md).
@@ -62,7 +62,6 @@ Antes de declarar bootstrap concluído:
 - [ ] Symlinks resolvem (`ls -la` confirmado)
 - [ ] `STATE.md` populado com playbook inicial (não vazio)
 - [ ] `CONVENTIONS.md` com mapa de symlinks
-- [ ] `RFC-001` documenta a adoção do framework
 - [ ] Handoff entregue ao usuário com próximos passos
 
 Checklist completo em [references/PHASE-5-VALIDATION.md](references/PHASE-5-VALIDATION.md).

@@ -135,7 +135,7 @@ Ao iniciar sessão, ler este arquivo antes de qualquer outro.
 
 ## Próximos Passos
 
-Quando tiver 30 minutos: execute o bootstrap completo para criar skills por domínio, hooks de automação, RFC-001 e CONVENTIONS.md.
+Quando tiver 30 minutos: execute o bootstrap completo para criar skills por domínio, hooks de automação e CONVENTIONS.md.
 
 ```text
 Use a skill axis-bootstrap para completar a estrutura deste projeto.

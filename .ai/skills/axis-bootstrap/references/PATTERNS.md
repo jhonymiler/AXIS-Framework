@@ -8,11 +8,11 @@ Padrões reutilizáveis que o bootstrap aplica e que devem ser seguidos em qualq
 
 A spec carrega em três momentos distintos para minimizar tokens:
 
-| Camada | Quando carrega | Conteúdo | Custo |
-| ------ | -------------- | -------- | ----- |
-| **1 — Discovery** | Sempre (startup) | `name` + `description` do frontmatter | ~3 linhas/skill |
-| **2 — Index** | Quando relevante | `SKILL.md` completo | ~40-60 linhas |
-| **3 — On-demand** | Quando necessário | `references/*.md` | sob demanda |
+| Camada            | Quando carrega    | Conteúdo                              | Custo           |
+| ----------------- | ----------------- | ------------------------------------- | --------------- |
+| **1 — Discovery** | Sempre (startup)  | `name` + `description` do frontmatter | ~3 linhas/skill |
+| **2 — Index**     | Quando relevante  | `SKILL.md` completo                   | ~40-60 linhas   |
+| **3 — On-demand** | Quando necessário | `references/*.md`                     | sob demanda     |
 
 O agente sabe que uma skill existe (camada 1), decide se precisa (camada 2), só puxa detalhes profundos quando vai implementar (camada 3).
 
@@ -22,12 +22,12 @@ O agente sabe que uma skill existe (camada 1), decide se precisa (camada 2), só
 
 Progressive Disclosure só funciona com limites explícitos. Defina:
 
-| Categoria | Budget | Regra |
-| --------- | ------ | ----- |
-| **Base fixa** (INSTRUCTIONS + frontmatters) | ~1.500-2.000 tokens | Sempre carregado |
-| **Skills ativos** (SKILL.md completos) | ~3.000-5.000 tokens | Apenas relevantes para a task |
-| **References on-demand** | ~5.000-10.000 tokens | Apenas quando necessário |
-| **Total alvo** | <15.000 tokens | Reservar máximo para raciocínio |
+| Categoria                                   | Budget               | Regra                           |
+| ------------------------------------------- | -------------------- | ------------------------------- |
+| **Base fixa** (INSTRUCTIONS + frontmatters) | ~1.500-2.000 tokens  | Sempre carregado                |
+| **Skills ativos** (SKILL.md completos)      | ~3.000-5.000 tokens  | Apenas relevantes para a task   |
+| **References on-demand**                    | ~5.000-10.000 tokens | Apenas quando necessário        |
+| **Total alvo**                              | <15.000 tokens       | Reservar máximo para raciocínio |
 
 **Regras de carregamento:**
 
@@ -66,12 +66,12 @@ Esta cadeia deve ser referenciada em `CONVENTIONS.md` e pode ser uma rule indepe
 
 Nem toda tarefa precisa do mesmo nível de planejamento. Antes de iniciar, o agente avalia:
 
-| Complexidade | Indicadores | Documentação | O que pular |
-| ------------ | ----------- | ------------ | ----------- |
-| **Small** | ≤3 arquivos, escopo em 1 frase | Descrever → Implementar → Verificar | Spec, design, task breakdown |
-| **Medium** | Feature clara, <10 passos | Spec breve + design inline | Design formal |
-| **Large** | Multi-componente, >10 passos | Spec completa + design + tasks | Nada |
-| **Complex** | Ambiguidade, domínio novo | Spec + discussão + pesquisa | Nada + validação interativa |
+| Complexidade | Indicadores                    | Documentação                        | O que pular                  |
+| ------------ | ------------------------------ | ----------------------------------- | ---------------------------- |
+| **Small**    | ≤3 arquivos, escopo em 1 frase | Descrever → Implementar → Verificar | Spec, design, task breakdown |
+| **Medium**   | Feature clara, <10 passos      | Spec breve + design inline          | Design formal                |
+| **Large**    | Multi-componente, >10 passos   | Spec completa + design + tasks      | Nada                         |
+| **Complex**  | Ambiguidade, domínio novo      | Spec + discussão + pesquisa         | Nada + validação interativa  |
 
 **Regras:**
 
@@ -135,13 +135,12 @@ description: Complete reference for the Payments API integration.
 
 ## 7. Fluxos vs Estado
 
-| Tipo | Onde | Exemplo |
-| ---- | ---- | ------- |
-| Fluxo de trabalho | `skills/<nome>/SKILL.md` | "Como coletar dados da API" |
-| Algoritmo/lógica | `skills/<nome>/references/GUIDE.md` | "Lógica de deduplicação" |
-| Schema/contrato | `docs/database-schema.md` | "Tabela transactions" |
-| Decisão arquitetural | `docs/RFC/RFC-NNN.md` | "Por que PostgreSQL" |
-| Estado atual | `docs/STATE.md` | "Feature X em progresso" |
+| Tipo              | Onde                                | Exemplo                     |
+| ----------------- | ----------------------------------- | --------------------------- |
+| Fluxo de trabalho | `skills/<nome>/SKILL.md`            | "Como coletar dados da API" |
+| Algoritmo/lógica  | `skills/<nome>/references/GUIDE.md` | "Lógica de deduplicação"    |
+| Schema/contrato   | `docs/database-schema.md`           | "Tabela transactions"       |
+| Estado atual      | `docs/STATE.md`                     | "Feature X em progresso"    |
 
 **Regra:** skills documentam **fluxos**; docs documentam **estado**.
 
@@ -179,14 +178,13 @@ Documentação não-mantida vira desinformação — pior que ausente, porque o 
 
 **Gatilhos:**
 
-| Evento | Ação esperada |
-| ------ | ------------- |
-| Código muda fluxo de skill | Propor atualização da skill antes de encerrar |
-| Decisão arquitetural na sessão | Propor RFC ou atualizar `architecture.md` |
-| Regra de negócio surge | Perguntar se documenta na skill/docs |
-| Bug revela comportamento não-documentado | Propor documentar |
-| Nova integração | Avaliar nova skill ou expansão |
-| Sessão pausada com trabalho | Atualizar `STATE.md` |
+| Evento                                   | Ação esperada                                 |
+| ---------------------------------------- | --------------------------------------------- |
+| Código muda fluxo de skill               | Propor atualização da skill antes de encerrar |
+| Regra de negócio surge                   | Perguntar se documenta na skill/docs          |
+| Bug revela comportamento não-documentado | Propor documentar                             |
+| Nova integração                          | Avaliar nova skill ou expansão                |
+| Sessão pausada com trabalho              | Atualizar `STATE.md`                          |
 
 **Protocolo de encerramento:**
 
@@ -265,11 +263,11 @@ Dev novo usa Windsurf enquanto time usa Cursor. Sem configuração adicional, Wi
 
 A abordagem ACE trata `STATE.md` como um **playbook que se auto-curada** — não como log de histórico. Três operações por sessão:
 
-| Operação | O que faz | Frequência |
-| --------- | --------- | ---------- |
+| Operação       | O que faz                                   | Frequência                |
+| -------------- | ------------------------------------------- | ------------------------- |
 | **Generation** | Adiciona novo aprendizado, decisão, blocker | A cada sessão com mudança |
-| **Reflection** | Identifica o que está resolvido ou obsoleto | A cada sessão |
-| **Curation** | Remove o obsoleto, eleva o útil | A cada sessão |
+| **Reflection** | Identifica o que está resolvido ou obsoleto | A cada sessão             |
+| **Curation**   | Remove o obsoleto, eleva o útil             | A cada sessão             |
 
 **Regras de curação:**
 
@@ -287,11 +285,11 @@ A abordagem ACE trata `STATE.md` como um **playbook que se auto-curada** — nã
 
 Em vez de medir apenas "o agente passou nesta task?", o AXIS recomenda medir consistência:
 
-| Métrica | O que mede | Como aplicar |
-| ------- | ---------- | ------------ |
-| **pass@1** | Passou na primeira tentativa | Baseline — não usar sozinho |
-| **pass@k** | Passou em k execuções independentes | Smoke test 3x o mesmo fluxo |
-| **ε-robustness** | Passou com variação no input | Testar com ligeira reformulação do pedido |
+| Métrica          | O que mede                          | Como aplicar                              |
+| ---------------- | ----------------------------------- | ----------------------------------------- |
+| **pass@1**       | Passou na primeira tentativa        | Baseline — não usar sozinho               |
+| **pass@k**       | Passou em k execuções independentes | Smoke test 3x o mesmo fluxo               |
+| **ε-robustness** | Passou com variação no input        | Testar com ligeira reformulação do pedido |
 
 **Protocolo mínimo para smoke test na Fase 5:**
 
@@ -311,18 +309,17 @@ Em vez de medir apenas "o agente passou nesta task?", o AXIS recomenda medir con
 
 Specs longas não são melhores specs. AXIS impõe:
 
-| Artefato | Limite | Consequência de exceder |
-| -------- | ------ | ----------------------- |
-| `INSTRUCTIONS.md` | 100-180 linhas | Contexto carregado sempre — ruído direto |
-| `SKILL.md` | ≤ 60 linhas | Indexado sempre — cada linha custa token |
-| `STATE.md` | ≤ 80 linhas | Lido no início de cada sessão — deve ser focado |
+| Artefato          | Limite         | Consequência de exceder                         |
+| ----------------- | -------------- | ----------------------------------------------- |
+| `INSTRUCTIONS.md` | 100-180 linhas | Contexto carregado sempre — ruído direto        |
+| `SKILL.md`        | ≤ 60 linhas    | Indexado sempre — cada linha custa token        |
+| `STATE.md`        | ≤ 80 linhas    | Lido no início de cada sessão — deve ser focado |
 
 **Critério de testabilidade de uma spec:** um item de spec é testável se você pode responder "como eu saberia que o agente seguiu isso?". Se não consegue responder, o item é muito vago.
 
 Exemplos:
 
-| Vago (ruído) | Testável (sinal) |
-| ----------- | ---------------- |
-| "Siga boas práticas" | "Use `createQueryBuilder` para bulk insert >100 registros" |
-| "Documente decisões importantes" | "Crie RFC para qualquer decisão que altere arquitetura" |
+| Vago (ruído)               | Testável (sinal)                                                |
+| -------------------------- | --------------------------------------------------------------- |
+| "Siga boas práticas"       | "Use `createQueryBuilder` para bulk insert >100 registros"      |
 | "Seja cuidadoso com dados" | "Nunca executar `DROP` ou `TRUNCATE` sem confirmação explícita" |
