@@ -1,169 +1,128 @@
-# Prompt Template — Contrato do Output Final
+# Prompt Template — Output Contract
 
-Este é o **contrato** do que um bootstrap bem-sucedido entrega. Use como referência ao gerar e como base para a validação na Fase 5.
+This is the **contract** of what a successful bootstrap delivers. Use as reference when generating and as the basis for validation in Phase 5.
 
 ---
 
-## Estrutura Final Esperada
+## Expected Final Structure
 
 ```text
-projeto-alvo/
-├── .ai/                                           ← FONTE ÚNICA
-│   ├── INSTRUCTIONS.md                            (100-180 linhas)
-│   ├── CONVENTIONS.md                             (mapa + regras)
+target-project/
+├── .ai/                                           ← SINGLE SOURCE
+│   ├── INSTRUCTIONS.md                            (100-180 lines)
+│   ├── CONVENTIONS.md                             (map + rules)
 │   ├── skills/
-│   │   ├── <skill-1>/SKILL.md                     (40-60 linhas)
+│   │   ├── <skill-1>/SKILL.md                     (40-60 lines)
 │   │   ├── <skill-2>/SKILL.md
 │   │   └── ...                                    (3-7 skills)
-│   ├── rules/                                     (3-7 rules — se aplicável)
+│   ├── rules/                                     (3-7 rules — if applicable)
 │   │   ├── code-style.md
 │   │   ├── architecture-patterns.md
 │   │   └── ...
 │   └── docs/
-│       ├── architecture.md                        (se software)
-│       ├── database-schema.md                     (se software)
-│       ├── glossary.md                            (se domínio especializado)
+│       ├── architecture.md                        (if software)
+│       ├── database-schema.md                     (if software)
+│       ├── glossary.md                            (if specialized domain)
         └── STATE.md
 │
 ├── CLAUDE.md           → .ai/INSTRUCTIONS.md
 ├── AGENTS.md           → .ai/INSTRUCTIONS.md
 │
-├── .claude/                                       (se Claude Code declarado)
+├── .claude/                                       (if Claude Code declared)
 │   ├── CLAUDE.md       → ../.ai/INSTRUCTIONS.md
 │   ├── rules           → ../.ai/rules
 │   ├── skills          → ../.ai/skills
-│   └── settings.json                              (versionado)
+│   └── settings.json                              (versioned)
 │
-├── .cursor/, .agents/, .github/                   (conforme declaradas)
+├── .cursor/, .agents/, .github/                   (per declared IDEs)
 │
-├── scripts/                                       (se software)
+├── scripts/                                       (if software)
 │   ├── format-file.sh
 │   ├── validate-bash.sh
 │   └── run-tests-if-changed.sh
 │
-└── setup-ide-links.sh                             (idempotente)
+└── setup-ide-links.sh                             (idempotent)
 ```
 
 ---
 
-## Conteúdo Mínimo por Arquivo
+## Minimum Content per File
 
 ### `.ai/INSTRUCTIONS.md`
 
-Ordem (frequência de consulta, não importância lógica):
+Order (consultation frequency, not logical importance):
 
-1. O que o projeto faz (1-2 frases)
-2. Stack ou ferramentas (com versões)
-3. Como rodar / como começar
-4. Arquitetura em tabela (componentes + responsabilidade)
-5. Princípios de design (3-7 bullets com rationale)
-6. Convenções de código (resumo — detalhes em rules)
-7. Skills disponíveis (tabela com quando usar)
-8. Links para docs e referências
+1. What the project does (1-2 sentences)
+2. Stack or tools (with versions)
+3. How to run / how to start
+4. Architecture in table (components + responsibility)
+5. Design principles (3-7 bullets with rationale)
+6. Code conventions (summary — details in rules)
+7. Available skills (table with when to use)
+8. Links to docs and references
 
-**Tamanho:** 100-180 linhas. Abaixo de 100 é superficial; acima de 200 perde foco.
+**Size:** 100-180 lines. Below 100 is superficial; above 200 loses focus.
 
 ### `.ai/skills/<skill>/SKILL.md`
 
 ```markdown
 ---
-name: <nome-skill>
-description: <2-4 linhas mencionando termos de domínio que agem como gatilhos>
+name: <skill-name>
+description: <2-4 lines mentioning domain terms that act as triggers>
 ---
 
-# <Título da Skill>
+# Skill Title
 
-<Propósito em 1-2 frases.>
+<Purpose in 1-2 sentences.>
 
-## Quando Usar
-- <Cenário 1>
-- <Cenário 2>
-- <Cenário 3>
+## When to Use
+- <Scenario 1>
+- <Scenario 2>
+- <Scenario 3>
 
-## Resumo Rápido
-<Tabela ou bullets densos>
+## Quick Summary
+<Dense table or bullets>
 
-## Referências
-- [GUIDE.md](references/GUIDE.md) — <propósito>
-- [REFERENCE.md](references/REFERENCE.md) — <propósito>
+## References
+- [GUIDE.md](references/GUIDE.md) — <purpose>
+- [REFERENCE.md](references/REFERENCE.md) — <purpose>
 ```
 
-**Tamanho:** 40-60 linhas. Description: 2-4 linhas, escrito em terceira pessoa, com termos-gatilho.
+**Size:** 40-60 lines. Description: 2-4 lines, written in third person, with trigger terms.
 
 ### `.ai/CONVENTIONS.md`
 
-- Mapa de symlinks
-- Regras para o agente (onde criar arquivos, o que nunca fazer)
+- Symlink map
+- Rules for the agent (where to create files, what never to do)
 - Knowledge Verification Chain
-- Como adicionar nova IDE (3-4 linhas de `ln -s`)
-- Templates pointer (link para TEMPLATES.md ou cópia local)
-
-### `.ai/docs/STATE.md`
-
-Seções obrigatórias:
-
-- **Decisões Ativas** (com data e rationale)
-- **Em Progresso** (com % de completude estimado)
-- **Blockers** (com responsável aguardado)
-- **Ideias Adiadas** (com critério para retomar)
-- **Lições Aprendidas** (com contexto)
-- **TODOs Pendentes** (checkbox)
-
-### `.claude/settings.json` (ou equivalente)
-
-```json
-{
-  "permissions": {
-    "allow": ["Read", "Bash(git *)", "<stack-specific>", "Edit(/src/**)", "Edit(/.ai/**)"],
-    "deny": ["Bash(rm -rf *)", "Bash(git push --force*)"],
-    "ask": ["Bash(git push *)", "Edit(/.env*)"]
-  },
-  "hooks": {
-    "PostToolUse": [/* lint hook se software */],
-    "PreToolUse": [/* validate-bash sempre */],
-    "Stop": [/* test hook se software */]
-  }
-}
-```
+- How to add new IDE (3-4 lines of `ln -s`)
+- Templates pointer (link to TEMPLATES.md or local copy)
 
 ---
 
-## Validation Checklist
+## Handoff to User
 
-Antes de declarar bootstrap completo:
+```markdown
+## Bootstrap Complete
 
-- [ ] `.ai/INSTRUCTIONS.md` existe e tem 100-180 linhas
-- [ ] Pelo menos 3 skills criadas, cada uma com SKILL.md ≤ 60 linhas
-- [ ] Cada SKILL.md tem `description` com 2-4 linhas e termos-gatilho
-- [ ] `.ai/CONVENTIONS.md` contém mapa de symlinks
-- [ ] `.ai/docs/STATE.md` tem todas as 6 seções (mesmo que algumas estejam vazias)
-- [ ] Symlinks resolvem corretamente (`ls -la` mostra os targets)
-- [ ] `settings.json` está versionado (`git status` confirma)
-- [ ] Hooks executam (smoke test em arquivo dummy) — se software
-- [ ] Setup script é idempotente (rodar 2x não quebra)
-- [ ] Usuário recebeu lista de 3-5 próximos passos sugeridos
+### What was created
+- N files in .ai/
+- N skills initialized: <list>
+- N rules: <list>
+- N stubs in docs/
+- Memory layer with STATE, CONVENTIONS
+- N symlinks distributing to <IDEs>
+- N hooks in settings.json
 
----
+### Metrics
+- INSTRUCTIONS.md: N lines (target 100-180) ✓
+- SKILL.md average: N lines (target 40-60) ✓
+- Symlinks: all resolve ✓
+- Smoke tests: pass ✓
 
-## Handoff ao Usuário
-
-Mensagem final ao concluir:
-
-```text
-Bootstrap concluído. Resumo:
-
-Estrutura criada:
-- N arquivos em .ai/
-- N symlinks distribuindo para [IDEs]
-- N hooks configurados em settings.json
-- N skills inicializadas
-
-Próximos passos sugeridos:
-1. Detalhar a primeira skill (popule references/GUIDE.md em <skill>)
-2. Validar settings.json com seu time
-3. Rodar `bash setup-ide-links.sh` em qualquer máquina nova do time
-4. Configurar CI para verificar resolução de symlinks (opcional)
-
-Para entender o framework: leia FRAMEWORK.md neste repo.
-Para auditar o que foi gerado: invoque novamente este skill em modo "auditoria".
+### Suggested next steps (3-5)
+1. Detail the first priority skill — populate references/GUIDE.md in <skill>
+2. Validate settings.json with the team
+3. Configure CI to verify symlink resolution
+4. Test invocation by another IDE (multi-tool smoke test)
 ```

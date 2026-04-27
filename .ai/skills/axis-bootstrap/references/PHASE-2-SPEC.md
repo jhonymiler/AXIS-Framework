@@ -1,142 +1,142 @@
 # Phase 2 — Spec Layer Generation
 
-**Objetivo:** gerar a fonte única de conhecimento do projeto (`.ai/`).
+**Goal:** generate the project's single source of knowledge (`.ai/`).
 
-**Entrada:** Project Profile validado na Fase 1.
+**Input:** Project Profile validated in Phase 1.
 
-**Output:** estrutura `.ai/` populada com `INSTRUCTIONS.md`, esqueletos de skills, rules iniciais e stubs de docs.
+**Output:** `.ai/` structure populated with `INSTRUCTIONS.md`, skill skeletons, initial rules, and doc stubs.
 
 ---
 
-## Ordem de Geração (não inverta)
+## Generation Order (do not reverse)
 
 ```text
-1. Criar estrutura de pastas
-2. Gerar INSTRUCTIONS.md
-3. Gerar esqueletos de skills (uma por domínio identificado)
-4. Gerar rules iniciais
-5. Gerar stubs de docs
-6. Apresentar ao usuário e validar
+1. Create folder structure
+2. Generate INSTRUCTIONS.md
+3. Generate skill skeletons (one per identified domain)
+4. Generate initial rules
+5. Generate doc stubs
+6. Present to user and validate
 ```
 
 ---
 
-## Passo 1 — Estrutura de Pastas
+## Step 1 — Folder Structure
 
 ```bash
 mkdir -p .ai/{skills,rules,docs,docs/stories}
 ```
 
-Para projetos não-técnicos, ainda criar a estrutura — `rules/` pode ser usada para "protocolos", `docs/` para referências de domínio. A homogeneidade simplifica a manutenção.
+For non-technical projects, still create the structure — `rules/` can be used for "protocols", `docs/` for domain references. Homogeneity simplifies maintenance.
 
 ---
 
-## Passo 2 — INSTRUCTIONS.md
+## Step 2 — INSTRUCTIONS.md
 
-Use o template de [TEMPLATES.md → INSTRUCTIONS.md](TEMPLATES.md#instructionsmd).
+Use the template from [TEMPLATES.md → INSTRUCTIONS.md](TEMPLATES.md#instructionsmd).
 
-**Ordem das seções (frequência de consulta, não importância lógica):**
+**Section order (consultation frequency, not logical importance):**
 
-1. **Propósito** (1-2 frases — o que faz, para quem, por quê)
-2. **Stack ou Ferramentas** (com versões relevantes)
-3. **Como Rodar / Como Começar** (comandos exatos ou primeiros passos)
-4. **Arquitetura** (tabela: componente → responsabilidade → tecnologia → localização)
-5. **Princípios de Design** (3-7 bullets com rationale curto)
-6. **Convenções** (resumo — detalhes em rules)
-7. **Skills Disponíveis** (tabela: skill → quando usar)
-8. **Links** (para docs detalhados)
+1. **Purpose** (1-2 sentences — what it does, for whom, why)
+2. **Stack or Tools** (with relevant versions)
+3. **How to Run / How to Start** (exact commands or first steps)
+4. **Architecture** (table: component → responsibility → technology → location)
+5. **Design Principles** (3-7 bullets with short rationale)
+6. **Conventions** (summary — details in rules)
+7. **Available Skills** (table: skill → when to use)
+8. **Links** (to detailed docs)
 
-**Tamanho-alvo:** 100-180 linhas. Abaixo de 100 é superficial; acima de 200 perde foco.
+**Target size:** 100-180 lines. Below 100 is superficial; above 200 loses focus.
 
-**Insight crítico — descreva decisões, não apenas fatos:**
+**Critical insight — describe decisions, not just facts:**
 
 ```markdown
-# Ruim
+# Bad
 - ORM: TypeORM
 
-# Bom
-- ORM: TypeORM com Repository pattern — nunca acessar `Repository<T>` direto nos services,
-  encapsular em classes `*Repository` para facilitar mock nos testes
+# Good
+- ORM: TypeORM with Repository pattern — never access `Repository<T>` directly in services,
+  encapsulate in `*Repository` classes to make mocking in tests easier
 ```
 
-A segunda forma economiza uma pergunta ao dev e evita código fora do padrão.
+The second form saves a question to the dev and prevents out-of-pattern code.
 
-**Para projetos não-técnicos**, substituir:
+**For non-technical projects**, replace:
 
-- "Stack" → "Ferramentas e plataformas"
-- "Como rodar" → "Como começar / fluxo de trabalho"
-- "Arquitetura" → "Componentes do projeto"
-- "Convenções de código" → "Padrões de qualidade"
+- "Stack" → "Tools and platforms"
+- "How to run" → "How to start / workflow"
+- "Architecture" → "Project components"
+- "Code conventions" → "Quality standards"
 
 ---
 
-## Passo 3 — Esqueletos de Skills
+## Step 3 — Skill Skeletons
 
-Para cada domínio identificado na Fase 1, criar:
+For each domain identified in Phase 1, create:
 
 ```text
-.ai/skills/<nome>/
-└── SKILL.md         (40-60 linhas, sem references/ ainda)
+.ai/skills/<name>/
+└── SKILL.md         (40-60 lines, without references/ yet)
 ```
 
-Use o template [SKILL.md em TEMPLATES.md](TEMPLATES.md#skillmd-índice).
+Use template [SKILL.md in TEMPLATES.md](TEMPLATES.md#skillmd-index).
 
-**O frontmatter `description` é o elemento mais crítico** — determina se a skill será carregada. Checklist:
+**The frontmatter `description` is the most critical element** — determines whether the skill will be loaded. Checklist:
 
-- [ ] 2-4 linhas (1 linha é vago, 5+ é excessivo)
-- [ ] Em terceira pessoa ("Use when implementando...")
-- [ ] Menciona termos de domínio que agem como gatilhos
-- [ ] Lista 3-5 cenários de uso
-- [ ] Um dev novo entenderia quando usar a skill só lendo a description
+- [ ] 2-4 lines (1 line is vague, 5+ is excessive)
+- [ ] In third person ("Use when implementing...")
+- [ ] Mentions domain terms that act as triggers
+- [ ] Lists 3-5 usage scenarios
+- [ ] A new dev would understand when to use the skill just by reading the description
 
 ```yaml
-# Fraco
+# Weak
 description: Reference for the payments API integration.
 
-# Forte
+# Strong
 description: Complete reference for the Payments API integration.
   Use when implementing API calls (endpoints, auth, payload format),
   debugging API responses (error codes, rate limits),
   or understanding the retry strategy and idempotency rules.
 ```
 
-**Não popule references/ ainda.** Esta fase entrega o índice. References são preenchidos em sessões subsequentes conforme o conhecimento se acumula.
+**Do not populate references/ yet.** This phase delivers the index. References are filled in subsequent sessions as knowledge accumulates.
 
-### Granularidade — quando criar nova skill vs expandir existente
+### Granularity — when to create new skill vs expand existing
 
-**Criar nova quando:**
-- Domínio tem >5 conceitos específicos
-- Existe fluxo de trabalho próprio
-- Cenário de uso é distinto
+**Create new when:**
+- Domain has >5 specific concepts
+- Has its own workflow
+- Usage scenario is distinct
 
-**Expandir existente quando:**
-- Informação é complementar
-- SKILL.md ainda <60 linhas após adição
-- Mesmo cenário de uso
+**Expand existing when:**
+- Information is complementary
+- SKILL.md still <60 lines after addition
+- Same usage scenario
 
-**Usar `docs/` em vez de skill quando:**
-- É documentação de referência pura (schema, contratos)
-- Não envolve fluxo de trabalho
-- Será referenciado por múltiplas skills
+**Use `docs/` instead of skill when:**
+- It is pure reference documentation (schema, contracts)
+- Does not involve workflow
+- Will be referenced by multiple skills
 
 ---
 
-## Passo 4 — Rules Iniciais
+## Step 4 — Initial Rules
 
-Para projetos de software, criar 3-7 rules em `.ai/rules/`. Use template [Rule em TEMPLATES.md](TEMPLATES.md#rule-de-código).
+For software projects, create 3-7 rules in `.ai/rules/`. Use template [Rule in TEMPLATES.md](TEMPLATES.md#code-rule).
 
-**Estrutura padrão recomendada:**
+**Recommended default structure:**
 
 ```text
 .ai/rules/
 ├── code-style.md            (naming, formatting, imports)
-├── architecture-patterns.md (DI, módulos, padrões do framework)
+├── architecture-patterns.md (DI, modules, framework patterns)
 ├── database.md              (ORM, migrations, queries)
-├── testing.md               (estrutura de testes, mocks)
-└── cli.md                   (comandos e scripts)
+├── testing.md               (test structure, mocks)
+└── cli.md                   (commands and scripts)
 ```
 
-**Frontmatter para escopo:**
+**Frontmatter for scope:**
 
 ```yaml
 ---
@@ -146,117 +146,105 @@ paths:
 ---
 ```
 
-**Como escrever rule eficaz:**
+**How to write an effective rule:**
 
 ```markdown
-# Ruim — genérico demais
+# Bad — too generic
 - Use meaningful variable names
 - Keep functions small
 
-# Bom — específico e acionável
-- Use constantes ou enums para todos os valores fixos de domínio (ex: `Status`, `Origin`)
-  — nunca usar string literals como `'pending'` espalhados no código
-- Operações em lote: prefira bulk inserts/updates nativos do ORM/DB — nunca loops
-  (impacto de N+1 queries em tabelas grandes é exponencial)
+# Good — specific and actionable
+- Use constants or enums for all fixed domain values (e.g., `Status`, `Origin`)
+  — never use string literals like `'pending'` scattered in the code
+- Batch operations: prefer native ORM/DB bulk inserts/updates — never loops
+  (impact of N+1 queries on large tables is exponential)
 ```
 
-**Três elementos de rule eficaz:** o quê fazer, como fazer, e por quê (quando não é óbvio).
+**Three elements of an effective rule:** what to do, how to do it, and why (when not obvious).
 
-**Para projetos não-técnicos**, substituir rules por **protocolos** (mesma estrutura, sem `applyTo`):
+**For non-technical projects**, replace rules with **protocols** (same structure, without `applyTo`):
 
 ```text
-.ai/rules/  (ou .ai/protocols/)
-├── tom-de-voz.md
-├── estrutura-de-artigo.md
-├── checklist-de-revisao.md
-└── padroes-de-citacao.md
+.ai/rules/  (or .ai/protocols/)
+├── tone-of-voice.md
+├── article-structure.md
+├── review-checklist.md
+└── citation-standards.md
 ```
 
 ---
 
-## Passo 5 — Stubs de Docs
+## Step 5 — Doc Stubs
 
-Criar arquivos com cabeçalho e seções vazias, prontos para preenchimento futuro.
+Create files with headers and empty sections, ready for future population.
 
-### Para software
-
-```text
-.ai/docs/
-├── architecture.md          (visão geral do sistema + decisões)
-├── database-schema.md       (tabelas + regras de negócio + índices)
-├── api-contracts.md         (contratos internos e externos)
-├── data-flows.md            (opcional — para fluxos não-óbvios)
-└── monitoring.md            (opcional — observabilidade)
-```
-
-`architecture.md` deve incluir seção **Decisões Arquiteturais Chave** com formato:
-
-```markdown
-- **Por que <decisão>:** <rationale curto>
-```
-
-`database-schema.md` deve incluir **regras de negócio** junto ao schema (não em outro lugar):
-
-```markdown
-**Regras de negócio:**
-- `deleted_at IS NULL` em todas as queries (soft delete)
-- `retry_count` incrementado a cada tentativa falha, máx 3
-```
-
-### Para domínios especializados (não-software)
+### For software
 
 ```text
 .ai/docs/
-├── glossary.md              (termos do domínio com significado específico)
-├── workflows.md             (fluxos de trabalho)
-└── references.md            (links externos, fontes oficiais)
+├── architecture.md          (system overview + decisions)
+├── database-schema.md       (tables + business rules + indexes)
+├── api-contracts.md         (internal and external contracts)
+├── data-flows.md            (optional — for non-obvious flows)
+└── monitoring.md            (optional — observability)
+```
+
+`architecture.md` should include a **Key Architectural Decisions** section with format:
+
+```markdown
+- **Why <decision>:** <short rationale>
+```
+
+`database-schema.md` should include **business rules** alongside the schema (not elsewhere):
+
+```markdown
+**Business rules:**
+- `deleted_at IS NULL` in all queries (soft delete)
+- `retry_count` incremented on each failed attempt, max 3
+```
+
+### For specialized domains (non-software)
+
+```text
+.ai/docs/
+├── glossary.md              (domain terms with specific meaning)
+├── workflows.md             (work flows)
+└── references.md            (external links, official sources)
 ```
 
 ---
 
-## Passo 6 — Validação e Gate
+## Step 6 — Validation and Gate
 
-Apresente ao usuário:
+Present to user:
 
 ```markdown
-## Spec Layer Gerada
+## Spec Layer Generated
 
-### Estrutura
-.ai/INSTRUCTIONS.md (N linhas)
-.ai/skills/<skill1>/SKILL.md (N linhas)
-.ai/skills/<skill2>/SKILL.md (N linhas)
+### Structure
+.ai/INSTRUCTIONS.md (N lines)
+.ai/skills/<skill1>/SKILL.md (N lines)
+.ai/skills/<skill2>/SKILL.md (N lines)
 ...
 .ai/rules/<rule1>.md
 .ai/docs/architecture.md (stub)
 ...
 
 ### Total
-- N skills inicializadas
-- N rules criadas
-- N stubs de docs
+- N skills initialized
+- N rules created
+- N doc stubs
 
-### Pergunta
-Algum domínio crítico que esqueci? Algum arquivo que não faz sentido neste projeto?
-Algum nome a ajustar?
+### Question
+Any critical domain I missed? Any file that doesn't make sense for this project?
+Any name to adjust?
 ```
 
-**Espere confirmação antes da Fase 3.**
+**Wait for confirmation before Phase 3.**
 
 ---
 
-## Princípios de Qualidade
+## Quality Principles
 
-- **Densidade > comprimento** — cada linha precisa carregar informação útil
-- **Decisões > fatos** — explique o "porquê", não apenas o "quê"
-- **Específico > genérico** — "use Repository pattern porque X" > "use boas práticas"
-- **Composabilidade** — skills devem se referenciar, não duplicar conteúdo
-- **Documente fluxos em skills, estado em docs** — distinção crítica:
-
-| Tipo              | Onde                                | Exemplo                     |
-| ----------------- | ----------------------------------- | --------------------------- |
-| Fluxo de trabalho | `skills/<nome>/SKILL.md`            | "Como coletar dados da API" |
-| Algoritmo/lógica  | `skills/<nome>/references/GUIDE.md` | "Lógica de deduplicação"    |
-| Schema/contrato   | `docs/database-schema.md`           | "Tabela transactions"       |
-| Estado atual      | `docs/STATE.md`                     | "Feature X em progresso"    |
-
-Padrões adicionais (Progressive Disclosure budget, KVC, auto-sizing) em [PATTERNS.md](PATTERNS.md).
+- **Density > length** — every line must carry useful information
+- **Decisions > facts** — explain the "why", not just the "what"

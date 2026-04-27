@@ -2,141 +2,142 @@
 
 > **Harness-first. Spec-driven. Memory-persistent.**
 
-Um framework executável que bootstrapa qualquer projeto — técnico ou não — com a infraestrutura necessária para colaborar de forma **confiável e escalável** com agentes de IA.
+An executable framework that bootstraps any project — technical or not — with the infrastructure needed to collaborate **reliably and scalably** with AI agents.
 
-> **Não é um artigo para ler. É uma spec para executar.** O framework usa o próprio padrão que prega: ele se entrega como um skill que a IA carrega e executa em fases com gates explícitos.
-
----
-
-## O Modelo Central
-
-```text
-Projeto Aumentado por IA = Spec Layer + Harness Layer + Memory Layer
-```
-
-| Camada      | Responde                     | Artefatos                                  | Por que importa                        |
-| ----------- | ---------------------------- | ------------------------------------------ | -------------------------------------- |
-| **Spec**    | O QUÊ o projeto é e precisa  | INSTRUCTIONS.md, skills, rules, docs       | Contexto mínimo, sem ruído             |
-| **Harness** | COMO o agente se comporta    | settings.json, hooks, sub-agents, symlinks | **Confiabilidade real — não o modelo** |
-| **Memory**  | O QUE persiste entre sessões | STATE.md, CONVENTIONS.md                   | Antifragilidade ao tempo               |
-
-> **Insight-chave:** LangChain moveu um agente do fora-do-top-30 para top-5 no Terminal Bench 2.0 mudando apenas o harness — **mesmo modelo**. A camada de maior alavancagem não é o prompt, é o harness.
-
-Detalhes completos em [FRAMEWORK.md](FRAMEWORK.md).
+> **This is not an article to read. It is a spec to execute.** The framework uses the very pattern it teaches: it delivers itself as a skill that the AI loads and runs in phases with explicit gates.
 
 ---
 
-## Quick Start — 5 Minutos
-
-### Opção A — Bootstrap novo projeto (caminho rápido)
-
-Em qualquer agente (Claude Code, Cursor, Windsurf, Copilot):
+## The Core Model
 
 ```text
-Use a skill axis-bootstrap para inicializar este projeto.
+AI-Augmented Project = Spec Layer + Harness Layer + Memory Layer
 ```
 
-O agente conduz você por 5 fases com gates explícitos. Você confirma antes de cada fase avançar.
+| Layer       | Answers                        | Artifacts                                  | Why it matters                      |
+| ----------- | ------------------------------ | ------------------------------------------ | ------------------------------------ |
+| **Spec**    | WHAT the project is and needs  | INSTRUCTIONS.md, skills, rules, docs       | Minimal context, no noise            |
+| **Harness** | HOW the agent behaves          | settings.json, hooks, sub-agents, symlinks | **Real reliability — not the model** |
+| **Memory**  | WHAT persists between sessions | STATE.md, CONVENTIONS.md                   | Antifragility over time              |
 
-### Opção B — Instalar manualmente
+> **Key insight:** LangChain moved an agent from outside the top 30 to top 5 in Terminal Bench 2.0 by changing only the harness — **same model**. The highest-leverage layer is not the prompt — it's the harness.
+
+Full details in [FRAMEWORK.md](FRAMEWORK.md).
+
+---
+
+## Quick Start — 5 Minutes
+
+### Option A — Bootstrap a new project (fast path)
+
+In any agent (Claude Code, Cursor, Windsurf, Copilot):
+
+```text
+Use the axis-bootstrap skill to initialize this project.
+```
+
+The agent guides you through 5 phases with explicit gates. You confirm before each phase advances.
+
+### Option B — Manual install
 
 ```bash
-# 1. Copie a estrutura .ai/ para seu projeto
-cp -r /path/to/AXIS/.ai/ seu-projeto/.ai/
+# 1. Copy the .ai/ structure into your project
+cp -r /path/to/AXIS/.ai/ your-project/.ai/
 
-# 2. Execute o setup de symlinks
-cd seu-projeto && bash setup-ide-links.sh
+# 2. Run symlink setup
+cd your-project && bash setup-ide-links.sh
 ```
 
-### O que o bootstrap entrega
+### What the bootstrap delivers
 
-Em ~30 minutos de interação:
+In ~30 minutes of interaction:
 
-- `INSTRUCTIONS.md` contextual (100-180 linhas, não monolítico)
-- Skills por domínio com Progressive Disclosure
-- `settings.json` versionado com permissões auditáveis
-- Hooks de formatação, bloqueio destrutivo e testes automáticos
-- Symlinks multi-IDE (Claude Code, Cursor, Windsurf, Copilot, etc.)
-- `STATE.md` para continuidade entre sessões
-
----
-
-## Por que AXIS e Não Outro Framework
-
-| Framework               | Ângulo                      | Limitação                                                            |
-| ----------------------- | --------------------------- | -------------------------------------------------------------------- |
-| **Spec Kit (GitHub)**   | Spec-first                  | Sem harness, sem memória persistente; contexto perdido entre sessões |
-| **BMAD-METHOD**         | Agile multi-agent           | Focado em software; pesado para projetos menores                     |
-| **LangChain/LangGraph** | Runtime de agentes          | Runtime, não infra de projeto; lock-in de framework                  |
-| **CrewAI**              | Orquestração role-based     | Sem gestão de contexto entre IDEs                                    |
-| **AXIS**                | **Harness + Spec + Memory** | Stack-agnóstico, multi-IDE, 3 camadas integradas                     |
-
-AXIS resolve o que os outros ignoram: **a divergência de contexto entre IDEs, a fragilidade entre sessões e a ausência de permissões versionadas**.
+- Contextual `INSTRUCTIONS.md` (100-180 lines, not monolithic)
+- Domain skills with Progressive Disclosure
+- Versioned `settings.json` with auditable permissions
+- Hooks for formatting, destructive blocking, and automatic tests
+- Multi-IDE symlinks (Claude Code, Cursor, Windsurf, Copilot, etc.)
+- `STATE.md` for continuity between sessions
 
 ---
 
-## Quando Usar AXIS
+## Why AXIS and Not Another Framework
 
-- Iniciando um projeto novo (técnico ou não-técnico)
-- Adotando workflow de IA em projeto existente
-- Migrando de um `CLAUDE.md` monolítico para estrutura modular
-- Auditando um projeto para identificar lacunas na infra de IA
-- Padronizando múltiplos projetos do time
+| Framework               | Angle                       | Limitation                                                            |
+| ----------------------- | --------------------------- | --------------------------------------------------------------------- |
+| **Spec Kit (GitHub)**   | Spec-first                  | No harness, no persistent memory; context lost between sessions       |
+| **BMAD-METHOD**         | Agile multi-agent           | Software-focused; heavy for smaller projects                          |
+| **LangChain/LangGraph** | Agent runtime               | Runtime, not project infra; framework lock-in                         |
+| **CrewAI**              | Role-based orchestration    | No cross-IDE context management                                       |
+| **AXIS**                | **Harness + Spec + Memory** | Stack-agnostic, multi-IDE, 3 integrated layers                        |
 
-## Quando NÃO Usar
-
-- Script descartável de 1 hora
-- Projeto solo de fim de semana sem perspectiva de continuidade
-- Quando o overhead da estrutura excede o ganho
-
-Ver [FRAMEWORK.md](FRAMEWORK.md#trade-offs) para o trade-off completo.
+AXIS solves what others ignore: **context divergence across IDEs, session fragility, and the absence of versioned permissions**.
 
 ---
 
-## Estrutura deste Repositório
+## When to Use AXIS
+
+- Starting a new project (technical or non-technical)
+- Adopting an AI workflow in an existing project
+- Migrating from a monolithic `CLAUDE.md` to a modular structure
+- Auditing a project for AI infrastructure gaps
+- Standardizing multiple team projects
+
+## When NOT to Use
+
+- A throwaway script you'll finish in 1 hour
+- A solo weekend project with no continuity expected
+- When the overhead of the structure exceeds the gain
+
+See [FRAMEWORK.md](FRAMEWORK.md#trade-offs) for the full trade-off analysis.
+
+---
+
+## Repository Structure
 
 ```text
 AXIS/
-├── README.md                                    ← você está aqui
-├── FRAMEWORK.md                                 ← modelo conceitual (humanos)
-└── .ai/                                         ← o framework executável (fonte única)
-    ├── INSTRUCTIONS.md                          ← entry point para IA
-    ├── CONVENTIONS.md                           ← como o framework se mantém
+├── README.md                                    ← Portuguese readme
+├── README.en.md                                 ← you are here
+├── FRAMEWORK.md                                 ← conceptual model (humans)
+└── .ai/                                         ← the executable framework (single source)
+    ├── INSTRUCTIONS.md                          ← AI entry point
+    ├── CONVENTIONS.md                           ← how the framework maintains itself
     └── skills/
-        └── axis-bootstrap/                      ← a spec executável
-            ├── SKILL.md                         ← índice do skill
-            ├── PLANNER.md                       ← fases + gates
-            ├── PROMPT-TEMPLATE.md               ← contrato do output
-            └── references/                      ← detalhes on-demand
-                ├── QUICKSTART.md                ← caminho de 5 minutos
+        └── axis-bootstrap/                      ← the executable spec
+            ├── SKILL.md                         ← skill index
+            ├── PLANNER.md                       ← phases + gates
+            ├── PROMPT-TEMPLATE.md               ← output contract
+            └── references/                      ← on-demand details
+                ├── QUICKSTART.md                ← 5-minute path
                 ├── PHASE-1-DISCOVERY.md
                 ├── PHASE-2-SPEC.md
-                ├── PHASE-3-HARNESS.md           ← inclui failure attribution
-                ├── PHASE-4-MEMORY.md            ← inclui princípios ACE
+                ├── PHASE-3-HARNESS.md           ← includes failure attribution
+                ├── PHASE-4-MEMORY.md            ← includes ACE principles
                 ├── PHASE-5-VALIDATION.md
                 ├── TEMPLATES.md
                 ├── PATTERNS.md                  ← PD, KVC, ACE, k-trial
                 └── UNIVERSAL-MAP.md
 ```
 
-O framework é **self-hosting** — sua própria estrutura segue o padrão que ensina.
+The framework is **self-hosting** — its own structure follows the pattern it teaches.
 
 ---
 
-## Princípios Operacionais
+## Operational Principles
 
-1. **Harness-first** — confiabilidade vem do ambiente, não do modelo
-2. **Single Source of Truth** — conteúdo vive em `.ai/`; symlinks resolvem distribuição multi-IDE
-3. **Progressive Disclosure** — carregue apenas o necessário (~1.500 tokens base)
-4. **Gates entre fases** — nenhum artefato gerado sem confirmação do usuário
-5. **Memória como playbook** — STATE.md não é log; é contexto curado que se auto-melhora (princípio ACE)
-6. **Stack-agnóstico** — funciona para software, conteúdo, pesquisa, legal, qualquer domínio
+1. **Harness-first** — reliability comes from the environment, not the model
+2. **Single Source of Truth** — content lives in `.ai/`; symlinks handle multi-IDE distribution
+3. **Progressive Disclosure** — load only what is needed (~1,500 tokens base)
+4. **Gates between phases** — no artifact generated without user confirmation
+5. **Memory as playbook** — STATE.md is not a log; it is curated context that self-improves (ACE principle)
+6. **Stack-agnostic** — works for software, content, research, legal, any domain
 
 ---
 
-## Symlinks Multi-IDE
+## Multi-IDE Symlinks
 
-AXIS usa **Single Source of Truth**: todo conteúdo vive em `.ai/`. As pastas IDE-específicas contêm apenas symlinks — é **fisicamente impossível** ter divergência.
+AXIS uses **Single Source of Truth**: all content lives in `.ai/`. IDE-specific folders contain only symlinks — divergence is **physically impossible**.
 
 ```text
 CLAUDE.md                        → .ai/INSTRUCTIONS.md
@@ -148,4 +149,4 @@ AGENTS.md                        → .ai/INSTRUCTIONS.md
 .github/copilot-instructions.md  → .ai/INSTRUCTIONS.md
 ```
 
-Para configurar em um projeto novo: `bash setup-ide-links.sh`
+To configure in a new project: `bash setup-ide-links.sh`

@@ -1,61 +1,61 @@
 # Templates
 
-Todos os templates copy-paste usados pelo bootstrap. Cada um tem âncora linkável (ex: `#skillmd-índice`) referenciada das outras phases.
+All copy-paste templates used by the bootstrap. Each has a linkable anchor (e.g., `#skillmd-index`) referenced from other phases.
 
 ---
 
 ## INSTRUCTIONS.md
 
 ```markdown
-# <Nome do Projeto>
+# <Project Name>
 
-## Propósito
+## Purpose
 
-<1-2 frases descrevendo o que o projeto faz, para quem, e por quê.>
+<1-2 sentences describing what the project does, for whom, and why.>
 
-## Stack / Ferramentas
+## Stack / Tools
 
-- **Linguagem:** <ex: TypeScript 5.4>
-- **Framework:** <ex: NestJS 10>
-- **Banco:** <ex: PostgreSQL 16 + TypeORM>
-- **Infra:** <ex: Docker, AWS ECS>
-- **Test:** <ex: Jest, Supertest>
+- **Language:** <e.g., TypeScript 5.4>
+- **Framework:** <e.g., NestJS 10>
+- **Database:** <e.g., PostgreSQL 16 + TypeORM>
+- **Infra:** <e.g., Docker, AWS ECS>
+- **Test:** <e.g., Jest, Supertest>
 
-## Como Rodar
+## How to Run
 
 ```bash
-<comando exato para subir ambiente local>
-<comando exato para rodar testes>
-<comando exato para build>
+<exact command to start local environment>
+<exact command to run tests>
+<exact command to build>
 ```
 
-## Arquitetura
+## Architecture
 
-| Componente | Responsabilidade | Tecnologia   | Localização   |
-| ---------- | ---------------- | ------------ | ------------- |
-| <ex: API>  | <ex: HTTP REST>  | <ex: NestJS> | <ex: src/api> |
+| Component  | Responsibility   | Technology    | Location       |
+| ---------- | ---------------- | ------------- | -------------- |
+| <e.g. API> | <e.g. HTTP REST> | <e.g. NestJS> | <e.g. src/api> |
 
-Detalhes: [docs/architecture.md](docs/architecture.md)
+Details: [docs/architecture.md](docs/architecture.md)
 
-## Princípios de Design
+## Design Principles
 
-- **<Princípio 1>:** <rationale curto>
-- **<Princípio 2>:** <rationale curto>
+- **<Principle 1>:** <short rationale>
+- **<Principle 2>:** <short rationale>
 
-## Convenções
+## Conventions
 
-Resumo aqui; detalhes em [.ai/rules/](rules/):
+Summary here; details in [.ai/rules/](rules/):
 
-- Naming: <regra>
-- Error handling: <regra>
-- Tests: <regra>
+- Naming: <rule>
+- Error handling: <rule>
+- Tests: <rule>
 
-## Skills Disponíveis
+## Available Skills
 
-| Skill                                  | Quando usar   |
+| Skill                                  | When to use   |
 | -------------------------------------- | ------------- |
-| [<skill-1>](skills/<skill-1>/SKILL.md) | <quando usar> |
-| [<skill-2>](skills/<skill-2>/SKILL.md) | <quando usar> |
+| [<skill-1>](skills/<skill-1>/SKILL.md) | <when to use> |
+| [<skill-2>](skills/<skill-2>/SKILL.md) | <when to use> |
 
 ## Links
 
@@ -65,56 +65,56 @@ Resumo aqui; detalhes em [.ai/rules/](rules/):
 - [Conventions](CONVENTIONS.md)
 ```
 
-**Tamanho-alvo:** 100-180 linhas após preenchimento real.
+**Target size:** 100-180 lines after real content is filled in.
 
 ---
 
-## SKILL.md (índice)
+## SKILL.md (index)
 
 ```markdown
 ---
-name: nome-da-skill
-description: <2-4 linhas>. Use when implementando X, debugando Y,
-  ou entendendo Z do domínio. Mention specific domain terms that act
+name: skill-name
+description: <2-4 lines>. Use when implementing X, debugging Y,
+  or understanding Z of the domain. Mention specific domain terms that act
   as triggers: term1, term2, term3.
 ---
 
-# Título da Skill
+# Skill Title
 
-<Propósito em 1-2 frases.>
+<Purpose in 1-2 sentences.>
 
-## Quando Usar
+## When to Use
 
-- <Cenário específico 1>
-- <Cenário específico 2>
-- <Cenário específico 3>
+- <Specific scenario 1>
+- <Specific scenario 2>
+- <Specific scenario 3>
 
-## Resumo Rápido
+## Quick Summary
 
-| Item | Valor | Observação |
-| ---- | ----- | ---------- |
-| ...  | ...   | ...        |
+| Item | Value | Notes |
+| ---- | ----- | ----- |
+| ...  | ...   | ...   |
 
-## Referências
+## References
 
-- [GUIDE.md](references/GUIDE.md) — guia operacional passo a passo
-- [REFERENCE.md](references/REFERENCE.md) — tabelas e dados de referência
-- [PROMPT-TEMPLATE.md](references/PROMPT-TEMPLATE.md) — contrato de output (se gera artefatos)
-- [TROUBLESHOOTING.md](references/TROUBLESHOOTING.md) — erros comuns (opcional)
+- [GUIDE.md](references/GUIDE.md) — step-by-step operational guide
+- [REFERENCE.md](references/REFERENCE.md) — tables and reference data
+- [PROMPT-TEMPLATE.md](references/PROMPT-TEMPLATE.md) — output contract (if generates artifacts)
+- [TROUBLESHOOTING.md](references/TROUBLESHOOTING.md) — common errors (optional)
 
-## Validação Final
+## Final Validation
 
-Antes de finalizar trabalho que use esta skill:
+Before finishing work using this skill:
 
-- [ ] <gate específico do domínio 1>
-- [ ] <gate específico do domínio 2>
+- [ ] <domain-specific gate 1>
+- [ ] <domain-specific gate 2>
 ```
 
-**Tamanho-alvo:** 40-60 linhas.
+**Target size:** 40-60 lines.
 
 ---
 
-## Rule de Código
+## Code Rule
 
 ```markdown
 ---
@@ -123,16 +123,16 @@ paths:
   - "src/**"
 ---
 
-# <Nome da Regra>
+# <Rule Name>
 
-## <Seção 1>
+## <Section 1>
 
-- <Diretriz concisa com contexto (por que fazer assim)>
-- <Diretriz concisa com contexto>
+- <Concise guideline with context (why do it this way)>
+- <Concise guideline with context>
 
-## <Seção 2>
+## <Section 2>
 
-- <Diretriz concisa>
+- <Concise guideline>
 ```
 
 ---
@@ -140,36 +140,36 @@ paths:
 ## STATE.md
 
 ```markdown
-# Estado do Projeto
+# Project State
 
-## Decisões Ativas
-<!-- [YYYY-MM-DD] Decisão X tomada porque Y -->
+## Active Decisions
+<!-- [YYYY-MM-DD] Decision X made because Y -->
 
-## Em Progresso
-<!-- Feature Z: 70% completa, falta integração com API X -->
+## In Progress
+<!-- Feature Z: 70% complete, missing integration with API X -->
 
 ## Blockers
-<!-- API X retornando 429 em staging — aguardando resposta do fornecedor -->
+<!-- API X returning 429 in staging — awaiting vendor response -->
 
-## Ideias Adiadas (Deferred)
-<!-- Migrar para gRPC — avaliar quando volume passar de 10k req/min -->
+## Deferred Ideas
+<!-- Migrate to gRPC — evaluate when volume exceeds 10k req/min -->
 
-## Lições Aprendidas
-<!-- Bulk insert com TypeORM: usar createQueryBuilder em vez de save() para >100 registros -->
+## Lessons Learned
+<!-- Bulk insert with TypeORM: use createQueryBuilder instead of save() for >100 records -->
 
-## TODOs Pendentes
+## Pending TODOs
 - [ ]
 
 ---
 
-## Protocolo de Handoff
+## Handoff Protocol
 
-Ao final de qualquer sessão com mudanças relevantes, atualizar este arquivo com:
-- O que foi feito
-- O que falta
-- Qualquer contexto que se perderia
+At the end of any session with relevant changes, update this file with:
+- What was done
+- What remains
+- Any context that would otherwise be lost
 
-Ao iniciar sessão, ler este arquivo **antes** de qualquer outro.
+At the start of a session, read this file **before** anything else.
 ```
 
 ---
@@ -177,13 +177,13 @@ Ao iniciar sessão, ler este arquivo **antes** de qualquer outro.
 ## CONVENTIONS.md
 
 ```markdown
-# Convenções
+# Conventions
 
 ## Single Source of Truth
 
-Todo conteúdo vive em `.ai/`. Pastas IDE-específicas contêm apenas symlinks.
+All content lives in `.ai/`. IDE-specific folders contain symlinks only.
 
-## Mapa de Symlinks
+## Symlink Map
 
 ```text
 CLAUDE.md     → .ai/INSTRUCTIONS.md
@@ -194,37 +194,37 @@ AGENTS.md     → .ai/INSTRUCTIONS.md
 .github/      → ../.ai/{rules,skills,INSTRUCTIONS.md}
 ```
 
-Para adicionar nova IDE: editar `setup-ide-links.sh` (3-4 linhas) e rodar.
+To add a new IDE: edit `setup-ide-links.sh` (3-4 lines) and run it.
 
 ## Templates
 
-- **Nova skill:** copiar `<skill>/SKILL.md` de qualquer skill existente como base
-- **Nova rule:** copiar formato de `code-style.md`
+- **New skill:** copy `<skill>/SKILL.md` from any existing skill as a base
+- **New rule:** copy the format from `code-style.md`
 
-## Regras para o Agente
+## Agent Rules
 
-- Nunca duplicar conteúdo entre IDEs
-- Sempre criar arquivos dentro de `.ai/`
-- Manter `SKILL.md` ≤ 60 linhas
-- Manter `INSTRUCTIONS.md` entre 100-180 linhas
-- Atualizar `STATE.md` ao final de sessões com mudanças
+- Never duplicate content between IDEs
+- Always create files inside `.ai/`
+- Keep `SKILL.md` ≤ 60 lines
+- Keep `INSTRUCTIONS.md` between 100-180 lines
+- Update `STATE.md` at the end of sessions with changes
 
 ## Knowledge Verification Chain
 
-Antes de afirmar:
+Before asserting:
 1. Codebase
-2. Docs do projeto
-3. MCP/Context7 (docs oficiais)
+2. Project docs
+3. MCP/Context7 (official docs)
 4. Web search
-5. Marcar incerto — nunca fabricar
+5. Mark as uncertain — never fabricate
 
-## Manutenção
+## Maintenance
 
-| Evento                     | Ação                           |
-| -------------------------- | ------------------------------ |
-| Mudança de fluxo no código | Atualizar skill correspondente |
-| Sessão pausada             | Atualizar STATE.md             |
-| Nova integração            | Avaliar nova skill             |
+| Event                       | Action                         |
+| --------------------------- | ------------------------------ |
+| Code changes a skill's flow | Update the corresponding skill |
+| Session paused              | Update STATE.md                |
+| New integration             | Evaluate new skill             |
 ```
 
 ---
@@ -288,9 +288,9 @@ Antes de afirmar:
 }
 ```
 
-Substituir `<build-tool>` por:
+Replace `<build-tool>` with:
 
-| Stack       | Comando                                           |
+| Stack       | Command                                           |
 | ----------- | ------------------------------------------------- |
 | Node.js     | `Bash(npm *)`, `Bash(npx *)`                      |
 | Python      | `Bash(pip *)`, `Bash(pytest *)`, `Bash(poetry *)` |
@@ -309,8 +309,8 @@ Substituir `<build-tool>` por:
 ```bash
 #!/bin/bash
 # scripts/format-file.sh
-# Formata o arquivo passado como argumento. Stack-aware via case.
-# Nunca falha — formatter ausente não bloqueia o agente.
+# Formats the file passed as argument. Stack-aware via case.
+# Never fails — missing formatter does not block the agent.
 
 FILE="$1"
 [ -z "$FILE" ] && exit 0
@@ -334,14 +334,14 @@ exit 0
 ```bash
 #!/bin/bash
 # scripts/validate-bash.sh
-# Bloqueia padrões destrutivos. Universal — instalar em qualquer projeto.
+# Blocks destructive patterns. Universal — install in any project.
 
 INPUT=$(cat)
 CMD=$(echo "$INPUT" | jq -r '.tool_input.command // ""' 2>/dev/null)
 
-# Padrões nunca permitidos sem confirmação explícita
+# Patterns never allowed without explicit confirmation
 if echo "$CMD" | grep -qE '(rm -rf /|DROP TABLE|TRUNCATE |DELETE FROM [^W])'; then
-  echo '{"action": "deny", "reason": "Comando potencialmente destrutivo. Execute manualmente se intencional."}'
+  echo '{"action": "deny", "reason": "Potentially destructive command. Run manually if intentional."}'
   exit 0
 fi
 
@@ -355,7 +355,7 @@ echo '{"action": "allow"}'
 ```bash
 #!/bin/bash
 # scripts/run-tests-if-changed.sh
-# Detecta extensões de código alteradas e roda os testes correspondentes.
+# Detects changed code extensions and runs the corresponding tests.
 
 CHANGED=$(git diff --name-only HEAD 2>/dev/null)
 [ -z "$CHANGED" ] && exit 0
@@ -375,10 +375,10 @@ exit 0
 
 ```bash
 #!/bin/bash
-# Idempotente — pode rodar quantas vezes quiser sem erro.
+# Idempotent — can run as many times as needed without error.
 set -e
 
-# Raiz
+# Root
 ln -sf .ai/INSTRUCTIONS.md CLAUDE.md
 ln -sf .ai/INSTRUCTIONS.md AGENTS.md
 
@@ -393,7 +393,7 @@ mkdir -p .cursor
 ln -sf ../.ai/rules .cursor/rules
 ln -sf ../.ai/skills .cursor/skills
 
-# Windsurf / Agents genéricos
+# Windsurf / Generic Agents
 mkdir -p .agents
 ln -sf ../.ai/rules .agents/rules
 ln -sf ../.ai/skills .agents/skills
@@ -404,36 +404,36 @@ ln -sf ../.ai/INSTRUCTIONS.md .github/copilot-instructions.md
 ln -sf ../.ai/rules .github/instructions
 ln -sf ../.ai/skills .github/skills
 
-echo "Symlinks criados/atualizados com sucesso."
+echo "Symlinks created/updated successfully."
 ```
 
-**Comentar/remover** as seções de IDEs não usadas pelo time, para reduzir ruído em `git status`.
+**Comment/remove** the sections for IDEs not used by the team, to reduce noise in `git status`.
 
 ---
 
 ## architecture.md (stub)
 
 ```markdown
-# Arquitetura do Sistema
+# System Architecture
 
-## Visão Geral
+## Overview
 
-<Diagrama ASCII ou Mermaid mostrando componentes e conexões.>
+<ASCII or Mermaid diagram showing components and connections.>
 
-## Componentes
+## Components
 
-| Componente | Responsabilidade | Tecnologia | Localização |
-| ---------- | ---------------- | ---------- | ----------- |
-| ...        | ...              | ...        | ...         |
+| Component | Responsibility | Technology | Location |
+| --------- | -------------- | ---------- | -------- |
+| ...       | ...            | ...        | ...      |
 
-## Decisões Arquiteturais Chave
+## Key Architectural Decisions
 
-- **Por que <tecnologia>:** <rationale>
-- **Por que <padrão>:** <rationale>
+- **Why <technology>:** <rationale>
+- **Why <pattern>:** <rationale>
 
-## Restrições e Trade-offs
+## Constraints and Trade-offs
 
-- **<Restrição>:** <consequência e mitigação>
+- **<Constraint>:** <consequence and mitigation>
 ```
 
 ---
@@ -443,17 +443,17 @@ echo "Symlinks criados/atualizados com sucesso."
 ```markdown
 # Database Schema
 
-## Tabela: <nome>
+## Table: <name>
 
-| Coluna | Tipo | Nullable | Descrição |
-| ------ | ---- | -------- | --------- |
-| id     | UUID | N        | PK gerado |
-| ...    | ...  | ...      | ...       |
+| Column | Type | Nullable | Description  |
+| ------ | ---- | -------- | ------------ |
+| id     | UUID | N        | Generated PK |
+| ...    | ...  | ...      | ...          |
 
-**Índices:** `idx_xxx` (col1, col2) — usado em <query>
-**Constraints:** `uq_xxx` (col) — garante <invariante>
+**Indexes:** `idx_xxx` (col1, col2) — used in <query>
+**Constraints:** `uq_xxx` (col) — ensures <invariant>
 
-**Regras de negócio:**
-- <regra 1>
-- <regra 2>
+**Business rules:**
+- <rule 1>
+- <rule 2>
 ```

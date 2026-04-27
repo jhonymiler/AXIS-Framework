@@ -1,37 +1,38 @@
-# Conventions — Como o Framework se Mantém
+# Conventions — How the Framework Maintains Itself
 
-Este documento descreve a estrutura interna deste repositório e o protocolo para evoluí-lo sem quebrar a recursividade.
-
----
-
-## Princípio Central
-
-**O framework segue o padrão que ensina.** Qualquer mudança aqui deve preservar:
-
-- Single Source of Truth (sem duplicação de conteúdo)
-- Progressive Disclosure (SKILL.md ≤ 60 linhas, references on-demand)
-- Gates entre fases (no skill `spec-harness-bootstrap`)
-- Universal mapping (cada conceito técnico tem equivalente não-técnico)
-
-Se uma proposta de mudança quebra um desses, ela é rejeitada ou redesenhada.
+This document describes the internal structure of this repository and the protocol for evolving it without breaking recursiveness.
 
 ---
 
-## Mapa de Estrutura
+## Core Principle
+
+**The framework follows the pattern it teaches.** Any change here must preserve:
+
+- Single Source of Truth (no content duplication)
+- Progressive Disclosure (SKILL.md ≤ 60 lines, references on-demand)
+- Gates between phases (in the `axis-bootstrap` skill)
+- Universal mapping (every technical concept has a non-technical equivalent)
+
+If a proposed change breaks any of these, it is rejected or redesigned.
+
+---
+
+## Structure Map
 
 ```text
-Spec-Harness/                                    ← raiz (humanos leem README/FRAMEWORK)
-├── README.md                                    ← humanos: visão geral + quick start
-├── FRAMEWORK.md                                 ← humanos: modelo conceitual
-└── .ai/                                         ← IA: tudo aqui é fonte única
-    ├── INSTRUCTIONS.md                          ← IA: entry point
-    ├── CONVENTIONS.md                           ← este arquivo
+AXIS/                                            ← root (humans read README/FRAMEWORK)
+├── README.md                                    ← humans: overview + quick start (Portuguese)
+├── README.en.md                                 ← humans: overview + quick start (English)
+├── FRAMEWORK.md                                 ← humans: conceptual model
+└── .ai/                                         ← AI: everything here is single source
+    ├── INSTRUCTIONS.md                          ← AI: entry point
+    ├── CONVENTIONS.md                           ← this file
     └── skills/
-        └── spec-harness-bootstrap/              ← a spec executável
-            ├── SKILL.md                         ← índice ≤ 60 linhas
-            ├── PLANNER.md                       ← orquestração
-            ├── PROMPT-TEMPLATE.md               ← contrato de output
-            └── references/                      ← detalhes on-demand
+        └── axis-bootstrap/                      ← the executable spec
+            ├── SKILL.md                         ← index ≤ 60 lines
+            ├── PLANNER.md                       ← orchestration
+            ├── PROMPT-TEMPLATE.md               ← output contract
+            └── references/                      ← on-demand details
                 ├── PHASE-1-DISCOVERY.md
                 ├── PHASE-2-SPEC.md
                 ├── PHASE-3-HARNESS.md
@@ -44,27 +45,27 @@ Spec-Harness/                                    ← raiz (humanos leem README/F
 
 ---
 
-## Quando Modificar Cada Arquivo
+## When to Modify Each File
 
-| Mudança                         | Onde                                                    | Não onde               |
-| ------------------------------- | ------------------------------------------------------- | ---------------------- |
-| Novo conceito conceitual        | `FRAMEWORK.md`                                          | `SKILL.md`             |
-| Nova fase no bootstrap          | novo `PHASE-N.md` + atualizar `PLANNER.md` + `SKILL.md` | mover para outro skill |
-| Novo template (artefato gerado) | `references/TEMPLATES.md`                               | inline em PHASE-N.md   |
-| Novo padrão (PD, KVC, etc.)     | `references/PATTERNS.md`                                | espalhado em PHASEs    |
-| Suporte a novo tipo de projeto  | `references/UNIVERSAL-MAP.md` + `TEMPLATES.md`          | criar skill paralela   |
-| Quick start, instalação         | `README.md`                                             | `INSTRUCTIONS.md`      |
-| Como a IA opera no framework    | `INSTRUCTIONS.md`                                       | `README.md`            |
-| Mapa de manutenção              | este arquivo                                            | qualquer outro         |
+| Change                               | Where                                                    | Not where              |
+| ------------------------------------ | -------------------------------------------------------- | ---------------------- |
+| New conceptual concept               | `FRAMEWORK.md`                                           | `SKILL.md`             |
+| New phase in bootstrap               | new `PHASE-N.md` + update `PLANNER.md` + `SKILL.md`     | move to another skill  |
+| New template (generated artifact)    | `references/TEMPLATES.md`                                | inline in PHASE-N.md   |
+| New pattern (PD, KVC, etc.)          | `references/PATTERNS.md`                                 | scattered in PHASEs    |
+| Support for new project type         | `references/UNIVERSAL-MAP.md` + `TEMPLATES.md`           | create parallel skill  |
+| Quick start, installation            | `README.md` / `README.en.md`                             | `INSTRUCTIONS.md`      |
+| How the AI operates in the framework | `INSTRUCTIONS.md`                                        | `README.md`            |
+| Maintenance map                      | this file                                                | anywhere else          |
 
 ---
 
-## Symlinks (quando este repo for instalado em projeto-alvo)
+## Symlinks (when this repo is installed in a target project)
 
-Quando o framework é **usado em um projeto-alvo**, ele cria os seguintes symlinks no projeto:
+When the framework is **used in a target project**, it creates the following symlinks in the project:
 
 ```bash
-# Raiz do projeto-alvo
+# Target project root
 ln -sf .ai/INSTRUCTIONS.md CLAUDE.md
 ln -sf .ai/INSTRUCTIONS.md AGENTS.md
 
@@ -79,7 +80,7 @@ mkdir -p .cursor
 ln -sf ../.ai/rules .cursor/rules
 ln -sf ../.ai/skills .cursor/skills
 
-# Windsurf / agentes genéricos
+# Windsurf / generic agents
 mkdir -p .agents
 ln -sf ../.ai/rules .agents/rules
 ln -sf ../.ai/skills .agents/skills
@@ -91,44 +92,29 @@ ln -sf ../.ai/rules .github/instructions
 ln -sf ../.ai/skills .github/skills
 ```
 
-O script idempotente está em `references/TEMPLATES.md` sob o nome `setup-ide-links.sh`.
+The idempotent script is in `references/TEMPLATES.md` under the name `setup-ide-links.sh`.
 
 ---
 
-## Adicionando Suporte a uma Nova IDE
+## Adding Support for a New IDE
 
-1. Identificar onde a IDE busca instruções e regras
-2. Adicionar 3-4 linhas de symlink ao `setup-ide-links.sh` em `TEMPLATES.md`
-3. Atualizar a tabela em `FRAMEWORK.md` (ou a equivalente em `PHASE-3-HARNESS.md`)
-4. Documentar quirks da IDE (formato de frontmatter aceito, tamanho máximo, etc.)
+1. Identify where the IDE looks for instructions and rules
+2. Add 3-4 symlink lines to `setup-ide-links.sh` in `TEMPLATES.md`
+3. Update the table in `FRAMEWORK.md` (or the equivalent in `PHASE-3-HARNESS.md`)
+4. Document IDE quirks (accepted frontmatter format, maximum size, etc.)
 
-Não criar um novo skill por IDE. O suporte multi-IDE é uma propriedade do harness, não um domínio.
-
----
-
-## Regras para o Agente
-
-Ao operar dentro deste repositório:
-
-- **Não crie arquivos fora da estrutura mapeada acima** sem antes propor ao usuário
-- **Não duplique conteúdo** entre `FRAMEWORK.md` e `SKILL.md` — referencie
-- **Mantenha SKILL.md ≤ 60 linhas** — se passar, mova detalhes para `references/`
-- **Ao adicionar uma fase**, atualize: `PLANNER.md`, `SKILL.md`, e crie o `PHASE-N.md` correspondente
-- **Ao mudar um template**, mantenha consistência com exemplos em `PATTERNS.md`
+Do not create a new skill per IDE. Multi-IDE support is a harness property, not a domain.
 
 ---
 
-## Knowledge Verification Chain (interna)
+## Rules for the Agent
 
-Antes de afirmar qualquer coisa sobre o framework:
+When operating within this repository:
 
-1. **Codebase deste repo** — ler o arquivo relevante
-2. **Documentação cruzada** — verificar consistência entre `FRAMEWORK.md`, `SKILL.md` e `PHASE-N.md`
-3. **Web** — apenas se a pergunta for sobre conceito externo (Anthropic, GitHub Spec Kit, etc.)
-4. **Marcar incerto** — se faltar informação, dizer "não está documentado" — nunca inventar
+- **Do not create files outside the structure mapped above** without first proposing to the user
+- **Do not duplicate content** between `FRAMEWORK.md` and `SKILL.md` — reference instead
+- **Keep SKILL.md ≤ 60 lines** — if exceeded, move details to `references/`
+- **When adding a phase**, update: `PLANNER.md`, `SKILL.md`, and create the corresponding `PHASE-N.md`
+- **When changing a template**, maintain consistency with examples in `PATTERNS.md`
 
 ---
-
-## Protocolo de Evolução
-
-Mudanças não-triviais ao framework devem ser documentadas com uma nota em `STATE.md` descrevendo o que mudou e por quê.

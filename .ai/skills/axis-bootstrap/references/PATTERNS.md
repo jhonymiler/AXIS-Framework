@@ -1,130 +1,130 @@
-# Patterns — Padrões Técnicos do Framework
+# Patterns — Technical Patterns of the Framework
 
-Padrões reutilizáveis que o bootstrap aplica e que devem ser seguidos em qualquer evolução do projeto pós-bootstrap.
+Reusable patterns that the bootstrap applies and that should be followed in any post-bootstrap project evolution.
 
 ---
 
-## 1. Progressive Disclosure (3 Camadas)
+## 1. Progressive Disclosure (3 Layers)
 
-A spec carrega em três momentos distintos para minimizar tokens:
+The spec loads in three distinct moments to minimize tokens:
 
-| Camada            | Quando carrega    | Conteúdo                              | Custo           |
-| ----------------- | ----------------- | ------------------------------------- | --------------- |
-| **1 — Discovery** | Sempre (startup)  | `name` + `description` do frontmatter | ~3 linhas/skill |
-| **2 — Index**     | Quando relevante  | `SKILL.md` completo                   | ~40-60 linhas   |
-| **3 — On-demand** | Quando necessário | `references/*.md`                     | sob demanda     |
+| Layer             | When it loads    | Content                               | Cost            |
+| ----------------- | ---------------- | ------------------------------------- | --------------- |
+| **1 — Discovery** | Always (startup) | `name` + `description` from frontmatter | ~3 lines/skill |
+| **2 — Index**     | When relevant    | Full `SKILL.md`                       | ~40-60 lines    |
+| **3 — On-demand** | When needed      | `references/*.md`                     | on demand       |
 
-O agente sabe que uma skill existe (camada 1), decide se precisa (camada 2), só puxa detalhes profundos quando vai implementar (camada 3).
+The agent knows a skill exists (layer 1), decides if it needs it (layer 2), only pulls deep details when implementing (layer 3).
 
 ---
 
 ## 2. Token Budget
 
-Progressive Disclosure só funciona com limites explícitos. Defina:
+Progressive Disclosure only works with explicit limits. Define:
 
-| Categoria                                   | Budget               | Regra                           |
-| ------------------------------------------- | -------------------- | ------------------------------- |
-| **Base fixa** (INSTRUCTIONS + frontmatters) | ~1.500-2.000 tokens  | Sempre carregado                |
-| **Skills ativos** (SKILL.md completos)      | ~3.000-5.000 tokens  | Apenas relevantes para a task   |
-| **References on-demand**                    | ~5.000-10.000 tokens | Apenas quando necessário        |
-| **Total alvo**                              | <15.000 tokens       | Reservar máximo para raciocínio |
+| Category                                   | Budget               | Rule                                 |
+| ------------------------------------------ | -------------------- | ------------------------------------ |
+| **Fixed base** (INSTRUCTIONS + frontmatter) | ~1,500-2,000 tokens  | Always loaded                        |
+| **Active skills** (full SKILL.md)          | ~3,000-5,000 tokens  | Only relevant ones for the task      |
+| **References on-demand**                   | ~5,000-10,000 tokens | Only when necessary                  |
+| **Target total**                           | <15,000 tokens       | Reserve maximum for reasoning        |
 
-**Regras de carregamento:**
+**Loading rules:**
 
-- Nunca carregar múltiplos `SKILL.md` simultaneamente se não são para a mesma task
-- Nunca carregar múltiplos docs de arquitetura ao mesmo tempo
-- Ao atingir o limite, descarregar o conteúdo mais antigo
-- Avisar quando o contexto de docs ultrapassar o budget (sinal de skills grandes demais)
+- Never load multiple `SKILL.md` simultaneously if not for the same task
+- Never load multiple architecture docs at the same time
+- When reaching the limit, unload the oldest content
+- Warn when the docs context exceeds the budget (signal of oversized skills)
 
 ---
 
 ## 3. Knowledge Verification Chain
 
-**Antes de afirmar qualquer coisa**, o agente segue esta ordem **obrigatória**:
+**Before asserting anything**, the agent follows this order **mandatorily**:
 
 ```text
-Passo 1: Codebase  → verificar código existente, convenções e padrões
-Passo 2: Docs do projeto → README, .ai/docs/, comentários inline, skills
-Passo 3: Docs oficiais (MCP/Context7) → resolver lib ID, consultar API atual
-Passo 4: Web search → docs oficiais, fontes confiáveis, padrões da comunidade
-Passo 5: Marcar como incerto → "Não tenho certeza sobre X — verifique"
+Step 1: Codebase  → verify existing code, conventions and patterns
+Step 2: Project docs → README, .ai/docs/, inline comments, skills
+Step 3: Official docs (MCP/Context7) → resolve lib ID, consult current API
+Step 4: Web search → official docs, reliable sources, community standards
+Step 5: Mark as uncertain → "I'm not sure about X — please verify"
 ```
 
-**Regras invioláveis:**
+**Inviolable rules:**
 
-- Nunca pular para o Passo 5 se 1-4 estão disponíveis
-- Passo 5 é **sempre** sinalizado como incerto — nunca apresentado como fato
-- **Nunca assumir ou fabricar.** Se não encontrar, dizer "não encontrei documentação"
-- Inventar APIs, padrões ou comportamentos causa falhas em cascata: design errado → tasks erradas → implementação errada
-- Incerteza é sempre preferível a fabricação
+- Never skip to Step 5 if 1-4 are available
+- Step 5 is **always** signaled as uncertain — never presented as fact
+- **Never assume or fabricate.** If not found, say "I found no documentation"
+- Inventing APIs, patterns or behaviors causes cascading failures: wrong design → wrong tasks → wrong implementation
+- Uncertainty is always preferable to fabrication
 
-Esta cadeia deve ser referenciada em `CONVENTIONS.md` e pode ser uma rule independente em `.ai/rules/knowledge-verification.md`.
-
----
-
-## 4. Auto-Sizing por Complexidade
-
-Nem toda tarefa precisa do mesmo nível de planejamento. Antes de iniciar, o agente avalia:
-
-| Complexidade | Indicadores                    | Documentação                        | O que pular                  |
-| ------------ | ------------------------------ | ----------------------------------- | ---------------------------- |
-| **Small**    | ≤3 arquivos, escopo em 1 frase | Descrever → Implementar → Verificar | Spec, design, task breakdown |
-| **Medium**   | Feature clara, <10 passos      | Spec breve + design inline          | Design formal                |
-| **Large**    | Multi-componente, >10 passos   | Spec completa + design + tasks      | Nada                         |
-| **Complex**  | Ambiguidade, domínio novo      | Spec + discussão + pesquisa         | Nada + validação interativa  |
-
-**Regras:**
-
-- **Specify** e **Execute** são sempre obrigatórios — sempre saber O QUÊ e FAZER
-- **Design** é pulado se mudança é direta (sem decisões arquiteturais novas)
-- **Task breakdown** é pulado se há ≤3 passos óbvios
-- **Válvula de segurança:** mesmo quando tasks são pulados, o agente lista os passos inline. Se a listagem revelar >5 passos ou dependências complexas, **PARAR** e criar task breakdown formal
-
-Evita dois extremos: over-engineering em tarefas simples (queima tokens com ceremony) e under-planning em complexas (gera retrabalho).
+This chain must be referenced in `CONVENTIONS.md` and can be an independent rule in `.ai/rules/knowledge-verification.md`.
 
 ---
 
-## 5. Granularidade de Skills
+## 4. Auto-Sizing by Complexity
 
-**Quando criar nova skill:**
+Not every task needs the same level of planning. Before starting, the agent evaluates:
 
-- Domínio tem >5 conceitos específicos
-- Existe fluxo de trabalho próprio
-- Informações não deriváveis do código sem contexto externo
-- Agente comete erros recorrentes sem a skill
+| Complexity | Indicators                     | Documentation                       | What to skip                 |
+| ---------- | ------------------------------ | ----------------------------------- | ---------------------------- |
+| **Small**  | ≤3 files, scope in 1 sentence  | Describe → Implement → Verify       | Spec, design, task breakdown |
+| **Medium** | Clear feature, <10 steps       | Brief spec + inline design          | Formal design                |
+| **Large**  | Multi-component, >10 steps     | Full spec + design + tasks          | Nothing                      |
+| **Complex** | Ambiguity, new domain         | Spec + discussion + research        | Nothing + interactive validation |
 
-**Quando expandir existente:**
+**Rules:**
 
-- Informação é complementar
-- `SKILL.md` ainda <60 linhas após adição
-- Cenário de uso é o mesmo
+- **Specify** and **Execute** are always mandatory — always know WHAT and DO IT
+- **Design** is skipped if the change is direct (no new architectural decisions)
+- **Task breakdown** is skipped if there are ≤3 obvious steps
+- **Safety valve:** even when tasks are skipped, the agent lists steps inline. If the listing reveals >5 steps or complex dependencies, **STOP** and create a formal task breakdown
 
-**Quando usar `docs/` em vez de skill:**
+Avoids two extremes: over-engineering on simple tasks (burns tokens with ceremony) and under-planning on complex ones (generates rework).
 
-- É documentação de referência pura (schema, contratos)
-- Não envolve fluxo de trabalho
-- Será referenciado por múltiplas skills
+---
+
+## 5. Skill Granularity
+
+**When to create a new skill:**
+
+- Domain has >5 specific concepts
+- Has its own workflow
+- Information not derivable from the code without external context
+- Agent makes recurring errors without the skill
+
+**When to expand an existing one:**
+
+- Information is complementary
+- `SKILL.md` is still <60 lines after addition
+- Use scenario is the same
+
+**When to use `docs/` instead of a skill:**
+
+- It is pure reference documentation (schema, contracts)
+- Does not involve a workflow
+- Will be referenced by multiple skills
 
 ---
 
 ## 6. Description Quality
 
-A `description` no frontmatter é a **única informação** que o agente lê em 100% das sessões. Determina se a skill é usada ou ignorada.
+The `description` in the frontmatter is the **only information** the agent reads in 100% of sessions. It determines whether the skill is used or ignored.
 
 **Checklist:**
 
-- [ ] Contém termos de domínio exatos que aparecem nas perguntas dos devs
-- [ ] Lista cenários com verbos de ação ("implementando", "debugando", "entendendo")
-- [ ] Tem 2-4 linhas (1 vago, 5+ excessivo)
-- [ ] Um dev novo entende quando usar só lendo a description
+- [ ] Contains exact domain terms that appear in developer questions
+- [ ] Lists scenarios with action verbs ("implementing", "debugging", "understanding")
+- [ ] Has 2-4 lines (1 is vague, 5+ is excessive)
+- [ ] A new developer understands when to use it just by reading the description
 
-**Exemplo:**
+**Example:**
 
 ```yaml
-# Fraco
+# Weak
 description: Reference for the payments API integration.
 
-# Forte
+# Strong
 description: Complete reference for the Payments API integration.
   Use when implementing API calls (endpoints, auth, payload format),
   debugging API responses (error codes, rate limits),
@@ -133,193 +133,192 @@ description: Complete reference for the Payments API integration.
 
 ---
 
-## 7. Fluxos vs Estado
+## 7. Flows vs State
 
-| Tipo              | Onde                                | Exemplo                     |
-| ----------------- | ----------------------------------- | --------------------------- |
-| Fluxo de trabalho | `skills/<nome>/SKILL.md`            | "Como coletar dados da API" |
-| Algoritmo/lógica  | `skills/<nome>/references/GUIDE.md` | "Lógica de deduplicação"    |
-| Schema/contrato   | `docs/database-schema.md`           | "Tabela transactions"       |
-| Estado atual      | `docs/STATE.md`                     | "Feature X em progresso"    |
+| Type              | Where                               | Example                    |
+| ----------------- | ----------------------------------- | -------------------------- |
+| Workflow          | `skills/<name>/SKILL.md`            | "How to collect API data"  |
+| Algorithm/logic   | `skills/<name>/references/GUIDE.md` | "Deduplication logic"      |
+| Schema/contract   | `docs/database-schema.md`           | "Transactions table"       |
+| Current state     | `docs/STATE.md`                     | "Feature X in progress"    |
 
-**Regra:** skills documentam **fluxos**; docs documentam **estado**.
+**Rule:** skills document **flows**; docs document **state**.
 
 ---
 
-## 8. Composabilidade entre Skills
+## 8. Composability Between Skills
 
-Skills frequentemente precisam umas das outras. Protocolo:
+Skills often need each other. Protocol:
 
-1. **Verificar disponibilidade** — antes de usar funcionalidade de outra skill, verificar se existe
-2. **Delegar se disponível** — usar a skill complementar, não reimplementar
-3. **Fallback gracioso** — se não disponível, usar abordagem padrão
-4. **Recomendar uma vez** — sugerir instalação no máximo uma vez por sessão
+1. **Check availability** — before using another skill's functionality, check if it exists
+2. **Delegate if available** — use the complementary skill, do not reimplement
+3. **Graceful fallback** — if not available, use the standard approach
+4. **Recommend once** — suggest installation at most once per session
 
-**Como documentar no SKILL.md:**
+**How to document in SKILL.md:**
 
 ```markdown
-## Integrações
+## Integrations
 
-- **Diagramas:** Se `mermaid-studio` disponível, delegar criação de diagramas.
-  Fallback: blocos de código Mermaid inline.
-- **Exploração:** Se `codenavi` disponível, delegar navegação.
-  Fallback: ferramentas built-in de busca.
+- **Diagrams:** If `mermaid-studio` available, delegate diagram creation.
+  Fallback: inline Mermaid code blocks.
+- **Exploration:** If `codenavi` available, delegate navigation.
+  Fallback: built-in search tools.
 ```
 
-Cria ecossistema modular sem dependências rígidas.
+Creates a modular ecosystem without rigid dependencies.
 
 ---
 
-## 9. Loop de Manutenção
+## 9. Maintenance Loop
 
-Documentação não-mantida vira desinformação — pior que ausente, porque o agente age com confiança em info errada.
+Unmaintained documentation becomes misinformation — worse than absent, because the agent acts with confidence on wrong info.
 
-**Regra fundamental:** toda mudança relevante de comportamento no código deve ser refletida nas skills/docs **na mesma sessão**.
+**Fundamental rule:** every relevant behavioral change in the code must be reflected in the skills/docs **in the same session**.
 
-**Gatilhos:**
+**Triggers:**
 
-| Evento                                   | Ação esperada                                 |
-| ---------------------------------------- | --------------------------------------------- |
-| Código muda fluxo de skill               | Propor atualização da skill antes de encerrar |
-| Regra de negócio surge                   | Perguntar se documenta na skill/docs          |
-| Bug revela comportamento não-documentado | Propor documentar                             |
-| Nova integração                          | Avaliar nova skill ou expansão                |
-| Sessão pausada com trabalho              | Atualizar `STATE.md`                          |
+| Event                              | Expected action                               |
+| ---------------------------------- | --------------------------------------------- |
+| Code changes a skill's flow        | Propose skill update before closing session   |
+| Business rule emerges              | Ask if it should be documented in skill/docs  |
+| Bug reveals undocumented behavior  | Propose documenting it                        |
+| New integration                    | Evaluate new skill or expansion               |
+| Session paused with work in progress | Update `STATE.md`                           |
 
-**Protocolo de encerramento:**
+**Closing protocol:**
 
-Ao final de sessão com mudanças, o agente:
+At the end of a session with changes, the agent:
 
-1. Lista mudanças de comportamento no código
-2. Identifica skills/docs afetadas
-3. Pergunta: *"As seguintes documentações precisam atualização: [lista]. Atualizo agora?"*
+1. Lists behavioral changes in the code
+2. Identifies affected skills/docs
+3. Asks: *"The following documentation needs updating: [list]. Update now?"*
 
-Cria hábito sem ser intrusivo — não atualiza automaticamente, mas tampouco passa sem avisar.
+Creates habit without being intrusive — does not update automatically, but does not let it pass without warning.
 
-**O agente como guardião da documentação:** com `CONVENTIONS.md` no contexto, identifica ativamente quando código contradiz docs e reporta — mesmo sem ser pedido.
-
----
-
-## 10. Padrão Anthropic dos Três Agentes
-
-Para tarefas longas, separar em sub-agents:
-
-- **Planner** decompõe spec em tasks (não executa)
-- **Generator** implementa tasks (não decide)
-- **Evaluator** valida output contra spec (não consulta histórico de implementação)
-
-Aplicação no framework:
-
-- `PLANNER.md` orquestra fases (não cria artefatos)
-- Cada `PHASE-N.md` gera artefatos (não decide a próxima fase)
-- `PHASE-5-VALIDATION.md` valida (não corrige sem confirmação)
-
-Esta separação evita o problema clássico onde o agente começa a "ajustar" decisões enquanto implementa, perdendo o caminho original.
+**The agent as documentation guardian:** with `CONVENTIONS.md` in context, actively identifies when code contradicts docs and reports — even when not asked.
 
 ---
 
-## 11. Cenários de Uso (exemplos)
+## 10. Anthropic Three-Agent Pattern
 
-### Cenário 1 — Implementar integração
+For long tasks, separate into sub-agents:
+
+- **Planner** decomposes spec into tasks (does not execute)
+- **Generator** implements tasks (does not decide)
+- **Evaluator** validates output against spec (does not consult implementation history)
+
+Application in the framework:
+
+- `PLANNER.md` orchestrates phases (does not create artifacts)
+- Each `PHASE-N.md` generates artifacts (does not decide the next phase)
+- `PHASE-5-VALIDATION.md` validates (does not correct without confirmation)
+
+This separation avoids the classic problem where the agent starts "adjusting" decisions while implementing, losing the original path.
+
+---
+
+## 11. Usage Scenarios (examples)
+
+### Scenario 1 — Implement an integration
 
 ```text
-Dev: "Implemente o envio de dados para a API X"
+Dev: "Implement data sending to API X"
 
-Startup: Agente lê INSTRUCTIONS.md, identifica via frontmatter
-         que skills api-integration e field-mapping são relevantes.
+Startup: Agent reads INSTRUCTIONS.md, identifies via frontmatter
+         that skills api-integration and field-mapping are relevant.
 
-Trigger: Lê os 2 SKILL.md (~80 linhas total). Sabe endpoints,
-         fluxo de normalização, padrão de retry.
+Trigger: Reads the 2 SKILL.md (~80 lines total). Knows endpoints,
+         normalization flow, retry pattern.
 
-On-demand: Precisa do payload completo → lê API-REFERENCE.md.
-           Precisa da tabela de mapeamento → lê MAPPING-TABLE.md.
+On-demand: Needs full payload → reads API-REFERENCE.md.
+           Needs the mapping table → reads MAPPING-TABLE.md.
 
-Total: ~400 linhas, vs ~2.000+ se tudo estivesse em arquivo monolítico.
+Total: ~400 lines, vs ~2,000+ if everything was in a monolithic file.
 ```
 
-### Cenário 2 — Nova feature
+### Scenario 2 — New feature
 
 ```text
-Dev: "Adicione suporte para processar dados de marketplace"
+Dev: "Add support for processing marketplace data"
 
-1. Agente lê skill de coleta → entende padrão existente
-2. Lê architecture-patterns.md → sabe como criar strategies
-3. Lê code-style.md → segue convenções de naming
-4. Lê guia detalhado → entende paginação, dedup, enriquecimento
+1. Agent reads collection skill → understands existing pattern
+2. Reads architecture-patterns.md → knows how to create strategies
+3. Reads code-style.md → follows naming conventions
+4. Reads detailed guide → understands pagination, dedup, enrichment
 
-Resultado: implementa seguindo padrões sem perguntar.
+Result: implements following patterns without asking.
 ```
 
-### Cenário 3 — Multi-IDE
+### Scenario 3 — Multi-IDE
 
-Dev novo usa Windsurf enquanto time usa Cursor. Sem configuração adicional, Windsurf lê `AGENTS.md` (symlink para `.ai/INSTRUCTIONS.md`) e skills em `.agents/skills/` (symlink para `.ai/skills/`). Recebe exatamente o mesmo contexto.
-
+New dev uses Windsurf while team uses Cursor. Without additional configuration, Windsurf reads `AGENTS.md` (symlink to `.ai/INSTRUCTIONS.md`) and skills in `.agents/skills/` (symlink to `.ai/skills/`). Receives exactly the same context.
 
 ---
 
 ## 5. ACE — Memory as Evolving Playbook
 
-> Baseado em: **Agentic Context Engineering** (arxiv 2510.04618). +10.6% em benchmarks de agentes, +8.6% em finanças.
+> Based on: **Agentic Context Engineering** (arxiv 2510.04618). +10.6% in agent benchmarks, +8.6% in finance.
 
-A abordagem ACE trata `STATE.md` como um **playbook que se auto-curada** — não como log de histórico. Três operações por sessão:
+The ACE approach treats `STATE.md` as a **self-curating playbook** — not as a history log. Three operations per session:
 
-| Operação       | O que faz                                   | Frequência                |
-| -------------- | ------------------------------------------- | ------------------------- |
-| **Generation** | Adiciona novo aprendizado, decisão, blocker | A cada sessão com mudança |
-| **Reflection** | Identifica o que está resolvido ou obsoleto | A cada sessão             |
-| **Curation**   | Remove o obsoleto, eleva o útil             | A cada sessão             |
+| Operation      | What it does                                | Frequency                   |
+| -------------- | ------------------------------------------- | --------------------------- |
+| **Generation** | Adds new learning, decision, blocker        | Every session with changes  |
+| **Reflection** | Identifies what is resolved or obsolete     | Every session               |
+| **Curation**   | Removes the obsolete, elevates the useful   | Every session               |
 
-**Regras de curação:**
+**Curation rules:**
 
-- STATE.md ≤ 80 linhas → se maior, algo não foi removido
-- Uma entrada em "Lições Aprendidas" só entra se é *não-óbvia* — insights que um dev novo não saberia
-- "Deferred" é a lixeira organizada — ideia que não morre, mas não bloqueia
+- STATE.md ≤ 80 lines → if larger, something was not removed
+- An entry in "Lessons Learned" only enters if it is *non-obvious* — insights a new dev would not know
+- "Deferred" is the organized trash can — idea that does not die, but does not block
 
-**Por que funciona:** impede o problema documentado no Spec Kit issue #75 — specs que crescem indefinidamente geram ruído, não contexto. Contexto curado > contexto volumoso.
+**Why it works:** prevents the problem documented in Spec Kit issue #75 — specs that grow indefinitely generate noise, not context. Curated context > voluminous context.
 
 ---
 
 ## 6. K-Trial Reliability
 
-> Baseado em: **ReliabilityBench** (arxiv 2601.06112). pass@1 superestima confiabilidade em 20-40%.
+> Based on: **ReliabilityBench** (arxiv 2601.06112). pass@1 overestimates reliability by 20-40%.
 
-Em vez de medir apenas "o agente passou nesta task?", o AXIS recomenda medir consistência:
+Instead of measuring only "did the agent pass this task?", AXIS recommends measuring consistency:
 
-| Métrica          | O que mede                          | Como aplicar                              |
+| Metric           | What it measures                    | How to apply                              |
 | ---------------- | ----------------------------------- | ----------------------------------------- |
-| **pass@1**       | Passou na primeira tentativa        | Baseline — não usar sozinho               |
-| **pass@k**       | Passou em k execuções independentes | Smoke test 3x o mesmo fluxo               |
-| **ε-robustness** | Passou com variação no input        | Testar com ligeira reformulação do pedido |
+| **pass@1**       | Passed on the first attempt         | Baseline — do not use alone               |
+| **pass@k**       | Passed in k independent runs        | Smoke test the same flow 3x               |
+| **ε-robustness** | Passed with variation in input      | Test with slight reformulation of request |
 
-**Protocolo mínimo para smoke test na Fase 5:**
+**Minimum protocol for smoke test in Phase 5:**
 
 ```bash
-# Rodar 3x o mesmo comando de bootstrap em projeto de teste
-# Se o resultado for idêntico nas 3 runs: confiável
-# Se variar: documentar o ponto de variação em STATE.md como blocker
+# Run the same bootstrap command 3x on a test project
+# If the result is identical in all 3 runs: reliable
+# If it varies: document the variation point in STATE.md as blocker
 ```
 
-**Sinal de alerta:** se a estrutura gerada varia entre sessões, o harness está sub-configurado — provavelmente falta template explícito ou acceptance criteria na skill.
+**Warning signal:** if the generated structure varies between sessions, the harness is under-configured — probably missing explicit template or acceptance criteria in the skill.
 
 ---
 
-## 7. Spec Testável (Anti-Verbosity)
+## 7. Testable Spec (Anti-Verbosity)
 
-> Baseado em: GitHub Spec Kit issue #75 ("creates illusion of work") e ReliabilityBench findings.
+> Based on: GitHub Spec Kit issue #75 ("creates illusion of work") and ReliabilityBench findings.
 
-Specs longas não são melhores specs. AXIS impõe:
+Long specs are not better specs. AXIS enforces:
 
-| Artefato          | Limite         | Consequência de exceder                         |
+| Artifact          | Limit          | Consequence of exceeding                        |
 | ----------------- | -------------- | ----------------------------------------------- |
-| `INSTRUCTIONS.md` | 100-180 linhas | Contexto carregado sempre — ruído direto        |
-| `SKILL.md`        | ≤ 60 linhas    | Indexado sempre — cada linha custa token        |
-| `STATE.md`        | ≤ 80 linhas    | Lido no início de cada sessão — deve ser focado |
+| `INSTRUCTIONS.md` | 100-180 lines  | Context loaded always — direct noise            |
+| `SKILL.md`        | ≤ 60 lines     | Indexed always — each line costs tokens         |
+| `STATE.md`        | ≤ 80 lines     | Read at session start — must be focused         |
 
-**Critério de testabilidade de uma spec:** um item de spec é testável se você pode responder "como eu saberia que o agente seguiu isso?". Se não consegue responder, o item é muito vago.
+**Testability criterion for a spec:** a spec item is testable if you can answer "how would I know the agent followed this?". If you can't answer, the item is too vague.
 
-Exemplos:
+Examples:
 
-| Vago (ruído)               | Testável (sinal)                                                |
-| -------------------------- | --------------------------------------------------------------- |
-| "Siga boas práticas"       | "Use `createQueryBuilder` para bulk insert >100 registros"      |
-| "Seja cuidadoso com dados" | "Nunca executar `DROP` ou `TRUNCATE` sem confirmação explícita" |
+| Vague (noise)                  | Testable (signal)                                                   |
+| ------------------------------ | ------------------------------------------------------------------- |
+| "Follow best practices"        | "Use `createQueryBuilder` for bulk insert >100 records"             |
+| "Be careful with data"         | "Never execute `DROP` or `TRUNCATE` without explicit confirmation"  |

@@ -1,60 +1,60 @@
-# QUICKSTART — AXIS em 5 Minutos
+# QUICKSTART — AXIS in 5 Minutes
 
-> Para o bootstrap completo (5 fases, 30 min), use a skill `axis-bootstrap`. Este documento é o caminho rápido para quem quer algo funcional hoje e estrutura completa depois.
-
----
-
-## O que você terá ao final
-
-- `INSTRUCTIONS.md` contextual (não monolítico)
-- `settings.json` com bloqueio de comandos destrutivos
-- Symlinks multi-IDE ativos
-- `STATE.md` com playbook inicial
-- Base para expandir para bootstrap completo
-
-**Tempo estimado:** 5-10 minutos de interação + 5 minutos de execução.
+> For the full bootstrap (5 phases, 30 min), use the `axis-bootstrap` skill. This document is the fast path for those who want something working today and full structure later.
 
 ---
 
-## Passo 1 — Identidade do projeto (2 min)
+## What you'll have at the end
 
-Responda mentalmente ou cole as respostas ao agente:
+- Contextual `INSTRUCTIONS.md` (not monolithic)
+- `settings.json` with destructive command blocking
+- Active multi-IDE symlinks
+- `STATE.md` with initial playbook
+- Base to expand to full bootstrap
 
-1. **O que o projeto faz?** (1 frase)
-2. **Stack/ferramentas principais?** (ou "não-técnico" se for conteúdo/pesquisa)
-3. **Qual(is) IDE(s) você usa?** (Claude Code / Cursor / Windsurf / Copilot — marque todas)
-4. **Há algo que o agente NUNCA deve fazer?** (ex: push direto para main, deletar dados de produção)
+**Estimated time:** 5-10 minutes of interaction + 5 minutes of execution.
 
 ---
 
-## Passo 2 — `INSTRUCTIONS.md` mínimo (2 min)
+## Step 1 — Project identity (2 min)
 
-Crie `.ai/INSTRUCTIONS.md` com esta estrutura mínima (adapte):
+Answer mentally or paste the answers to the agent:
+
+1. **What does the project do?** (1 sentence)
+2. **Main stack/tools?** (or "non-technical" if content/research)
+3. **Which IDE(s) do you use?** (Claude Code / Cursor / Windsurf / Copilot — mark all)
+4. **Is there anything the agent should NEVER do?** (e.g., push directly to main, delete production data)
+
+---
+
+## Step 2 — Minimal `INSTRUCTIONS.md` (2 min)
+
+Create `.ai/INSTRUCTIONS.md` with this minimal structure (adapt):
 
 ```markdown
-# [Nome do Projeto]
+# [Project Name]
 
-[1-2 frases sobre o que o projeto faz]
+[1-2 sentences about what the project does]
 
 ## Stack
-- [tecnologia principal]
-- [outras relevantes]
+- [main technology]
+- [other relevant ones]
 
-## Como rodar
-[comando de start]
+## How to run
+[start command]
 
-## Regras críticas
-- Nunca [restrição 1 do passo anterior]
-- Sempre confirmar antes de [ação destrutiva]
+## Critical rules
+- Never [restriction 1 from previous step]
+- Always confirm before [destructive action]
 ```
 
-> Limite: 50-80 linhas para quick start. Expandir para 100-180 no bootstrap completo.
+> Limit: 50-80 lines for quick start. Expand to 100-180 in full bootstrap.
 
 ---
 
-## Passo 3 — `settings.json` mínimo (1 min)
+## Step 3 — Minimal `settings.json` (1 min)
 
-Crie `.claude/settings.json` (ou equivalente para sua IDE):
+Create `.claude/settings.json` (or equivalent for your IDE):
 
 ```json
 {
@@ -80,16 +80,16 @@ Crie `.claude/settings.json` (ou equivalente para sua IDE):
 }
 ```
 
-**Adicione ao git imediatamente:** `git add .claude/settings.json && git commit -m "chore: add axis harness settings"`
+**Add to git immediately:** `git add .claude/settings.json && git commit -m "chore: add axis harness settings"`
 
 ---
 
-## Passo 4 — Symlinks multi-IDE (1 min)
+## Step 4 — Multi-IDE symlinks (1 min)
 
-Execute no terminal:
+Run in terminal:
 
 ```bash
-# Na raiz do projeto
+# At project root
 ln -sf .ai/INSTRUCTIONS.md CLAUDE.md
 ln -sf .ai/INSTRUCTIONS.md AGENTS.md
 mkdir -p .claude && ln -sf ../.ai/skills .claude/skills
@@ -99,46 +99,46 @@ mkdir -p .github && ln -sf ../.ai/INSTRUCTIONS.md .github/copilot-instructions.m
 mkdir -p .github && ln -sf ../.ai/skills .github/skills
 ```
 
-Verifique: `ls -la CLAUDE.md AGENTS.md .claude/skills`
+Verify: `ls -la CLAUDE.md AGENTS.md .claude/skills`
 
 ---
 
-## Passo 5 — `STATE.md` inicial (1 min)
+## Step 5 — Initial `STATE.md` (1 min)
 
-Crie `.ai/docs/STATE.md`:
+Create `.ai/docs/STATE.md`:
 
 ```markdown
-# Estado do Projeto
+# Project State
 
-## Em Progresso
-<!-- O que está sendo feito agora -->
+## In Progress
+<!-- What is being done now -->
 
 ## Blockers
-<!-- Nada no momento -->
+<!-- Nothing at the moment -->
 
-## Decisões Ativas
-<!-- [data] Adotado AXIS Framework -->
+## Active Decisions
+<!-- [date] Adopted AXIS Framework -->
 
-## Lições Aprendidas
-<!-- Vazio — a preencher ao longo do projeto -->
+## Lessons Learned
+<!-- Empty — to fill throughout the project -->
 
 ---
 
-## Protocolo de Handoff
+## Handoff Protocol
 
-Ao final de sessões com mudanças relevantes, atualizar este arquivo.
-Ao iniciar sessão, ler este arquivo antes de qualquer outro.
-**Curar ativamente** — remover o que está resolvido.
+At the end of sessions with relevant changes, update this file.
+At the start of a session, read this file before anything else.
+**Actively curate** — remove what is resolved.
 ```
 
 ---
 
-## Próximos Passos
+## Next Steps
 
-Quando tiver 30 minutos: execute o bootstrap completo para criar skills por domínio, hooks de automação e CONVENTIONS.md.
+When you have 30 minutes: run the full bootstrap to create domain skills, automation hooks, and CONVENTIONS.md.
 
 ```text
-Use a skill axis-bootstrap para completar a estrutura deste projeto.
+Use the axis-bootstrap skill to complete the structure of this project.
 ```
 
-O agente vai detectar o INSTRUCTIONS.md existente, pular Fase 1 (discovery já feita), e completar as camadas que faltam.
+The agent will detect the existing INSTRUCTIONS.md, skip Phase 1 (discovery already done), and complete the missing layers.

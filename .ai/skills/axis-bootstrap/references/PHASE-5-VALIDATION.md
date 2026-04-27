@@ -1,38 +1,37 @@
 # Phase 5 — Validation & Handoff
 
-**Objetivo:** validar que o bootstrap entregou um sistema completo e funcional, e fazer handoff claro ao usuário.
+**Goal:** validate that the bootstrap delivered a complete, functional system and make a clear handoff to the user.
 
-**Entrada:** Fases 1-4 completas.
+**Input:** Phases 1-4 complete.
 
-**Output:** relatório de validação + lista de próximos passos.
-
----
-
-## Modo Auditoria
-
-Esta fase também roda em modo standalone quando o usuário pede para **auditar um projeto existente**. Nesse caso:
-
-- Pular Fases 1-4
-- Aplicar todos os checklists abaixo
-- Reportar o que está ausente ou fora dos padrões
-- Não criar/modificar nada sem confirmação explícita
+**Output:** validation report + list of next steps.
 
 ---
 
-## Quality Gates — Estrutura
+## Audit Mode
+
+This phase also runs in standalone mode when the user asks to **audit an existing project**. In that case:
+
+- Skip Phases 1-4
+- Apply all checklists below
+- Report what is absent or out of standards
+- Do not create/modify anything without explicit confirmation
+
+---
+
+## Quality Gates — Structure
 
 ```text
-[ ] Pasta .ai/ existe na raiz do projeto
-[ ] .ai/INSTRUCTIONS.md existe e tem 100-180 linhas
-[ ] Pelo menos 3 skills em .ai/skills/, cada uma com SKILL.md
-[ ] Cada SKILL.md tem ≤ 60 linhas
-[ ] Cada SKILL.md tem frontmatter com `name` e `description`
-[ ] Cada `description` tem 2-4 linhas e menciona termos-gatilho
-[ ] Para projetos software: pelo menos 3 rules em .ai/rules/ com `applyTo`
-[ ] Pelo menos 1 stub em .ai/docs/ (architecture.md, glossary.md, ou equivalente)
-[ ] .ai/CONVENTIONS.md existe e contém mapa de symlinks
-[ ] .ai/docs/STATE.md existe com as 6 seções obrigatórias
-[ ] .ai/docs/RFC/RFC-001-*.md existe documentando a adoção
+[ ] .ai/ folder exists at project root
+[ ] .ai/INSTRUCTIONS.md exists and has 100-180 lines
+[ ] At least 3 skills in .ai/skills/, each with a SKILL.md
+[ ] Each SKILL.md has ≤ 60 lines
+[ ] Each SKILL.md has frontmatter with `name` and `description`
+[ ] Each `description` has 2-4 lines and mentions trigger terms
+[ ] For software projects: at least 3 rules in .ai/rules/ with `applyTo`
+[ ] At least 1 stub in .ai/docs/ (architecture.md, glossary.md, or equivalent)
+[ ] .ai/CONVENTIONS.md exists and contains symlink map
+[ ] .ai/docs/STATE.md exists with the 6 mandatory sections
 ```
 
 ---
@@ -40,13 +39,13 @@ Esta fase também roda em modo standalone quando o usuário pede para **auditar 
 ## Quality Gates — Harness
 
 ```text
-[ ] settings.json existe e está versionado (git ls-files o lista)
-[ ] settings.json tem allow/deny/ask preenchidos coerentemente com a stack
-[ ] Hook PreToolUse de bloqueio destrutivo configurado (universal)
-[ ] Para software: hook PostToolUse com formatter configurado
-[ ] Para software: hook Stop com testes configurado
-[ ] Scripts em scripts/ são executáveis (chmod +x)
-[ ] Scripts terminam com exit 0 (não bloqueiam o agente em caso de falha)
+[ ] settings.json exists and is versioned (git ls-files lists it)
+[ ] settings.json has allow/deny/ask filled coherently with the stack
+[ ] PreToolUse destructive blocking hook configured (universal)
+[ ] For software: PostToolUse hook with formatter configured
+[ ] For software: Stop hook with tests configured
+[ ] Scripts in scripts/ are executable (chmod +x)
+[ ] Scripts end with exit 0 (do not block the agent on failure)
 ```
 
 ---
@@ -54,23 +53,23 @@ Esta fase também roda em modo standalone quando o usuário pede para **auditar 
 ## Quality Gates — Symlinks
 
 ```text
-[ ] CLAUDE.md → .ai/INSTRUCTIONS.md (resolve)
-[ ] AGENTS.md → .ai/INSTRUCTIONS.md (resolve)
-[ ] Para cada IDE declarada: pasta correspondente com symlinks corretos
-[ ] setup-ide-links.sh existe e é idempotente
-[ ] Rodar setup-ide-links.sh duas vezes não gera erro
-[ ] ls -la mostra os targets esperados em todos os symlinks
+[ ] CLAUDE.md → .ai/INSTRUCTIONS.md (resolves)
+[ ] AGENTS.md → .ai/INSTRUCTIONS.md (resolves)
+[ ] For each declared IDE: corresponding folder with correct symlinks
+[ ] setup-ide-links.sh exists and is idempotent
+[ ] Running setup-ide-links.sh twice generates no error
+[ ] ls -la shows expected targets in all symlinks
 ```
 
-**Smoke test concreto:**
+**Concrete smoke test:**
 
 ```bash
-# Confirmar que cada symlink resolve sem erro
+# Confirm that each symlink resolves without error
 for f in CLAUDE.md AGENTS.md .claude/CLAUDE.md .cursor/rules .cursor/skills; do
   if [ -e "$f" ]; then
     echo "OK: $f → $(readlink -f "$f")"
   else
-    echo "FALTA: $f"
+    echo "MISSING: $f"
   fi
 done
 ```
@@ -80,129 +79,116 @@ done
 ## Quality Gates — Memory
 
 ```text
-[ ] STATE.md tem todas as 6 seções (Decisões Ativas, Em Progresso, Blockers,
-    Ideias Adiadas, Lições, TODOs)
-[ ] STATE.md menciona o protocolo de handoff
-[ ] RFC-001 não tem campos vazios (Contexto, Decisão, Consequências, Alternativas)
-[ ] CONVENTIONS.md descreve onde a IA pode/não pode criar arquivos
-[ ] CONVENTIONS.md inclui Knowledge Verification Chain
+[ ] STATE.md has all 6 sections (Active Decisions, In Progress, Blockers,
+    Deferred Ideas, Lessons, TODOs)
+[ ] STATE.md mentions the handoff protocol
+[ ] CONVENTIONS.md describes where the AI can/cannot create files
+[ ] CONVENTIONS.md includes Knowledge Verification Chain
 ```
 
 ---
 
-## Métricas Quantitativas
+## Quantitative Metrics
 
-Calcular e reportar:
+Calculate and report:
 
-| Métrica | Alvo | Como medir |
-| ------- | ---- | ---------- |
-| Linhas em `INSTRUCTIONS.md` | 100-180 | `wc -l` |
-| Linhas médias por `SKILL.md` | 40-60 | `wc -l skills/*/SKILL.md \| awk` |
-| Skills totais | 3-10 | `ls -d skills/*/ \| wc -l` |
-| Rules totais | 3-7 (se software) | `ls rules/*.md \| wc -l` |
-| Symlinks ativos | igual ao número de IDEs declaradas + 2 (raiz) | `find . -type l \| wc -l` |
-| Hooks instalados | 1-3 | contagem em settings.json |
+| Metric | Target | How to measure |
+| ------ | ------ | -------------- |
+| Lines in `INSTRUCTIONS.md` | 100-180 | `wc -l` |
+| Average lines per `SKILL.md` | 40-60 | `wc -l skills/*/SKILL.md \| awk` |
+| Total skills | 3-10 | `ls -d skills/*/ \| wc -l` |
+| Total rules | 3-7 (if software) | `ls rules/*.md \| wc -l` |
+| Active symlinks | equal to number of declared IDEs + 2 (root) | `find . -type l \| wc -l` |
+| Hooks installed | 1-3 | count in settings.json |
 
-**Sinais de problema:**
+**Problem signals:**
 
-- `INSTRUCTIONS.md` >200 linhas → mover detalhes para skills/docs
-- Algum `SKILL.md` >80 linhas → mover conteúdo para `references/`
-- >12 skills → fragmentação excessiva, considerar consolidação
-- Nenhuma rule criada em projeto software → provável lacuna
+- `INSTRUCTIONS.md` >200 lines → move details to skills/docs
+- Any `SKILL.md` >80 lines → move content to `references/`
+- >12 skills → excessive fragmentation, consider consolidation
+- No rules created in software project → probable gap
 
 ---
 
-## Auto-Validação Cruzada
+## Cross-Validation
 
 ```text
-[ ] As skills mencionadas em INSTRUCTIONS.md (tabela) existem em .ai/skills/
-[ ] As rules mencionadas em INSTRUCTIONS.md existem em .ai/rules/
-[ ] O mapa de symlinks em CONVENTIONS.md bate com os symlinks reais
-[ ] As IDEs declaradas na Fase 1 têm pastas correspondentes
-[ ] As decisões em RFC-001 batem com a estrutura real gerada
+[ ] Skills mentioned in INSTRUCTIONS.md (table) exist in .ai/skills/
+[ ] Rules mentioned in INSTRUCTIONS.md exist in .ai/rules/
+[ ] Symlink map in CONVENTIONS.md matches the real symlinks
+[ ] IDEs declared in Phase 1 have corresponding folders
 ```
 
-**Se algum cruzamento falha**, corrigir antes do handoff.
+**If any cross-check fails**, fix before handoff.
 
 ---
 
-## Handoff ao Usuário
+## Handoff to User
 
-Mensagem final segue o template em [PROMPT-TEMPLATE.md](../PROMPT-TEMPLATE.md#handoff-ao-usuário). Estrutura:
+Final message follows template in [PROMPT-TEMPLATE.md](../PROMPT-TEMPLATE.md#handoff-to-user). Structure:
 
 ```markdown
-## Bootstrap Concluído
+## Bootstrap Complete
 
-### O que foi criado
-- N arquivos em .ai/
-- N skills inicializadas: <lista>
-- N rules: <lista>
-- N stubs em docs/
-- Memory layer com STATE, RFC-001, CONVENTIONS
-- N symlinks distribuindo para <IDEs>
-- N hooks no settings.json
+### What was created
+- N files in .ai/
+- N skills initialized: <list>
+- N rules: <list>
+- N stubs in docs/
+- Memory layer with STATE, CONVENTIONS
+- N symlinks distributing to <IDEs>
+- N hooks in settings.json
 
-### Métricas
-- INSTRUCTIONS.md: N linhas (alvo 100-180) ✓
-- SKILL.md média: N linhas (alvo 40-60) ✓
-- Symlinks: todos resolvem ✓
+### Metrics
+- INSTRUCTIONS.md: N lines (target 100-180) ✓
+- SKILL.md average: N lines (target 40-60) ✓
+- Symlinks: all resolve ✓
 - Smoke tests: pass ✓
 
-### Próximos passos sugeridos (3-5)
-1. Detalhar a primeira skill prioritária — popule references/GUIDE.md em <skill>
-2. Adicionar primeira RFC de domínio se há decisão arquitetural pendente
-3. Validar settings.json com o time
-4. Configurar CI para verificar resolução de symlinks
-5. Testar invocação por outra IDE (smoke test multi-tool)
+### Suggested next steps (3-5)
+1. Detail the first priority skill — populate references/GUIDE.md in <skill>
+2. Validate settings.json with the team
+3. Configure CI to verify symlink resolution
+4. Test invocation by another IDE (multi-tool smoke test)
 
-### Como retomar
-- Próxima sessão: agente lê STATE.md primeiro
-- Auditoria futura: invoque novamente este skill em modo "auditoria"
-- Adicionar nova IDE: editar setup-ide-links.sh + rodar
+### How to resume
+- Next session: agent reads STATE.md first
+- Future audit: invoke this skill again in "audit" mode
+- Add new IDE: edit setup-ide-links.sh + run
 ```
 
 ---
 
-## Lacunas Aceitáveis vs Bloqueantes
+## Acceptable vs Blocking Gaps
 
-**Aceitáveis** (apenas reportar, não bloquear):
+**Acceptable** (report only, do not block):
 
-- references/ ainda vazios em skills (esperado — preenchem com uso)
-- Rules específicas do domínio ainda não escritas
-- docs/ stubs sem conteúdo
-- TODOs vazios no STATE.md
+- references/ still empty in skills (expected — filled with use)
+- Domain-specific rules not yet written
+- docs/ stubs without content
+- Empty TODOs in STATE.md
 
-**Bloqueantes** (corrigir antes do handoff):
+**Blocking** (fix before handoff):
 
-- INSTRUCTIONS.md ausente ou <50 linhas
-- Skills sem `description` no frontmatter
-- Symlinks quebrados
-- `settings.json` não versionado
-- RFC-001 com campos em branco
+- INSTRUCTIONS.md absent or <50 lines
+- Skills without `description` in frontmatter
+- Broken symlinks
+- `settings.json` not versioned
 
 ---
 
-## Auditoria Pós-Adoção (uso futuro)
+## Post-Adoption Audit (future use)
 
-O usuário pode reinvocar este skill semanas depois para auditar:
+The user can re-invoke this skill weeks later to audit:
 
 ```text
-"Use axis-bootstrap em modo auditoria neste projeto."
+"Use axis-bootstrap in audit mode on this project."
 ```
 
-O agente:
+The agent:
 
-1. Pula Fases 1-4
-2. Aplica todos os gates desta fase
-3. Identifica drift (ex: INSTRUCTIONS.md cresceu para 250 linhas; alguma skill perdeu description)
-4. Propõe correções uma por uma
-5. **Não corrige sem confirmação**
-
----
-
-## Antipadrões
-
-- Declarar bootstrap concluído sem rodar smoke tests
-- Aceitar `description` genérica em skill ("Reference for X") — sempre exigir termos-gatilho
-- Pular auto-validação cruzada (gera inconsistência silenciosa)
-- Entregar handoff sem próximos passos concretos (deixa o usuário sem direção)
+1. Skips Phases 1-4
+2. Applies all gates from this phase
+3. Identifies drift (e.g., INSTRUCTIONS.md grew to 250 lines; some skill lost description)
+4. Proposes corrections one by one
+5. **Does not correct without confirmation**

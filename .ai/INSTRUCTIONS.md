@@ -1,57 +1,57 @@
 # Spec-Harness Framework — Instructions
 
-> Você está dentro de um framework auto-aplicável para bootstrapar projetos com infraestrutura completa de IA. Este arquivo é seu entry point.
+> You are inside a self-applicable framework for bootstrapping projects with complete AI infrastructure. This file is your entry point.
 
-## Propósito
+## Purpose
 
-Este repositório contém uma **spec executável** que bootstrapa qualquer projeto (técnico ou não-técnico) com três camadas validadas:
+This repository contains an **executable spec** that bootstraps any project (technical or non-technical) with three validated layers:
 
 - **Spec Layer** — INSTRUCTIONS, skills, rules, docs
 - **Harness Layer** — settings.json, hooks, sub-agents, symlinks
 - **Memory Layer** — STATE.md, CONVENTIONS.md
 
-Conceito completo em [FRAMEWORK.md](../FRAMEWORK.md).
+Full conceptual model in [FRAMEWORK.md](FRAMEWORK.md).
 
-## Como Operar
+## How to Operate
 
-### Cenário 1 — Usuário pede para bootstrapar um projeto
+### Scenario 1 — User asks to bootstrap a project
 
-1. Carregue o skill [`axis-bootstrap`](skills/axis-bootstrap/SKILL.md)
-2. Siga o `PLANNER.md` em ordem rigorosa
-3. **Não pule fases.** Cada fase tem um gate explícito que precisa ser confirmado pelo usuário antes da próxima começar
-4. Use os templates de `references/TEMPLATES.md` ao gerar artefatos — não invente formatos
+1. Load the skill [`axis-bootstrap`](.ai/skills/axis-bootstrap/SKILL.md)
+2. Follow `PLANNER.md` in strict order
+3. **Do not skip phases.** Each phase has an explicit gate that must be confirmed by the user before the next begins
+4. Use templates from `references/TEMPLATES.md` when generating artifacts — do not invent formats
 
-### Cenário 2 — Usuário pede para auditar um projeto existente
+### Scenario 2 — User asks to audit an existing project
 
-1. Carregue o skill `axis-bootstrap`
-2. Pule Fase 1 (discovery) se já há `INSTRUCTIONS.md` legível
-3. Aplique apenas `PHASE-5-VALIDATION.md` para identificar lacunas
-4. Reporte o que está faltando por camada (Spec / Harness / Memory)
+1. Load the `axis-bootstrap` skill
+2. Skip Phase 1 (discovery) if a readable `INSTRUCTIONS.md` already exists
+3. Apply only `PHASE-5-VALIDATION.md` to identify gaps
+4. Report what is missing per layer (Spec / Harness / Memory)
 
-### Cenário 3 — Usuário pede para entender o framework
+### Scenario 3 — User asks to understand the framework
 
-1. Aponte para [FRAMEWORK.md](../FRAMEWORK.md) (modelo conceitual)
-2. Aponte para [README.md](../README.md) (quick start)
-3. Não execute o bootstrap até que o usuário peça explicitamente
+1. Point to [FRAMEWORK.md](FRAMEWORK.md) (conceptual model)
+2. Point to [README.en.md](README.en.md) (quick start)
+3. Do not execute the bootstrap until the user explicitly asks
 
-## Princípios Invioláveis
+## Inviolable Principles
 
-1. **Single Source of Truth** — nunca duplique conteúdo entre IDEs. Use symlinks.
-2. **Progressive Disclosure** — carregue apenas o que é necessário para a fase atual.
-3. **Gates entre fases** — nenhum artefato de uma fase é gerado antes do gate da fase anterior ter sido aprovado.
-4. **Sem fabricação** — se faltar informação, pergunte. Inventar quebra o contrato com o usuário.
-5. **Recursividade** — este próprio repositório segue o padrão que ensina. Se você modificar o framework, mantenha a recursividade.
+1. **Single Source of Truth** — never duplicate content across IDEs. Use symlinks.
+2. **Progressive Disclosure** — load only what is needed for the current phase.
+3. **Gates between phases** — no artifact from a phase is generated before the gate of the previous phase has been approved.
+4. **No fabrication** — if information is missing, ask. Inventing breaks the contract with the user.
+5. **Recursiveness** — this repository itself follows the pattern it teaches. If you modify the framework, maintain the recursiveness.
 
-## Skills Disponíveis
+## Available Skills
 
-| Skill                                              | Quando usar                                                                                             |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| [`axis-bootstrap`](skills/axis-bootstrap/SKILL.md) | Bootstrapar novo projeto, migrar de CLAUDE.md monolítico, ou auditar projeto existente para infra de IA |
+| Skill                                                          | When to use                                                                                                  |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| [`axis-bootstrap`](.ai/skills/axis-bootstrap/SKILL.md) | Bootstrap new project, migrate from monolithic CLAUDE.md, or audit existing project for AI infrastructure |
 
-## Convenções de Manutenção
+## Maintenance Conventions
 
-Como manter este repositório, mapa de symlinks e protocolo de evolução: [CONVENTIONS.md](CONVENTIONS.md).
+How to maintain this repository, symlink map, and evolution protocol: [CONVENTIONS.md](.ai/CONVENTIONS.md).
 
 ## Stack
 
-Este repositório é stack-agnóstico — o framework se aplica a qualquer linguagem, ferramenta ou domínio. As ramificações específicas (Node, Python, Go, etc., ou domínios não-técnicos) são tratadas dentro do skill `spec-harness-bootstrap` em `references/UNIVERSAL-MAP.md` e `references/TEMPLATES.md`.
+This repository is stack-agnostic — the framework applies to any language, tool, or domain. Stack-specific branches (Node, Python, Go, etc., or non-technical domains) are handled within the `axis-bootstrap` skill in `references/UNIVERSAL-MAP.md` and `references/TEMPLATES.md`.

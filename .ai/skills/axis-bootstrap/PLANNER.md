@@ -1,178 +1,178 @@
-# Bootstrap Planner — Orquestração das Fases
+# Bootstrap Planner — Phase Orchestration
 
-Este documento descreve o **estado de execução** do bootstrap. O agente o consulta como uma máquina de estados: cada fase tem entrada, saída, e um gate antes de avançar.
-
----
-
-## Princípios de Orquestração
-
-1. **Sequencial e bloqueante** — não inicie a Fase N+1 sem ter confirmado o gate da Fase N com o usuário
-2. **Cada fase é atômica** — se algo na Fase 2 indica que a Fase 1 estava errada, **volte** para a Fase 1, não corrija inline
-3. **Stateful** — mantenha um registro do que foi decidido em cada fase (escreva em `.ai/docs/STATE.md` no projeto-alvo assim que a Fase 4 criar o arquivo; até lá, mantenha em memória de sessão)
-4. **Nunca silencie o usuário** — apresente resumos antes de cada gate; espere aprovação explícita
+This document describes the **execution state** of the bootstrap. The agent consults it as a state machine: each phase has an input, an output, and a gate before advancing.
 
 ---
 
-## Estado Inicial
+## Orchestration Principles
 
-Ao invocar o skill, o agente verifica:
-
-- Existe `.ai/INSTRUCTIONS.md` no projeto-alvo? → **Modo:** auditoria (pular para Fase 5)
-- Existe `CLAUDE.md` ou `AGENTS.md` legível? → **Modo:** migração (Fase 1 reduzida — extrair contexto do existente)
-- Pasta vazia ou só código? → **Modo:** bootstrap completo (todas as 5 fases)
-
-Pergunte ao usuário qual modo se aplica caso a detecção seja ambígua.
+1. **Sequential and blocking** — do not start Phase N+1 without confirming Phase N's gate with the user
+2. **Each phase is atomic** — if something in Phase 2 indicates Phase 1 was wrong, **go back** to Phase 1, do not fix inline
+3. **Stateful** — keep a record of what was decided in each phase (write to `.ai/docs/STATE.md` in the target project once Phase 4 creates the file; until then, keep in session memory)
+4. **Never silence the user** — present summaries before each gate; wait for explicit approval
 
 ---
 
-## Fase 1 — Discovery
+## Initial State
 
-**Carrega:** [references/PHASE-1-DISCOVERY.md](references/PHASE-1-DISCOVERY.md)
+When the skill is invoked, the agent checks:
 
-**Entrada:** projeto-alvo + intenção do usuário
+- Does `.ai/INSTRUCTIONS.md` exist in the target project? → **Mode:** audit (skip to Phase 5)
+- Does a readable `CLAUDE.md` or `AGENTS.md` exist? → **Mode:** migration (reduced Phase 1 — extract context from existing file)
+- Empty folder or just code? → **Mode:** full bootstrap (all 5 phases)
 
-**Output esperado:**
-
-- Tipo de projeto identificado (software / conteúdo / pesquisa / business / legal / educacional / outro)
-- Stack ou ferramentas principais (se aplicável)
-- 3-7 domínios candidatos a virar skills
-- Restrições críticas (compliance, deadline, time, IDE preferida)
-- Critérios de qualidade do output (proof-of-concept vs produção)
-
-**Gate de saída:**
-
-> Apresentar resumo estruturado em ~10 bullets. Pedir confirmação literal: *"Está correto e completo? Algo a adicionar antes de prosseguir?"*
-
-**Não avance até receber "sim" ou correções aplicadas.**
+Ask the user which mode applies if detection is ambiguous.
 
 ---
 
-## Fase 2 — Spec Layer
+## Phase 1 — Discovery
 
-**Carrega:** [references/PHASE-2-SPEC.md](references/PHASE-2-SPEC.md) + [references/TEMPLATES.md](references/TEMPLATES.md)
+**Loads:** [references/PHASE-1-DISCOVERY.md](references/PHASE-1-DISCOVERY.md)
 
-**Entrada:** output da Fase 1
+**Input:** target project + user intent
 
-**Geração nesta ordem:**
+**Expected output:**
 
-1. `mkdir -p .ai/{skills,rules,docs}` no projeto-alvo
-2. `INSTRUCTIONS.md` (100-180 linhas) usando template adaptado ao tipo
-3. Esqueletos de skills (uma SKILL.md por domínio identificado, sem references/ ainda)
-4. 3-7 rules iniciais com `applyTo` apropriado (omitir se não-técnico — usar protocolos)
-5. Stubs de docs: `architecture.md`, `database-schema.md` (se software), `glossary.md` (se domínio especializado)
+- Project type identified (software / content / research / business / legal / educational / other)
+- Main stack or tools (if applicable)
+- 3-7 candidate domains to become skills
+- Critical constraints (compliance, deadline, team, preferred IDE)
+- Output quality criteria (proof-of-concept vs production)
 
-**Gate de saída:**
+**Exit gate:**
 
-> Listar todos os arquivos criados com 1-linha de propósito cada. Mostrar contagem de linhas. Pedir confirmação: *"Esta é a Spec Layer mínima. Algum domínio crítico que esqueci? Algum arquivo que não faz sentido neste projeto?"*
+> Present structured summary in ~10 bullets. Ask literal confirmation: *"Is this correct and complete? Anything to add before proceeding?"*
 
----
-
-## Fase 3 — Harness Layer
-
-**Carrega:** [references/PHASE-3-HARNESS.md](references/PHASE-3-HARNESS.md) + [references/TEMPLATES.md](references/TEMPLATES.md)
-
-**Entrada:** Fase 2 confirmada + tipo de projeto
-
-**Decisões críticas:**
-
-- **Hooks de lint/format:** apenas se software com formatter disponível
-- **Hook de bloqueio destrutivo:** **sempre** (universal, baixo custo, alto valor)
-- **Hook de testes no Stop:** apenas se software com test runner
-- **Sub-agents:** habilitar `Explore` sempre; outros conforme escopo
-- **Symlinks por IDE:** apenas para IDEs que o usuário declarou usar
-
-**Geração:**
-
-1. `.claude/settings.json` (ou equivalente) versionado, com perfil de permissões adequado
-2. `scripts/` com hooks (`format-file.sh`, `validate-bash.sh`, `run-tests-if-changed.sh` — apenas os aplicáveis)
-3. Symlinks via `setup-ide-links.sh` adaptado às IDEs declaradas
-4. (Opcional) `.gitignore` ajustado
-
-**Gate de saída:**
-
-> Mostrar `settings.json`, lista de hooks instalados, e árvore de symlinks. Smoke test: *"Vou rodar `ls -la` para confirmar os symlinks. Posso?"* Após confirmação, executar e mostrar saída.
+**Do not advance until receiving "yes" or applied corrections.**
 
 ---
 
-## Fase 4 — Memory Layer
+## Phase 2 — Spec Layer
 
-**Carrega:** [references/PHASE-4-MEMORY.md](references/PHASE-4-MEMORY.md)
+**Loads:** [references/PHASE-2-SPEC.md](references/PHASE-2-SPEC.md) + [references/TEMPLATES.md](references/TEMPLATES.md)
 
-**Entrada:** Fases 2 e 3 confirmadas
+**Input:** Phase 1 output
 
-**Geração:**
+**Generation in this order:**
 
-1. `.ai/docs/STATE.md` com seções: Decisões Ativas, Em Progresso, Blockers, Ideias Adiadas, Lições Aprendidas, TODOs
-2. `.ai/CONVENTIONS.md` com mapa de symlinks e regras de manutenção
+1. `mkdir -p .ai/{skills,rules,docs}` in target project
+2. `INSTRUCTIONS.md` (100-180 lines) using template adapted to type
+3. Skill skeletons (one SKILL.md per identified domain, without references/ yet)
+4. 3-7 initial rules with appropriate `applyTo` (omit if non-technical — use protocols)
+5. Doc stubs: `architecture.md`, `database-schema.md` (if software), `glossary.md` (if specialized domain)
 
-**Gate de saída:**
+**Exit gate:**
 
-> Mostrar conteúdo gerado. Perguntar: *"Há decisões já tomadas, blockers atuais, ou contexto importante para registrar agora antes da primeira sessão real?"* Atualizar `STATE.md` com o que o usuário responder.
+> List all files created with 1-line purpose each. Show line counts. Ask confirmation: *"This is the minimal Spec Layer. Any critical domain I missed? Any file that doesn't make sense for this project?"*
 
 ---
 
-## Fase 5 — Validation
+## Phase 3 — Harness Layer
 
-**Carrega:** [references/PHASE-5-VALIDATION.md](references/PHASE-5-VALIDATION.md)
+**Loads:** [references/PHASE-3-HARNESS.md](references/PHASE-3-HARNESS.md) + [references/TEMPLATES.md](references/TEMPLATES.md)
 
-**Entrada:** Fases 1-4 completas
+**Input:** Phase 2 confirmed + project type
 
-**Execução:**
+**Critical decisions:**
 
-1. Rodar checklist de quality gates (12-15 itens)
-2. Calcular métricas (linhas em INSTRUCTIONS, tamanho médio de SKILL.md, contagem de rules)
-3. Smoke tests automatizados (symlinks resolvem, hooks executam)
-4. Gerar handoff: lista de arquivos criados + próximos passos sugeridos
+- **Lint/format hooks:** only if software with available formatter
+- **Destructive blocking hook:** **always** (universal, low cost, high value)
+- **Stop hook for tests:** only if software with test runner
+- **Sub-agents:** always enable `Explore`; others per scope
+- **Symlinks by IDE:** only for IDEs the user declared using
 
-**Gate final:**
+**Generation:**
 
-> Apresentar relatório de bootstrap concluído. Listar 3-5 ações sugeridas para o usuário fazer em seguida (ex: "Crie a primeira skill detalhada para o domínio X", "Configure CI para validar symlinks").
+1. `.claude/settings.json` (or equivalent) versioned, with appropriate permission profile
+2. `scripts/` with hooks (`format-file.sh`, `validate-bash.sh`, `run-tests-if-changed.sh` — only applicable ones)
+3. Symlinks via `setup-ide-links.sh` adapted to declared IDEs
+4. (Optional) `.gitignore` adjusted
+
+**Exit gate:**
+
+> Show `settings.json`, list of installed hooks, and symlink tree. Smoke test: *"I'll run `ls -la` to confirm the symlinks. May I?"* After confirmation, execute and show output.
+
+---
+
+## Phase 4 — Memory Layer
+
+**Loads:** [references/PHASE-4-MEMORY.md](references/PHASE-4-MEMORY.md)
+
+**Input:** Phases 2 and 3 confirmed
+
+**Generation:**
+
+1. `.ai/docs/STATE.md` with sections: Active Decisions, In Progress, Blockers, Deferred Ideas, Lessons Learned, TODOs
+2. `.ai/CONVENTIONS.md` with symlink map and maintenance rules
+
+**Exit gate:**
+
+> Show generated content. Ask: *"Are there decisions already made, current blockers, or important context to record now before the first real session?"* Update `STATE.md` with what the user provides.
+
+---
+
+## Phase 5 — Validation
+
+**Loads:** [references/PHASE-5-VALIDATION.md](references/PHASE-5-VALIDATION.md)
+
+**Input:** Phases 1-4 complete
+
+**Execution:**
+
+1. Run quality gates checklist (12-15 items)
+2. Calculate metrics (lines in INSTRUCTIONS, average SKILL.md size, rules count)
+3. Automated smoke tests (symlinks resolve, hooks execute)
+4. Generate handoff: list of files created + suggested next steps
+
+**Final gate:**
+
+> Present completed bootstrap report. List 3-5 actions suggested for the user to do next (e.g., "Create the first detailed skill for domain X", "Configure CI to validate symlinks").
 
 ---
 
 ## Recovery
 
-Se uma fase falhar (usuário recusa o output, surge informação contraditória):
+If a phase fails (user rejects output, contradictory information arises):
 
-- **Em Fase 1-2:** revise as perguntas, ajuste o resumo, regenere
-- **Em Fase 3:** se a stack mudou, regenere `settings.json` e hooks; symlinks são reversíveis (`rm` + recriar)
-- **Em Fase 4-5:** raramente requer voltar; geralmente é correção pontual no `STATE.md` ou `CONVENTIONS.md`
+- **In Phase 1-2:** review questions, adjust summary, regenerate
+- **In Phase 3:** if stack changed, regenerate `settings.json` and hooks; symlinks are reversible (`rm` + recreate)
+- **In Phase 4-5:** rarely requires going back; usually a targeted correction in `STATE.md` or `CONVENTIONS.md`
 
-**Nunca destrua trabalho do usuário.** Antes de sobrescrever um arquivo existente, faça backup (`.bak`) ou peça confirmação.
-
----
-
-## Mapa de Decisões Frequentes
-
-| Pergunta da fase                       | Resposta padrão                                                                     |
-| -------------------------------------- | ----------------------------------------------------------------------------------- |
-| Tipo desconhecido na Fase 1            | Tratar como "outro" e usar UNIVERSAL-MAP para inferir                               |
-| Stack não está em TEMPLATES.md         | Usar template Node.js como base e adaptar — registrar como follow-up                |
-| Usuário não sabe quais skills criar    | Sugerir 3 baseadas no domínio descrito + 1 skill universal de qualidade (lint/test) |
-| Usuário não usa nenhuma IDE específica | Criar apenas symlinks raiz (CLAUDE.md, AGENTS.md) e `.agents/`                      |
-| Projeto não-técnico                    | Pular Fase 3 (hooks) parcialmente; manter bloqueio destrutivo + permissões          |
+**Never destroy the user's work.** Before overwriting an existing file, make a backup (`.bak`) or ask for confirmation.
 
 ---
 
-## Estado Final Esperado
+## Frequent Decision Map
 
-Ao final, o projeto-alvo tem:
+| Phase question                          | Default answer                                                                       |
+| --------------------------------------- | ------------------------------------------------------------------------------------ |
+| Unknown type in Phase 1                 | Treat as "other" and use UNIVERSAL-MAP to infer                                      |
+| Stack not in TEMPLATES.md              | Use Node.js template as base and adapt — log as follow-up                            |
+| User doesn't know which skills to create | Suggest 3 based on described domain + 1 universal quality skill (lint/test)         |
+| User doesn't use any specific IDE      | Create only root symlinks (CLAUDE.md, AGENTS.md) and `.agents/`                     |
+| Non-technical project                   | Partially skip Phase 3 (hooks); keep destructive blocking + permissions              |
+
+---
+
+## Expected Final State
+
+At the end, the target project has:
 
 ```text
-projeto-alvo/
+target-project/
 ├── .ai/
 │   ├── INSTRUCTIONS.md
 │   ├── CONVENTIONS.md
-│   ├── skills/                 (3-7 skills com SKILL.md mínimo)
-│   ├── rules/                  (3-7 rules — se aplicável)
+│   ├── skills/                 (3-7 skills with minimal SKILL.md)
+│   ├── rules/                  (3-7 rules — if applicable)
 │   └── docs/
-│       ├── architecture.md     (se software)
+│       ├── architecture.md     (if software)
         └── STATE.md
 ├── .claude/                    (symlinks)
-├── .cursor/, .agents/, .github/ (conforme IDEs declaradas)
+├── .cursor/, .agents/, .github/ (per declared IDEs)
 ├── CLAUDE.md, AGENTS.md        (symlinks)
-├── .claude/settings.json       (versionado)
-└── scripts/                    (hooks — se software)
+├── .claude/settings.json       (versioned)
+└── scripts/                    (hooks — if software)
 ```
 
-Estrutura completa esperada em [PROMPT-TEMPLATE.md](PROMPT-TEMPLATE.md).
+Expected complete structure in [PROMPT-TEMPLATE.md](PROMPT-TEMPLATE.md).

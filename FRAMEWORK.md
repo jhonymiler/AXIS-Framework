@@ -1,95 +1,95 @@
-# AXIS — Modelo Conceitual
+# AXIS — Conceptual Model
 
-> Framework harness-first para projetos aumentados por IA.
+> Harness-first framework for AI-augmented projects.
 
-Este documento é o **mapa mental** do AXIS. Para o roteiro de execução, ver [.ai/skills/axis-bootstrap/SKILL.md](.ai/skills/axis-bootstrap/SKILL.md). Para o quick start, ver [README.md](README.md).
-
----
-
-## O Problema que Resolve
-
-Equipes que trabalham com agentes de IA enfrentam três falhas recorrentes:
-
-1. **Documentação divergente** entre IDEs — Cursor lê uma versão, Claude Code lê outra, Copilot uma terceira. Em semanas o conteúdo está fora de sincronia.
-2. **Comportamento inconsistente** entre sessões e devs — sem hooks e permissões versionados, cada máquina age diferente.
-3. **Perda de contexto** entre sessões — decisões, blockers e lições somem quando uma sessão fecha.
-
-A solução combina três conceitos normalmente tratados separados: **Harness Engineering**, **Spec-Driven Development** e **Context Engineering (ACE)**.
+This document is the **mental map** of AXIS. For the execution roadmap, see [.ai/skills/axis-bootstrap/SKILL.md](.ai/skills/axis-bootstrap/SKILL.md). For the quick start, see [README.en.md](README.en.md).
 
 ---
 
-## Por que Harness-First
+## The Problem It Solves
 
-A literatura convergia em spec-first (GitHub Spec Kit, Kiro, Tessl). Mas a evidência empírica aponta harness como o bottleneck real:
+Teams working with AI agents face three recurring failures:
 
-- LangChain moveu um agente do fora-do-top-30 para top-5 no **Terminal Bench 2.0** mudando apenas o harness — mesmo modelo ([fonte: Augment Code](https://www.augmentcode.com/guides/harness-engineering-ai-coding-agents))
-- **ReliabilityBench (Jan 2026)** mostra que pass@1 superestima confiabilidade em 20-40%; arquiteturas mais simples superam complexas sob estresse ([arxiv 2601.06112](https://arxiv.org/abs/2601.06112))
-- Operadores relatam que swarms altamente autônomos são frágeis, caros e impossíveis de debugar em produção — padrão dominante é um único agente com acesso determinístico a ferramentas ([MindStudio](https://www.mindstudio.ai/blog/ai-agent-failure-pattern-recognition))
+1. **Divergent documentation** across IDEs — Cursor reads one version, Claude Code reads another, Copilot a third. Within weeks, content is out of sync.
+2. **Inconsistent behavior** across sessions and devs — without versioned hooks and permissions, each machine acts differently.
+3. **Context loss** between sessions — decisions, blockers, and lessons disappear when a session closes.
 
-> **Reposicionamento AXIS:** a Spec descreve o que o agente sabe. O Harness define como ele age — independente do que "decide" no momento. A Memory torna o sistema antifrágil ao tempo.
+The solution combines three concepts normally treated separately: **Harness Engineering**, **Spec-Driven Development**, and **Context Engineering (ACE)**.
 
 ---
 
-## O Modelo: Três Camadas
+## Why Harness-First
+
+The literature converged on spec-first (GitHub Spec Kit, Kiro, Tessl). But empirical evidence points to harness as the real bottleneck:
+
+- LangChain moved an agent from outside the top 30 to top 5 on **Terminal Bench 2.0** by changing only the harness — same model ([source: Augment Code](https://www.augmentcode.com/guides/harness-engineering-ai-coding-agents))
+- **ReliabilityBench (Jan 2026)** shows that pass@1 overestimates reliability by 20-40%; simpler architectures outperform complex ones under stress ([arxiv 2601.06112](https://arxiv.org/abs/2601.06112))
+- Operators report that highly autonomous swarms are fragile, expensive, and impossible to debug in production — the dominant pattern is a single agent with deterministic tool access ([MindStudio](https://www.mindstudio.ai/blog/ai-agent-failure-pattern-recognition))
+
+> **AXIS repositioning:** The Spec describes what the agent knows. The Harness defines how it acts — regardless of what it "decides" in the moment. The Memory makes the system antifragile over time.
+
+---
+
+## The Model: Three Layers
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  SPEC LAYER ─ O conhecimento (O QUÊ)                    │
-│  • INSTRUCTIONS.md  — contexto geral                    │
-│  • skills/          — conhecimento de domínio           │
-│  • rules/           — regras de comportamento/código    │
-│  • docs/            — referências estáticas             │
+│  SPEC LAYER ─ The knowledge (WHAT)                      │
+│  • INSTRUCTIONS.md  — general context                   │
+│  • skills/          — domain knowledge                  │
+│  • rules/           — behavior/code rules               │
+│  • docs/            — static references                 │
 └─────────────────────────────────────────────────────────┘
 ┌─────────────────────────────────────────────────────────┐
-│  HARNESS LAYER ─ A infraestrutura (COMO o agente age)   │
-│  • settings.json    — permissões versionadas            │
-│  • hooks            — automação (lint, testes, blocos)  │
-│  • sub-agents       — delegação e paralelismo           │
-│  • symlinks         — distribuição multi-IDE            │
+│  HARNESS LAYER ─ The infrastructure (HOW the agent acts)│
+│  • settings.json    — versioned permissions             │
+│  • hooks            — automation (lint, tests, blocks)  │
+│  • sub-agents       — delegation and parallelism        │
+│  • symlinks         — multi-IDE distribution            │
 └─────────────────────────────────────────────────────────┘
 ┌─────────────────────────────────────────────────────────┐
-│  MEMORY LAYER ─ A continuidade (O QUE persiste)         │
-│  • STATE.md         — estado, blockers, lições          │
-│  • CONVENTIONS.md   — como manter a estrutura           │
+│  MEMORY LAYER ─ The continuity (WHAT persists)          │
+│  • STATE.md         — state, blockers, lessons          │
+│  • CONVENTIONS.md   — how to maintain the structure     │
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Por que três camadas e não duas
+### Why three layers and not two
 
-A separação **Spec / Harness** já existe na literatura (Anthropic, Red Hat, GitHub Spec Kit). A adição da **Memory Layer** vem da observação prática reforçada pelo paper **ACE — Agentic Context Engineering** ([arxiv 2510.04618](https://arxiv.org/abs/2510.04618)): sem ela, projetos de longa duração regridem a cada sessão. A memória não é um log — é um **playbook evolutivo** que acumula, refina e curada estratégias, prevenindo colapso com atualizações incrementais estruturadas.
+The **Spec / Harness** separation already exists in the literature (Anthropic, Red Hat, GitHub Spec Kit). The addition of the **Memory Layer** comes from practical observation reinforced by the paper **ACE — Agentic Context Engineering** ([arxiv 2510.04618](https://arxiv.org/abs/2510.04618)): without it, long-running projects regress with each session. Memory is not a log — it is an **evolutionary playbook** that accumulates, refines, and curates strategies, preventing collapse with structured incremental updates.
 
-### Como as camadas interagem
+### How the layers interact
 
 ```
-  Início de sessão
+  Session start
        │
        ▼
-  [Spec] ────► IA carrega contexto mínimo (~1.500 tokens)
+  [Spec] ────► AI loads minimal context (~1,500 tokens)
        │
        ▼
-  [Memory] ──► IA lê STATE.md para saber onde parou
+  [Memory] ──► AI reads STATE.md to know where it left off
        │
        ▼
-  Trabalho ──► [Harness] aplica hooks, permissões, sub-agents
+  Work ──► [Harness] applies hooks, permissions, sub-agents
        │
        ▼
-  Mudança ──► Atualiza Spec se padrão mudou; atualiza Memory sempre
+  Change ──► Update Spec if pattern changed; update Memory always
        │
        ▼
-  Fim de sessão ─► STATE.md curado; loop recomeça mais informado
+  Session end ─► STATE.md curated; loop restarts more informed
 ```
 
 ---
 
-## Spec Layer em Detalhe
+## Spec Layer in Detail
 
 ### Single Source of Truth
 
-Todo conteúdo vive em `.ai/`. Pastas IDE-específicas (`.claude/`, `.cursor/`, `.github/`, `.agents/`) contêm apenas symlinks. **É fisicamente impossível ter divergência.**
+All content lives in `.ai/`. IDE-specific folders (`.claude/`, `.cursor/`, `.github/`, `.agents/`) contain only symlinks. **Divergence is physically impossible.**
 
 ```
-projeto/
-├── .ai/                          ← FONTE ÚNICA
+project/
+├── .ai/                          ← SINGLE SOURCE
 │   ├── INSTRUCTIONS.md
 │   ├── skills/
 │   ├── rules/
@@ -107,172 +107,172 @@ projeto/
 
 ### Progressive Disclosure
 
-Skills carregam em três momentos distintos para minimizar tokens:
+Skills load at three distinct moments to minimize tokens:
 
-| Camada            | Quando carrega    | Conteúdo                              | Tamanho         |
-| ----------------- | ----------------- | ------------------------------------- | --------------- |
-| **1 — Discovery** | Sempre (startup)  | `name` + `description` do frontmatter | ~3 linhas/skill |
-| **2 — Index**     | Quando relevante  | `SKILL.md` completo                   | ~40-60 linhas   |
-| **3 — On-demand** | Quando necessário | `references/*.md` específicos         | sob demanda     |
+| Layer | When it loads | Content | Size |
+| ----- | ------------- | ------- | ---- |
+| **1 — Discovery** | Always (startup) | `name` + `description` from frontmatter | ~3 lines/skill |
+| **2 — Index** | When relevant | Full `SKILL.md` | ~40-60 lines |
+| **3 — On-demand** | When needed | Specific `references/*.md` | on-demand |
 
 ---
 
-## Harness Layer em Detalhe
+## Harness Layer in Detail
 
-A spec define o que o agente sabe. O harness define como ele se comporta — independente do que "decide" no momento. **Produção confiável depende mais do harness que do modelo.**
+The spec defines what the agent knows. The harness defines how it behaves — regardless of what it "decides" in the moment. **Reliable production depends more on the harness than on the model.**
 
-### Cinco subsistemas do harness
+### Five harness subsystems
 
-1. **Context Harness** — orçamento de tokens, regras de loading/unloading, Progressive Disclosure
-2. **Permission Harness** — `settings.json` versionado com allow/deny/ask
-3. **Execution Harness** — hooks `PreToolUse`, `PostToolUse`, `Stop` automatizam validação, formatação e testes
-4. **Orchestration Harness** — sub-agents (Planner, Generator, Evaluator, Explore) para delegar e paralelizar
-5. **Verification Harness** — quality gates + **failure attribution** (cada falha é localizada em planning / execution / response, não apenas registrada como pass/fail)
+1. **Context Harness** — token budget, loading/unloading rules, Progressive Disclosure
+2. **Permission Harness** — versioned `settings.json` with allow/deny/ask
+3. **Execution Harness** — `PreToolUse`, `PostToolUse`, `Stop` hooks automate validation, formatting, and tests
+4. **Orchestration Harness** — sub-agents (Planner, Generator, Evaluator, Explore) for delegation and parallelism
+5. **Verification Harness** — quality gates + **failure attribution** (each failure is localized in planning / execution / response, not just recorded as pass/fail)
 
 ### Failure Attribution
 
-Inspirado em **AgentProp-Bench** ([arxiv 2604.16706](https://arxiv.org/html/2604.16706)) e **ReliabilityBench**, o AXIS não mede só se o agente passou — localiza onde falhou:
+Inspired by **AgentProp-Bench** ([arxiv 2604.16706](https://arxiv.org/html/2604.16706)) and **ReliabilityBench**, AXIS does not just measure whether the agent passed — it locates where it failed:
 
-| Categoria de Falha | Causa Raiz                           | Sinal no Harness                                        |
-| ------------------ | ------------------------------------ | ------------------------------------------------------- |
-| **Planning**       | Spec vaga, objetivo ambíguo          | Hook PreToolUse rejeita tasks sem critério de aceitação |
-| **Execution**      | Tool call inválida, permissão negada | Hook PostToolUse registra tentativa + contexto          |
-| **Response**       | Output correto mas formato errado    | Gate de validação na Fase 5                             |
+| Failure Category | Root Cause | Harness Signal |
+| ---------------- | ---------- | -------------- |
+| **Planning** | Vague spec, ambiguous goal | PreToolUse hook rejects tasks without acceptance criteria |
+| **Execution** | Invalid tool call, denied permission | PostToolUse hook records attempt + context |
+| **Response** | Correct output but wrong format | Validation gate in Phase 5 |
 
-### Padrão Anthropic dos Três Agentes
+### Anthropic's Three-Agent Pattern
 
-A Anthropic publicou (2026) uma arquitetura que separa três responsabilidades em sub-agents distintos:
+Anthropic published (2026) an architecture that separates three responsibilities into distinct sub-agents:
 
-- **Planner** decompõe spec em tasks
-- **Generator** implementa tasks  
-- **Evaluator** valida output contra spec
+- **Planner** decomposes spec into tasks
+- **Generator** implements tasks
+- **Evaluator** validates output against spec
 
-Esse padrão está embutido no AXIS: `PLANNER.md` orquestra fases, cada `PHASE-N.md` gera artefatos, `PHASE-5-VALIDATION.md` valida.
+This pattern is embedded in AXIS: `PLANNER.md` orchestrates phases, each `PHASE-N.md` generates artifacts, `PHASE-5-VALIDATION.md` validates.
 
 ---
 
-## Memory Layer em Detalhe
+## Memory Layer in Detail
 
-### Princípio ACE — Memória como Playbook
+### ACE Principle — Memory as Playbook
 
-O paper **ACE (Agentic Context Engineering)** ([arxiv 2510.04618](https://arxiv.org/abs/2510.04618)) demonstrou +10.6% em benchmarks de agentes e +8.6% em finanças com uma abordagem que trata contexto como **playbooks evolutivos** — não como logs de histórico.
+The paper **ACE (Agentic Context Engineering)** ([arxiv 2510.04618](https://arxiv.org/abs/2510.04618)) demonstrated +10.6% on agent benchmarks and +8.6% in finance with an approach that treats context as **evolutionary playbooks** — not as history logs.
 
-**Implicação para AXIS:**
+**Implication for AXIS:**
 
-- `STATE.md` não é um diário; é um playbook curado
-- Cada sessão **refina** o STATE — remove o que ficou obsoleto, eleva o que se provou útil
-- Specs longas geram ruído; specs testáveis e curtas geram confiabilidade
+- `STATE.md` is not a diary; it is a curated playbook
+- Each session **refines** the STATE — removes what became obsolete, elevates what proved useful
+- Long specs generate noise; testable and short specs generate reliability
 
-### Três tipos de memória, três artefatos
+### Two types of memory, two artifacts
 
-| Tipo                       | Artefato         | Atualização                                  |
-| -------------------------- | ---------------- | -------------------------------------------- |
-| **Estado vivo (playbook)** | `STATE.md`       | A cada sessão — curado, não apenas appendado |
-| **Meta**                   | `CONVENTIONS.md` | Quando a estrutura do `.ai/` muda            |
+| Type | Artifact | Update |
+| ---- | -------- | ------ |
+| **Live state (playbook)** | `STATE.md` | Each session — curated, not just appended |
+| **Meta** | `CONVENTIONS.md` | When `.ai/` structure changes |
 
 ### Session Handoff Protocol
 
-Ao final de cada sessão com mudanças relevantes, o agente:
-1. Atualiza `STATE.md` com o que foi feito, o que falta e contexto que se perderia
-2. **Remove** do STATE o que está resolvido (curação ativa)
-3. Ao iniciar próxima sessão, lê `STATE.md` antes de qualquer outra coisa
+At the end of each session with relevant changes, the agent:
+1. Updates `STATE.md` with what was done, what's left, and context that would be lost
+2. **Removes** from STATE what is resolved (active curation)
+3. At the start of the next session, reads `STATE.md` before anything else
 
 ---
 
-## Posicionamento Competitivo
+## Competitive Positioning
 
-| Framework             | Stars (approx.) | Ângulo Principal                    | Lacuna vs AXIS                                                                                    |
-| --------------------- | --------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------- |
-| **Spec Kit (GitHub)** | ~3k             | Spec-first para coding              | Sem harness; sem memória; contexto esquecido entre sessões (issue #75: "cria ilusão de trabalho") |
-| **BMAD-METHOD**       | ~8k             | Agile AI-driven development         | Focado em software; não resolve divergência multi-IDE                                             |
-| **SuperClaude**       | ~2k             | Personas especializadas para Claude | Específico para Claude; sem camada de memória estruturada                                         |
-| **LangGraph**         | ~45k            | Runtime de grafos de agentes        | Runtime, não infra de projeto; lock-in de framework; complexidade alta                            |
-| **CrewAI**            | ~28k            | Multi-agent role-based              | Sem gestão de contexto entre IDEs; SQLite3 limita escala                                          |
-| **DSPy**              | ~22k            | Programar (não promptar) LLMs       | Focado em otimização de prompts; não é infra de projeto                                           |
-| **AXIS**              | —               | **Harness + Spec + Memory**         | Multi-IDE, stack-agnóstico, 3 camadas integradas                                                  |
+| Framework | Stars (approx.) | Main Angle | Gap vs AXIS |
+| --------- | --------------- | ---------- | ----------- |
+| **Spec Kit (GitHub)** | ~3k | Spec-first for coding | No harness; no memory; context forgotten between sessions (issue #75: "creates illusion of work") |
+| **BMAD-METHOD** | ~8k | Agile AI-driven development | Software-focused; doesn't solve multi-IDE divergence |
+| **SuperClaude** | ~2k | Specialized personas for Claude | Claude-specific; no structured memory layer |
+| **LangGraph** | ~45k | Graph-based agent runtime | Runtime, not project infra; framework lock-in; high complexity |
+| **CrewAI** | ~28k | Multi-agent role-based | No cross-IDE context management; SQLite3 limits scale |
+| **DSPy** | ~22k | Programmatically (not prompting) LLMs | Focused on prompt optimization; not project infra |
+| **AXIS** | — | **Harness + Spec + Memory** | Multi-IDE, stack-agnostic, 3 integrated layers |
 
-**Posição única de AXIS:** é a única estrutura que resolve simultaneamente (1) divergência multi-IDE via symlinks, (2) comportamento não-determinístico via harness versionado, e (3) regressão entre sessões via memory como playbook.
-
----
-
-## Por que Funciona
-
-### 1. Cada camada é validável independentemente
-
-- Spec: `INSTRUCTIONS.md` tem 100-180 linhas? Skills têm description forte?
-- Harness: hooks executam? Permissões fazem sentido? Symlinks resolvem?
-- Memory: `STATE.md` tem seções obrigatórias? Foi curado?
-
-### 2. O framework é recursivo
-
-A pasta deste repositório segue **exatamente** o padrão que ensina. Você pode auditá-la com o próprio framework. Se encontrar inconsistência, é um bug no framework — não no documento.
-
-### 3. Universal por design
-
-A camada Spec é puramente sobre conhecimento. A Memory é puramente sobre continuidade. Apenas a Harness tem partes opcionais (hooks de lint não fazem sentido em projeto não-técnico). Ver [.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md](.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md).
-
-### 4. Spec testável, não verbosa
-
-Spec Kit revelou ([issue #75](https://github.com/github/spec-kit/issues/75)) que specs longas criam ilusão de trabalho. AXIS impõe limites explícitos (INSTRUCTIONS.md ≤ 180 linhas, SKILL.md ≤ 60 linhas) e gates que verificam testabilidade — não comprimento.
+**AXIS's unique position:** it is the only structure that simultaneously solves (1) multi-IDE divergence via symlinks, (2) non-deterministic behavior via versioned harness, and (3) session regression via memory as playbook.
 
 ---
 
-## Benefícios Mensuráveis
+## Why It Works
 
-| Métrica                      | Antes (CLAUDE.md monolítico) | Depois (AXIS)                                 |
-| ---------------------------- | ---------------------------- | --------------------------------------------- |
-| Tokens fixos por sessão      | ~8.000-12.000                | ~800-1.500 + on-demand                        |
-| Divergência entre IDEs       | comum em semanas             | impossível (symlinks)                         |
-| Tempo de onboarding          | varia por dev                | <10 min com `INSTRUCTIONS.md`                 |
-| Comportamento entre máquinas | inconsistente                | idêntico (`settings.json` no git)             |
-| Ações destrutivas acidentais | risco real                   | bloqueadas por hook                           |
-| Continuidade entre sessões   | manual e frágil              | automática via `STATE.md` curado              |
-| Localização de falhas        | pass/fail opaco              | atribuída por camada (planning/exec/response) |
+### 1. Each layer is independently validatable
+
+- Spec: Does `INSTRUCTIONS.md` have 100-180 lines? Do skills have strong descriptions?
+- Harness: Do hooks execute? Do permissions make sense? Do symlinks resolve?
+- Memory: Does `STATE.md` have the required sections? Was it curated?
+
+### 2. The framework is recursive
+
+This repository folder follows **exactly** the pattern it teaches. You can audit it with the framework itself. If you find an inconsistency, it is a bug in the framework — not in the document.
+
+### 3. Universal by design
+
+The Spec layer is purely about knowledge. The Memory layer is purely about continuity. Only the Harness has optional parts (lint hooks don't make sense in a non-technical project). See [.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md](.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md).
+
+### 4. Testable spec, not verbose
+
+Spec Kit revealed ([issue #75](https://github.com/github/spec-kit/issues/75)) that long specs create an illusion of work. AXIS enforces explicit limits (INSTRUCTIONS.md ≤ 180 lines, SKILL.md ≤ 60 lines) and gates that verify testability — not length.
+
+---
+
+## Measurable Benefits
+
+| Metric | Before (monolithic CLAUDE.md) | After (AXIS) |
+| ------ | ----------------------------- | ------------ |
+| Fixed tokens per session | ~8,000-12,000 | ~800-1,500 + on-demand |
+| Cross-IDE divergence | common within weeks | impossible (symlinks) |
+| Onboarding time | varies by dev | <10 min with `INSTRUCTIONS.md` |
+| Behavior across machines | inconsistent | identical (`settings.json` in git) |
+| Accidental destructive actions | real risk | blocked by hook |
+| Session continuity | manual and fragile | automatic via curated `STATE.md` |
+| Failure localization | opaque pass/fail | attributed by layer (planning/exec/response) |
 
 ---
 
 ## Trade-offs
 
-### Symlinks em Windows
+### Symlinks on Windows
 
-Exigem permissão de administrador ou Developer Mode. **Mitigação:** documentar no README; usar `mklink /D` ou `core.symlinks = true` no Git.
+Require administrator permission or Developer Mode. **Mitigation:** document in README; use `mklink /D` or `core.symlinks = true` in Git.
 
-### Curva inicial
+### Initial curve
 
-Mais conceitos que "colar tudo no CLAUDE.md". **Mitigação:** o `axis-bootstrap` skill conduz a curva — o usuário não precisa entender tudo antes de começar.
+More concepts than "paste everything into CLAUDE.md". **Mitigation:** the `axis-bootstrap` skill guides through the curve — the user doesn't need to understand everything before starting.
 
-### Overhead em projetos triviais
+### Overhead on trivial projects
 
-Para um projeto solo de 1-2 dias, a estrutura completa é over-engineering. **Recomendação — adotar quando:**
+For a 1-2 day solo project, the full structure is over-engineering. **Recommendation — adopt when:**
 
-- 3+ pessoas envolvidas, ou
-- Mais de uma IDE/agente em uso, ou
-- Projeto com domínio complexo (regras de negócio, integrações, compliance), ou
-- Expectativa de duração >2 semanas
+- 3+ people involved, or
+- More than one IDE/agent in use, or
+- Project with complex domain (business rules, integrations, compliance), or
+- Expected duration >2 weeks
 
-### CI/CD com shallow clone
+### CI/CD with shallow clone
 
-Pipelines podem não resolver symlinks. **Mitigação:** clone completo ou `core.symlinks = true` no pipeline.
-
----
-
-## Onde Cada Detalhe Está Documentado
-
-| Você quer...                             | Vá para                                                                                                        |
-| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Entender a visão geral                   | este documento                                                                                                 |
-| Quick start                              | [README.md](README.md)                                                                                         |
-| Bootstrap em 5 minutos                   | [.ai/skills/axis-bootstrap/references/QUICKSTART.md](.ai/skills/axis-bootstrap/references/QUICKSTART.md)       |
-| Bootstrapar um projeto                   | [.ai/skills/axis-bootstrap/SKILL.md](.ai/skills/axis-bootstrap/SKILL.md)                                       |
-| Aprender padrões (PD, KVC, ACE, k-trial) | [.ai/skills/axis-bootstrap/references/PATTERNS.md](.ai/skills/axis-bootstrap/references/PATTERNS.md)           |
-| Ver templates copy-paste                 | [.ai/skills/axis-bootstrap/references/TEMPLATES.md](.ai/skills/axis-bootstrap/references/TEMPLATES.md)         |
-| Aplicar a projeto não-técnico            | [.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md](.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md) |
-| Manter o framework                       | [.ai/CONVENTIONS.md](.ai/CONVENTIONS.md)                                                                       |
+Pipelines may not resolve symlinks. **Mitigation:** full clone or `core.symlinks = true` in the pipeline.
 
 ---
 
-## Conclusão
+## Where Each Detail Is Documented
 
-Documentação para IA não é luxo, é infraestrutura. Mas a infraestrutura tradicional (um arquivo monolítico) regride sob escala. **Spec + Harness + Memory** é a decomposição mínima que sobrevive ao tempo, ao tamanho do time e à variedade de IDEs.
+| You want to... | Go to |
+| -------------- | ----- |
+| Understand the overview | this document |
+| Quick start | [README.en.md](README.en.md) |
+| Bootstrap in 5 minutes | [.ai/skills/axis-bootstrap/references/QUICKSTART.md](.ai/skills/axis-bootstrap/references/QUICKSTART.md) |
+| Bootstrap a project | [.ai/skills/axis-bootstrap/SKILL.md](.ai/skills/axis-bootstrap/SKILL.md) |
+| Learn patterns (PD, KVC, ACE, k-trial) | [.ai/skills/axis-bootstrap/references/PATTERNS.md](.ai/skills/axis-bootstrap/references/PATTERNS.md) |
+| See copy-paste templates | [.ai/skills/axis-bootstrap/references/TEMPLATES.md](.ai/skills/axis-bootstrap/references/TEMPLATES.md) |
+| Apply to a non-technical project | [.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md](.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md) |
+| Maintain the framework | [.ai/CONVENTIONS.md](.ai/CONVENTIONS.md) |
 
-A diferença entre saber disso e ter implementado é o `axis-bootstrap` — uma spec executável que entrega o sistema completo em uma sessão, com harness como prioridade e memória como playbook.
+---
+
+## Conclusion
+
+Documentation for AI is not a luxury — it is infrastructure. But traditional infrastructure (a monolithic file) regresses under scale. **Spec + Harness + Memory** is the minimal decomposition that survives time, team size, and IDE variety.
+
+The difference between knowing this and having implemented it is `axis-bootstrap` — an executable spec that delivers the complete system in one session, with harness as priority and memory as playbook.

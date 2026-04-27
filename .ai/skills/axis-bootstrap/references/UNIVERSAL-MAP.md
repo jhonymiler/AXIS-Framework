@@ -1,121 +1,121 @@
-# Universal Map — Técnico ↔ Não-Técnico
+# Universal Map — Technical ↔ Non-Technical
 
-O framework foi originalmente concebido para projetos de software, mas suas três camadas (Spec, Harness, Memory) são **agnósticas de domínio**. Este documento mapeia conceitos técnicos para equivalentes universais, permitindo aplicação a qualquer tipo de projeto.
-
----
-
-## Princípio de Tradução
-
-| Camada      | Universalidade | O que muda                                                    |
-| ----------- | -------------- | ------------------------------------------------------------- |
-| **Spec**    | 100% universal | Apenas vocabulário (rules → protocolos)                       |
-| **Harness** | ~70% universal | Hooks de lint/test não se aplicam; permissões e bloqueios sim |
-| **Memory**  | 100% universal | Idêntico — STATE, CONVENTIONS funcionam igual                 |
-
-A camada que mais varia é a **Harness**, e mesmo lá o núcleo (versionamento de comportamento, bloqueio destrutivo, sub-agents) se mantém.
+The framework was originally designed for software projects, but its three layers (Spec, Harness, Memory) are **domain-agnostic**. This document maps technical concepts to universal equivalents, enabling application to any type of project.
 
 ---
 
-## Mapeamento Conceito a Conceito
+## Translation Principle
 
-| Conceito Técnico         | Equivalente Universal                                |
-| ------------------------ | ---------------------------------------------------- |
-| Stack tecnológica        | Ferramentas e plataformas                            |
-| Linguagem de programação | Formato de output (markdown, planilha, deck)         |
-| Framework                | Metodologia (PBL, BSC, OKR, ABNT)                    |
-| Banco de dados           | Repositório de dados (planilha, CMS, base de fontes) |
-| API externa              | Fonte oficial / stakeholder / fornecedor             |
-| Rules de código          | Protocolos de qualidade                              |
-| Code style               | Tom de voz / formatting                              |
-| Test suite               | Critérios de validação                               |
-| CI/CD                    | Pipeline de revisão / aprovação                      |
-| Hook de lint             | Checklist automático                                 |
-| Hook de bloqueio         | Validação pré-publicação                             |
-| Branches/commits         | Versões / revisões                                   |
-| PR review                | Revisão por pares                                    |
-| Bug                      | Inconsistência / erro factual                        |
-| Refactoring              | Reorganização / clarificação                         |
-| Deploy                   | Publicação / entrega                                 |
-| Production               | Ambiente final / cliente                             |
+| Layer       | Universality   | What changes                                                       |
+| ----------- | -------------- | ------------------------------------------------------------------ |
+| **Spec**    | 100% universal | Only vocabulary (rules → protocols)                                |
+| **Harness** | ~70% universal | Lint/test hooks do not apply; permissions and blocks do            |
+| **Memory**  | 100% universal | Identical — STATE, CONVENTIONS work the same                       |
+
+The layer that varies most is the **Harness**, and even there the core (behavior versioning, destructive blocking, sub-agents) remains intact.
 
 ---
 
-## Aplicação por Tipo de Projeto
+## Concept-to-Concept Mapping
 
-### Pesquisa Acadêmica
+| Technical Concept         | Universal Equivalent                                    |
+| ------------------------- | ------------------------------------------------------- |
+| Technology stack          | Tools and platforms                                     |
+| Programming language      | Output format (markdown, spreadsheet, deck)             |
+| Framework                 | Methodology (PBL, BSC, OKR, ABNT)                       |
+| Database                  | Data repository (spreadsheet, CMS, source library)      |
+| External API              | Official source / stakeholder / vendor                  |
+| Code rules                | Quality protocols                                       |
+| Code style                | Tone of voice / formatting                              |
+| Test suite                | Validation criteria                                     |
+| CI/CD                     | Review / approval pipeline                              |
+| Lint hook                 | Automated checklist                                     |
+| Blocking hook             | Pre-publication validation                              |
+| Branches/commits          | Versions / revisions                                    |
+| PR review                 | Peer review                                             |
+| Bug                       | Inconsistency / factual error                           |
+| Refactoring               | Reorganization / clarification                          |
+| Deploy                    | Publication / delivery                                  |
+| Production                | Final environment / client                              |
+
+---
+
+## Application by Project Type
+
+### Academic Research
 
 ```text
 .ai/
-├── INSTRUCTIONS.md         (pergunta de pesquisa, metodologia, prazo)
+├── INSTRUCTIONS.md          (research question, methodology, deadline)
 ├── skills/
-│   ├── metodologia/        (qual método, por quê)
-│   ├── coleta-dados/       (fontes, como acessar, como tratar)
-│   ├── analise/            (técnicas, fórmulas, software)
-│   ├── redacao-academica/  (estrutura, citações, tom)
-│   └── revisao/            (checklist de validação)
-├── rules/  (renomeada protocols/)
-│   ├── citacoes-abnt.md
-│   ├── estrutura-paper.md
-│   └── reproducibilidade.md
+│   ├── methodology/         (which method, why)
+│   ├── data-collection/     (sources, how to access, how to process)
+│   ├── analysis/            (techniques, formulas, software)
+│   ├── academic-writing/    (structure, citations, tone)
+│   └── review/              (validation checklist)
+├── rules/  (renamed protocols/)
+│   ├── citations-apa.md
+│   ├── paper-structure.md
+│   └── reproducibility.md
 └── docs/
-    ├── glossary.md         (termos técnicos do campo)
-    ├── fontes.md           (bibliografia anotada)
-    ├── STATE.md            (decisões metodológicas, dados coletados, lacunas)
+    ├── glossary.md          (domain technical terms)
+    ├── sources.md           (annotated bibliography)
+    ├── STATE.md             (methodological decisions, collected data, gaps)
 ```
 
-**Hooks aplicáveis:**
-- ✅ Bloqueio destrutivo (universal)
-- ✅ Validação de citações antes de exportar
-- ❌ Lint de código (não aplica)
+**Applicable hooks:**
+- ✅ Destructive blocking (universal)
+- ✅ Citation validation before export
+- ❌ Code linting (does not apply)
 
 ---
 
-### Conteúdo / Marketing / Docs Técnicas
+### Content / Marketing / Technical Docs
 
 ```text
 .ai/
-├── INSTRUCTIONS.md         (público, canais, calendário)
+├── INSTRUCTIONS.md          (audience, channels, calendar)
 ├── skills/
-│   ├── tom-de-voz/         (exemplos, palavras-chave a evitar)
-│   ├── estrutura-artigo/   (intro, dev, fechamento; tamanhos)
-│   ├── seo/                (keywords, meta, structure)
-│   ├── fact-checking/      (fontes confiáveis, processo)
-│   └── editorial/          (revisão, aprovações)
+│   ├── tone-of-voice/       (examples, words to avoid)
+│   ├── article-structure/   (intro, body, closing; lengths)
+│   ├── seo/                 (keywords, meta, structure)
+│   ├── fact-checking/       (reliable sources, process)
+│   └── editorial/           (review, approvals)
 ├── rules/
-│   ├── style-guide.md      (capitalização, formatação, listagens)
-│   └── compliance.md       (LGPD, claims regulados, disclaimers)
+│   ├── style-guide.md       (capitalization, formatting, lists)
+│   └── compliance.md        (GDPR, regulated claims, disclaimers)
 └── docs/
     ├── glossary.md
     ├── personas.md
-    ├── STATE.md            (calendário editorial, drafts, em revisão)
+    ├── STATE.md             (editorial calendar, drafts, under review)
 ```
 
-**Hooks aplicáveis:**
-- ✅ Bloqueio destrutivo
-- ✅ Spell check / lint markdown
-- ✅ Validação de links quebrados
-- ❌ Test runner (não aplica)
+**Applicable hooks:**
+- ✅ Destructive blocking
+- ✅ Spell check / markdown lint
+- ✅ Broken link validation
+- ❌ Test runner (does not apply)
 
 ---
 
-### Business / Gestão
+### Business / Management
 
 ```text
 .ai/
-├── INSTRUCTIONS.md         (objetivo, stakeholders, frameworks adotados)
+├── INSTRUCTIONS.md          (objective, stakeholders, adopted frameworks)
 ├── skills/
-│   ├── relatorio-executivo/  (estrutura, audiência, nível)
-│   ├── analise-swot/         (template, perguntas-guia)
-│   ├── okrs/                 (definição, tracking, review)
-│   ├── apresentacao-deck/    (princípios visuais, narrativa)
-│   └── analise-financeira/   (DRE, indicadores, projeções)
+│   ├── executive-report/    (structure, audience, level)
+│   ├── swot-analysis/       (template, guiding questions)
+│   ├── okrs/                (definition, tracking, review)
+│   ├── presentation-deck/   (visual principles, narrative)
+│   └── financial-analysis/  (P&L, indicators, projections)
 ├── rules/
-│   ├── tom-para-diretoria.md
-│   └── confidencialidade.md
+│   ├── tone-for-board.md
+│   └── confidentiality.md
 └── docs/
-    ├── glossary.md           (termos do negócio)
-    ├── stakeholders.md       (mapa, expectativas)
-    ├── STATE.md              (deals em andamento, OKRs do trimestre)
+    ├── glossary.md          (business terms)
+    ├── stakeholders.md      (map, expectations)
+    ├── STATE.md             (deals in progress, quarterly OKRs)
 ```
 
 ---
@@ -124,93 +124,93 @@ A camada que mais varia é a **Harness**, e mesmo lá o núcleo (versionamento d
 
 ```text
 .ai/
-├── INSTRUCTIONS.md         (jurisdição, áreas, riscos críticos)
+├── INSTRUCTIONS.md          (jurisdiction, areas, critical risks)
 ├── skills/
-│   ├── redacao-contratual/  (cláusulas, padrões)
-│   ├── analise-clausulas/   (riscos, ambiguidades)
-│   ├── compliance-lgpd/     (DPIA, base legal, direitos)
-│   └── pareceres/           (estrutura, fundamentação)
+│   ├── contract-drafting/   (clauses, standards)
+│   ├── clause-analysis/     (risks, ambiguities)
+│   ├── gdpr-compliance/     (DPIA, legal basis, rights)
+│   └── legal-opinions/      (structure, legal reasoning)
 ├── rules/
-│   ├── linguagem-juridica.md
-│   ├── citacao-jurisprudencia.md
-│   └── confidencialidade.md  (rule crítica para LLMs)
+│   ├── legal-language.md
+│   ├── case-law-citation.md
+│   └── confidentiality.md   (critical rule for LLMs)
 └── docs/
     ├── glossary.md
-    ├── jurisprudencias.md    (precedentes relevantes)
-    ├── STATE.md              (casos ativos, prazos)
+    ├── case-law.md          (relevant precedents)
+    ├── STATE.md             (active cases, deadlines)
 ```
 
-**Hooks especialmente relevantes:**
-- ✅ Bloqueio de envio acidental de informação confidencial
-- ✅ Validação de citações legais antes de exportar
+**Especially relevant hooks:**
+- ✅ Block accidental disclosure of confidential information
+- ✅ Legal citation validation before export
 
 ---
 
-### Educacional
+### Educational
 
 ```text
 .ai/
-├── INSTRUCTIONS.md         (público, nível, metodologia, BNCC se K-12)
+├── INSTRUCTIONS.md          (audience, level, methodology, curriculum if K-12)
 ├── skills/
-│   ├── design-instrucional/ (Bloom, ADDIE, modelos)
-│   ├── plano-aula/          (estrutura, objetivos, atividades)
-│   ├── avaliacao/           (questões, rubricas, validação)
-│   └── linguagem-nivel/     (adaptar para idade/conhecimento)
+│   ├── instructional-design/ (Bloom, ADDIE, models)
+│   ├── lesson-plan/          (structure, objectives, activities)
+│   ├── assessment/           (questions, rubrics, validation)
+│   └── language-level/       (adapt for age/knowledge)
 ├── rules/
-│   ├── inclusao-acessibilidade.md
-│   └── padrao-pedagogico.md
+│   ├── inclusion-accessibility.md
+│   └── pedagogical-standard.md
 └── docs/
-    ├── personas-aluno.md
+    ├── student-personas.md
     └── STATE.md
 ```
 
 ---
 
-## Quando NÃO Usar o Framework
+## When NOT to Use the Framework
 
-Independente do tipo:
+Regardless of type:
 
-- **Trabalho descartável** (1 dia, sem continuidade) — overhead > ganho
-- **Solo + 1 ferramenta + 1 sessão** — `CLAUDE.md` monolítico resolve
-- **Sem expectativa de evolução** — memória e specs perdem sentido
-- **Domínio puramente criativo sem padrões** (ex: arte livre) — restrições atrapalham
+- **Disposable work** (1 day, no continuity) — overhead > gain
+- **Solo + 1 tool + 1 session** — a monolithic `CLAUDE.md` is sufficient
+- **No expectation of evolution** — memory and specs lose their purpose
+- **Purely creative domain without standards** (e.g., free art) — constraints get in the way
 
-**Use quando:**
-- 3+ pessoas (humanos ou agentes) compartilham o trabalho
-- Mais de uma IDE/ferramenta envolvida
-- Domínio tem regras, normas, ou padrões que devem ser respeitados
-- Continuidade entre sessões é importante (semanas ou meses)
-- Há custo real de inconsistência (compliance, marca, qualidade)
-
----
-
-## Adaptações Comuns
-
-### Substituições de pasta
-
-| Tradicional                   | Alternativa universal                             |
-| ----------------------------- | ------------------------------------------------- |
-| `.ai/rules/`                  | `.ai/protocols/`                                  |
-| `.ai/docs/architecture.md`    | `.ai/docs/components.md`                          |
-| `.ai/docs/database-schema.md` | `.ai/docs/data-model.md` ou `.ai/docs/sources.md` |
-| `setup-ide-links.sh`          | mantém o nome — ainda relevante                   |
-
-### Hooks que sempre valem
-
-- **Bloqueio de comandos destrutivos** — universal
-- **Versionamento de `settings.json`** no git — universal
-
-### Hooks que dependem do domínio
-
-- Lint/format → existe para markdown, planilhas (validators), CSS, JSON, YAML — adaptar conforme o output
-- Test runner → existe como "validador de output" para qualquer artefato (link checker, schema validator, fact-checker)
+**Use when:**
+- 3+ people (humans or agents) share the work
+- More than one IDE/tool is involved
+- Domain has rules, norms, or standards that must be respected
+- Continuity between sessions matters (weeks or months)
+- There is real cost to inconsistency (compliance, brand, quality)
 
 ---
 
-## Princípio Final
+## Common Adaptations
 
-A camada **Spec** descreve **o que o domínio é**.
-A camada **Harness** garante **comportamento consistente** independente do domínio.
-A camada **Memory** preserva **continuidade** independente do domínio.
+### Folder substitutions
 
-Os três conceitos não dependem de programação — dependem de qualquer atividade humana com **conhecimento estruturado**, **padrões repetíveis** e **continuidade no tempo**. O framework é universal porque essas três propriedades são universais.
+| Traditional                    | Universal alternative                              |
+| ------------------------------ | -------------------------------------------------- |
+| `.ai/rules/`                   | `.ai/protocols/`                                   |
+| `.ai/docs/architecture.md`     | `.ai/docs/components.md`                           |
+| `.ai/docs/database-schema.md`  | `.ai/docs/data-model.md` or `.ai/docs/sources.md`  |
+| `setup-ide-links.sh`           | keep the name — still relevant                     |
+
+### Hooks that always apply
+
+- **Destructive command blocking** — universal
+- **Versioning `settings.json`** in git — universal
+
+### Domain-dependent hooks
+
+- Lint/format → exists for markdown, spreadsheets (validators), CSS, JSON, YAML — adapt to the output format
+- Test runner → exists as "output validator" for any artifact (link checker, schema validator, fact-checker)
+
+---
+
+## Final Principle
+
+The **Spec** layer describes **what the domain is**.
+The **Harness** layer ensures **consistent behavior** regardless of domain.
+The **Memory** layer preserves **continuity** regardless of domain.
+
+The three concepts do not depend on programming — they depend on any human activity with **structured knowledge**, **repeatable standards**, and **continuity over time**. The framework is universal because these three properties are universal.

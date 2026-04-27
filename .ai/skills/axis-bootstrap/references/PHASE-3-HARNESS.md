@@ -1,45 +1,45 @@
 # Phase 3 — Harness Layer Configuration
 
-**Objetivo:** instalar a infraestrutura comportamental que torna o agente seguro, consistente e produtivo independente do que o modelo "decide" no momento.
+**Goal:** install the behavioral infrastructure that makes the agent safe, consistent, and productive regardless of what the model "decides" in the moment.
 
-**Entrada:** Spec Layer da Fase 2 validada + tipo de projeto.
+**Input:** Spec Layer from Phase 2 validated + project type.
 
-**Output:** `settings.json` versionado, hooks configurados, sub-agents declarados, symlinks distribuídos.
-
----
-
-## Por que o Harness Existe
-
-A spec define o que o agente sabe. **Mas confiabilidade em produção depende mais do harness que do modelo.** Sem ele:
-
-- Formatação inconsistente acumula em diffs sujos
-- Comandos destrutivos passam (`rm -rf`, `DROP TABLE`)
-- Testes não rodam ao final, regressões escapam
-- Cada dev tem comportamento diferente da IA por máquina
-
-O harness elimina cada um desses por construção, não por disciplina.
+**Output:** versioned `settings.json`, configured hooks, declared sub-agents, distributed symlinks.
 
 ---
 
-## Os Cinco Subsistemas
+## Why the Harness Exists
 
-| Subsistema                | Função                               | Aplicabilidade            |
-| ------------------------- | ------------------------------------ | ------------------------- |
-| **Permission Harness**    | `settings.json` versionado           | Universal                 |
-| **Execution Harness**     | Hooks (Pre/Post/Stop)                | Software (com adaptações) |
-| **Orchestration Harness** | Sub-agents                           | Universal                 |
-| **Context Harness**       | Token budget, Progressive Disclosure | Universal (já em Fase 2)  |
-| **Verification Harness**  | Quality gates em skills              | Universal (já em Fase 2)  |
+The spec defines what the agent knows. **But production reliability depends more on the harness than on the model.** Without it:
 
-Esta fase implementa os três primeiros (os outros dois já estão no design da Fase 2).
+- Inconsistent formatting accumulates in dirty diffs
+- Destructive commands go through (`rm -rf`, `DROP TABLE`)
+- Tests don't run at the end, regressions escape
+- Each developer gets different AI behavior per machine
+
+The harness eliminates each of these by construction, not by discipline.
 
 ---
 
-## Passo 1 — `settings.json`
+## The Five Subsystems
 
-Use o template em [TEMPLATES.md → settings.json](TEMPLATES.md#settingsjson). Adapte ao stack via tabela:
+| Subsystem                 | Function                             | Applicability                     |
+| ------------------------- | ------------------------------------ | --------------------------------- |
+| **Permission Harness**    | Versioned `settings.json`            | Universal                         |
+| **Execution Harness**     | Hooks (Pre/Post/Stop)                | Software (with adaptations)       |
+| **Orchestration Harness** | Sub-agents                           | Universal                         |
+| **Context Harness**       | Token budget, Progressive Disclosure | Universal (already in Phase 2)    |
+| **Verification Harness**  | Quality gates in skills              | Universal (already in Phase 2)    |
 
-| Stack       | Substituir `<build-tool>` por                     |
+This phase implements the first three (the other two are already in the Phase 2 design).
+
+---
+
+## Step 1 — `settings.json`
+
+Use the template in [TEMPLATES.md → settings.json](TEMPLATES.md#settingsjson). Adapt to the stack via table:
+
+| Stack       | Replace `<build-tool>` with                       |
 | ----------- | ------------------------------------------------- |
 | Node.js     | `Bash(npm *)`, `Bash(npx *)`                      |
 | Python      | `Bash(pip *)`, `Bash(pytest *)`, `Bash(poetry *)` |
@@ -51,7 +51,7 @@ Use o template em [TEMPLATES.md → settings.json](TEMPLATES.md#settingsjson). A
 | Rust        | `Bash(cargo *)`                                   |
 | .NET        | `Bash(dotnet *)`                                  |
 
-**Estrutura mínima:**
+**Minimum structure:**
 
 ```json
 {
@@ -63,19 +63,19 @@ Use o template em [TEMPLATES.md → settings.json](TEMPLATES.md#settingsjson). A
 }
 ```
 
-**Universal (não-software):** mantenha `Read`, `Bash(git *)`, `Edit(/.ai/**)`, e adapte `Edit` ao layout do projeto. Pule entradas de stack.
+**Universal (non-software):** keep `Read`, `Bash(git *)`, `Edit(/.ai/**)`, and adapt `Edit` to the project layout. Skip stack entries.
 
-**Versionar no git** é obrigatório. Sem isso, comportamento varia por máquina e bugs ficam difíceis de reproduzir.
+**Versioning in git** is mandatory. Without it, behavior varies per machine and bugs are hard to reproduce.
 
 ---
 
-## Passo 2 — Hooks
+## Step 2 — Hooks
 
-Hooks executam comandos shell em resposta a eventos do agente. **Três são indispensáveis** quando aplicáveis:
+Hooks execute shell commands in response to agent events. **Three are indispensable** when applicable:
 
-### Hook A — `PostToolUse` (formatação automática)
+### Hook A — `PostToolUse` (automatic formatting)
 
-**Aplicável a:** software com formatter.
+**Applicable to:** software with a formatter.
 
 ```json
 {
@@ -95,13 +95,13 @@ Hooks executam comandos shell em resposta a eventos do agente. **Três são indi
 }
 ```
 
-Script `format-file.sh` em [TEMPLATES.md → format-file.sh](TEMPLATES.md#format-filesh). É stack-aware via `case` e nunca falha (`exit 0`) — formatter ausente não bloqueia o agente.
+Script `format-file.sh` in [TEMPLATES.md → format-file.sh](TEMPLATES.md#format-filesh). It is stack-aware via `case` and never fails (`exit 0`) — missing formatter does not block the agent.
 
-**Por que indispensável:** sem isso, diffs ficam poluídos com mudanças de estilo, aumentando custo de code review.
+**Why indispensable:** without it, diffs get polluted with style changes, increasing code review cost.
 
-### Hook B — `PreToolUse` (bloqueio destrutivo)
+### Hook B — `PreToolUse` (destructive blocking)
 
-**Aplicável a:** universal. Sempre instalar.
+**Applicable to:** universal. Always install.
 
 ```json
 {
@@ -116,13 +116,13 @@ Script `format-file.sh` em [TEMPLATES.md → format-file.sh](TEMPLATES.md#format
 }
 ```
 
-Script `validate-bash.sh` em [TEMPLATES.md → validate-bash.sh](TEMPLATES.md#validate-bashsh). Bloqueia padrões: `rm -rf /`, `DROP TABLE`, `TRUNCATE`, `DELETE FROM` sem WHERE.
+Script `validate-bash.sh` in [TEMPLATES.md → validate-bash.sh](TEMPLATES.md#validate-bashsh). Blocks patterns: `rm -rf /`, `DROP TABLE`, `TRUNCATE`, `DELETE FROM` without WHERE.
 
-**Por que indispensável:** o agente ocasionalmente infere que precisa "limpar" arquivos. Sem proteção, um erro de contexto é irreversível. Não bloqueia trabalho normal — só os casos perigosos.
+**Why indispensable:** the agent occasionally infers it needs to "clean up" files. Without protection, a context error is irreversible. Does not block normal work — only the dangerous cases.
 
-### Hook C — `Stop` (testes ao finalizar)
+### Hook C — `Stop` (tests on finish)
 
-**Aplicável a:** software com test runner.
+**Applicable to:** software with a test runner.
 
 ```json
 {
@@ -141,141 +141,141 @@ Script `validate-bash.sh` em [TEMPLATES.md → validate-bash.sh](TEMPLATES.md#va
 }
 ```
 
-Script `run-tests-if-changed.sh` em [TEMPLATES.md → run-tests-if-changed.sh](TEMPLATES.md#run-tests-if-changedsh). Detecta extensões alteradas no diff e roda apenas o test runner aplicável.
+Script `run-tests-if-changed.sh` in [TEMPLATES.md → run-tests-if-changed.sh](TEMPLATES.md#run-tests-if-changedsh). Detects changed extensions in the diff and runs only the applicable test runner.
 
-**Por que indispensável:** fecha o loop de feedback. O agente não apenas "faz" — valida o que fez. Regressões são capturadas na mesma sessão.
+**Why indispensable:** closes the feedback loop. The agent not only "does" — it validates what it did. Regressions are caught in the same session.
 
-### Para projetos não-técnicos
+### For non-technical projects
 
-- **Hook A:** pular (sem formatter)
-- **Hook B:** **manter** (proteção universal)
-- **Hook C:** pular ou substituir por validação de output (ex: spell check, lint markdown)
-
----
-
-## Passo 3 — Sub-agents
-
-Sub-agents permitem delegação inteligente. O agente principal **orquestra**, sub-agents **executam**.
-
-### `Explore` (built-in, sempre habilitar)
-
-- Acesso somente-leitura: `Glob`, `Grep`, `Read`, `WebFetch`, `WebSearch`
-- Impossível editar arquivos durante pesquisa
-- Mais eficiente: não carrega ferramentas de escrita não usadas
-- Para codebase grande, usar level `"very thorough"`
-
-### Quando delegar vs executar
-
-| Tarefa                            | Delegar? | Por quê                              |
-| --------------------------------- | -------- | ------------------------------------ |
-| Pesquisa / exploração             | **Sim**  | Output volumoso; só o resumo importa |
-| Implementação de task             | **Sim**  | File reads/edits consomem contexto   |
-| Tasks paralelas independentes     | **Sim**  | Única forma de paralelizar           |
-| Tasks sequenciais sem dependência | **Sim**  | Mantém contexto principal limpo      |
-| Planejamento e criação de tasks   | **Não**  | Requer contexto acumulado            |
-| Validação e relatórios finais     | **Não**  | Precisa do histórico da sessão       |
-| Quick fixes (≤3 arquivos)         | **Não**  | Overhead > task                      |
-
-### Contrato de cada sub-agent
-
-**Recebe:**
-- Definição da task (o quê fazer, onde, critério de conclusão)
-- Rules e conventions relevantes
-- Spec/design que a task referencia
-
-**Não recebe:**
-- Definições de outras tasks
-- Histórico de chat acumulado
-- `STATE.md` (a menos que registre uma decisão/blocker específica)
-
-**Retorna:**
-- Status: Completo | Bloqueado | Parcial
-- Arquivos alterados
-- Resultado de testes/validação
-- Issues encontrados
+- **Hook A:** skip (no formatter)
+- **Hook B:** **keep** (universal protection)
+- **Hook C:** skip or replace with output validation (e.g., spell check, markdown lint)
 
 ---
 
-## Passo 4 — Symlinks por IDE
+## Step 3 — Sub-agents
 
-Para cada IDE declarada na Fase 1, criar symlinks. Use o script [setup-ide-links.sh em TEMPLATES.md](TEMPLATES.md#setup-ide-linkssh).
+Sub-agents enable smart delegation. The main agent **orchestrates**, sub-agents **execute**.
 
-**Princípio:** o script é **idempotente** (`ln -sf` substitui sem erro). Pode rodar quantas vezes quiser.
+### `Explore` (built-in, always enable)
 
-**Pasta-alvo por IDE:**
+- Read-only access: `Glob`, `Grep`, `Read`, `WebFetch`, `WebSearch`
+- Cannot edit files during research
+- More efficient: does not load unused write tools
+- For large codebases, use level `"very thorough"`
 
-| IDE            | Onde busca contexto                                        |
+### When to delegate vs execute
+
+| Task                              | Delegate? | Why                                  |
+| --------------------------------- | --------- | ------------------------------------ |
+| Research / exploration            | **Yes**   | Bulky output; only the summary matters |
+| Task implementation               | **Yes**   | File reads/edits consume context     |
+| Independent parallel tasks        | **Yes**   | Only way to parallelize              |
+| Sequential tasks without dependencies | **Yes** | Keeps main context clean            |
+| Planning and task creation        | **No**    | Requires accumulated context         |
+| Validation and final reports      | **No**    | Needs session history                |
+| Quick fixes (≤3 files)            | **No**    | Overhead > task                      |
+
+### Sub-agent contract
+
+**Receives:**
+- Task definition (what to do, where, completion criteria)
+- Relevant rules and conventions
+- Spec/design the task references
+
+**Does not receive:**
+- Definitions of other tasks
+- Accumulated chat history
+- `STATE.md` (unless recording a specific decision/blocker)
+
+**Returns:**
+- Status: Complete | Blocked | Partial
+- Changed files
+- Test/validation result
+- Issues found
+
+---
+
+## Step 4 — Symlinks by IDE
+
+For each IDE declared in Phase 1, create symlinks. Use the script [setup-ide-links.sh in TEMPLATES.md](TEMPLATES.md#setup-ide-linkssh).
+
+**Principle:** the script is **idempotent** (`ln -sf` replaces without error). Can run as many times as needed.
+
+**Target folder by IDE:**
+
+| IDE            | Where it looks for context                                 |
 | -------------- | ---------------------------------------------------------- |
 | Claude Code    | `.claude/`, `CLAUDE.md`                                    |
 | Cursor         | `.cursor/rules/`, `.cursor/skills/`, `AGENTS.md`           |
 | GitHub Copilot | `.github/copilot-instructions.md`, `.github/instructions/` |
 | Windsurf       | `AGENTS.md`, `.agents/`                                    |
 
-**Pular** symlinks de IDEs que o usuário declarou não usar — reduz ruído em `git status`.
+**Skip** symlinks for IDEs the user declared not using — reduces noise in `git status`.
 
-**Smoke test após criar:**
+**Smoke test after creating:**
 
 ```bash
 ls -la CLAUDE.md AGENTS.md .claude/ .cursor/ .agents/ .github/
 ```
 
-Cada symlink deve mostrar `→ ../.ai/...` ou similar.
+Each symlink should show `→ ../.ai/...` or similar.
 
 ### Windows
 
-Symlinks no Windows exigem permissão de administrador ou Developer Mode ativado. Se o time usa Windows:
+Symlinks on Windows require administrator permission or Developer Mode enabled. If the team uses Windows:
 
-- Documentar no `INSTRUCTIONS.md` ou `CONVENTIONS.md`
-- Recomendar `core.symlinks = true` no Git for Windows
-- Alternativa: usar `mklink /D` em terminal elevado
+- Document in `INSTRUCTIONS.md` or `CONVENTIONS.md`
+- Recommend `core.symlinks = true` in Git for Windows
+- Alternative: use `mklink /D` in elevated terminal
 
 ---
 
-## Passo 5 — Smoke Test e Gate
+## Step 5 — Smoke Test and Gate
 
 ```bash
-# 1. Verificar settings.json
-cat .claude/settings.json | jq .   # ou cat se sem jq
+# 1. Verify settings.json
+cat .claude/settings.json | jq .   # or cat if no jq
 
-# 2. Verificar symlinks resolvem
+# 2. Verify symlinks resolve
 ls -la CLAUDE.md AGENTS.md
 
-# 3. Verificar hooks executam (criar arquivo dummy e ver lint rodar)
+# 3. Verify hooks execute (create dummy file and watch lint run)
 echo "test" > /tmp/test.ts && bash scripts/format-file.sh /tmp/test.ts
 ```
 
-Apresente ao usuário:
+Present to user:
 
 ```markdown
-## Harness Layer Configurada
+## Harness Layer Configured
 
-### Permissões
-- N entries em allow, N em deny, N em ask
+### Permissions
+- N entries in allow, N in deny, N in ask
 
-### Hooks instalados
-- PostToolUse: format-file.sh (Node/Python/Go conforme stack)
-- PreToolUse: validate-bash.sh (proteção destrutiva — universal)
+### Hooks installed
+- PostToolUse: format-file.sh (Node/Python/Go per stack)
+- PreToolUse: validate-bash.sh (destructive protection — universal)
 - Stop: run-tests-if-changed.sh
 
-### Symlinks criados
-[árvore visual]
+### Symlinks created
+[visual tree]
 
 ### Smoke test
-[saída dos 3 comandos acima]
+[output of the 3 commands above]
 
-### Pergunta
-Algum padrão destrutivo adicional a bloquear? Alguma IDE faltando?
+### Question
+Any additional destructive patterns to block? Any missing IDE?
 ```
 
-**Espere confirmação antes da Fase 4.**
+**Wait for confirmation before Phase 4.**
 
 ---
 
-## Passo 6 — Failure Attribution (Localização de Falhas)
+## Step 6 — Failure Attribution
 
-> **Contexto:** ReliabilityBench (arxiv 2601.06112) demonstrou que pass@1 superestima confiabilidade em 20-40%. AgentProp-Bench (arxiv 2604.16706) mostrou que a maioria dos benchmarks relata só pass/fail, sem localizar onde no pipeline a falha ocorreu. AXIS instrumenta o harness para atribuição.
+> **Context:** ReliabilityBench (arxiv 2601.06112) demonstrated that pass@1 overestimates reliability by 20-40%. AgentProp-Bench (arxiv 2604.16706) showed that most benchmarks report only pass/fail, without locating where in the pipeline the failure occurred. AXIS instruments the harness for attribution.
 
-**Configurar logging estruturado no `settings.json`:**
+**Configure structured logging in `settings.json`:**
 
 ```json
 {
@@ -306,26 +306,26 @@ Algum padrão destrutivo adicional a bloquear? Alguma IDE faltando?
 }
 ```
 
-Adicione `.ai/logs/` ao `.gitignore` (são logs de runtime, não versionados).
+Add `.ai/logs/` to `.gitignore` (they are runtime logs, not versioned).
 
-**Tabela de atribuição de falhas:**
+**Failure attribution table:**
 
-| Categoria     | Sintoma                                  | Sinal no log                            | Ação                                                             |
-| ------------- | ---------------------------------------- | --------------------------------------- | ---------------------------------------------------------------- |
-| **Planning**  | Agente tenta executar sem critério claro | PreToolUse sem spec task correspondente | Revisar `INSTRUCTIONS.md`; adicionar acceptance criteria à skill |
-| **Execution** | Tool call falha repetidamente            | PostToolUse com `exit != 0` em loop     | Revisar `settings.json`; ajustar allow/deny                      |
-| **Response**  | Output gerado mas formato errado         | Gate da Fase 5 rejeita                  | Adicionar exemplo de output ao template da skill                 |
+| Category      | Symptom                                   | Signal in log                           | Action                                                             |
+| ------------- | ----------------------------------------- | --------------------------------------- | ------------------------------------------------------------------ |
+| **Planning**  | Agent attempts to execute without clear criteria | PreToolUse without corresponding spec task | Review `INSTRUCTIONS.md`; add acceptance criteria to skill |
+| **Execution** | Tool call fails repeatedly                | PostToolUse with `exit != 0` in loop    | Review `settings.json`; adjust allow/deny                          |
+| **Response**  | Output generated but wrong format         | Phase 5 gate rejects                    | Add output example to skill template                               |
 
-**Adicionar ao checklist da Fase 5:**
-- [ ] `harness.jsonl` existe e registra eventos após smoke test
-- [ ] Nenhum loop de tool call com exit != 0 detectado
+**Add to Phase 5 checklist:**
+- [ ] `harness.jsonl` exists and records events after smoke test
+- [ ] No tool call loop with exit != 0 detected
 
 ---
 
-## Princípio Unificador
+## Unifying Principle
 
-O ganho dos hooks: **removem dependência de disciplina manual.** O formatter roda porque o hook existe, não porque o dev lembrou. Os testes rodam porque `Stop` foi configurado, não porque o agente decidiu. Comandos destrutivos são bloqueados porque a regra existe, não porque o agente "tomou cuidado".
+The gain from hooks: **removes dependency on manual discipline.** The formatter runs because the hook exists, not because the developer remembered. Tests run because `Stop` was configured, not because the agent decided to. Destructive commands are blocked because the rule exists, not because the agent "was careful".
 
-**Falhas em produção não são opacas** — o harness instrumentado localiza se o problema está em planning (spec vaga), execution (tool call inválida) ou response (formato errado). Isso elimina debug por tentativa-e-erro.
+**Production failures are not opaque** — the instrumented harness locates whether the problem is in planning (vague spec), execution (invalid tool call) or response (wrong format). This eliminates trial-and-error debugging.
 
-Spec define o que o agente sabe. Harness garante que ele age de forma consistente, segura e rastreável — independente do contexto da conversa.
+Spec defines what the agent knows. Harness ensures it acts consistently, safely, and traceably — regardless of the conversation context.
