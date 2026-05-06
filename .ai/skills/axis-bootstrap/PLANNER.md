@@ -47,6 +47,47 @@ Ask the user which mode applies if detection is ambiguous.
 
 ---
 
+## Phase 1.5 — Domain Analysis *(optional, recommended for complex projects)*
+
+**When to apply:** project with non-trivial business logic, multiple domain entities, or existing codebase to understand before speccing.
+
+**Trigger:** user says "analyze before speccing", project has >2 interacting entities, or complexity is evaluated as Large/Complex by Pattern #4.
+
+**Steps (in order):**
+
+1. **Story decomposition** — if large requirements exist, load [`story-decompose`](../../story-decompose/SKILL.md) to break into INVEST stories (1-5 days each)
+2. **Domain keyword extraction** — scan existing code and requirements; list: entities, key verbs, invariants, risks
+3. **Scope boundaries** — explicit "in scope" / "out of scope" for the iteration
+4. **Design direction** — which architectural pattern fits (Strategy, Factory, Repository, etc.) and why
+
+**Output:**
+
+```markdown
+## Domain Analysis — <feature>
+
+### Entities & Relationships
+- <Entity A> has many <Entity B> — key attribute: <attr>
+
+### Core Logic Summary
+- <Business rule 1 in 1 sentence>
+
+### Scope
+- In: <what we will do>
+- Out: <what we won't touch>
+
+### Risks
+- <Risk 1>: <mitigation>
+
+### Design Direction
+- Pattern: <name> — because <rationale>
+```
+
+**Exit gate:**
+
+> Present Domain Analysis output. Ask: *"Does this capture the domain correctly? Any entity or rule I missed?"* Advance to Phase 2 only after confirmation.
+
+---
+
 ## Phase 2 — Spec Layer
 
 **Loads:** [references/PHASE-2-SPEC.md](references/PHASE-2-SPEC.md) + [references/TEMPLATES.md](references/TEMPLATES.md)
@@ -144,13 +185,13 @@ If a phase fails (user rejects output, contradictory information arises):
 
 ## Frequent Decision Map
 
-| Phase question                          | Default answer                                                                       |
-| --------------------------------------- | ------------------------------------------------------------------------------------ |
-| Unknown type in Phase 1                 | Treat as "other" and use UNIVERSAL-MAP to infer                                      |
-| Stack not in TEMPLATES.md              | Use Node.js template as base and adapt — log as follow-up                            |
-| User doesn't know which skills to create | Suggest 3 based on described domain + 1 universal quality skill (lint/test)         |
-| User doesn't use any specific IDE      | Create only root symlinks (CLAUDE.md, AGENTS.md) and `.agents/`                     |
-| Non-technical project                   | Partially skip Phase 3 (hooks); keep destructive blocking + permissions              |
+| Phase question                           | Default answer                                                              |
+| ---------------------------------------- | --------------------------------------------------------------------------- |
+| Unknown type in Phase 1                  | Treat as "other" and use UNIVERSAL-MAP to infer                             |
+| Stack not in TEMPLATES.md                | Use Node.js template as base and adapt — log as follow-up                   |
+| User doesn't know which skills to create | Suggest 3 based on described domain + 1 universal quality skill (lint/test) |
+| User doesn't use any specific IDE        | Create only root symlinks (CLAUDE.md, AGENTS.md) and `.agents/`             |
+| Non-technical project                    | Partially skip Phase 3 (hooks); keep destructive blocking + permissions     |
 
 ---
 

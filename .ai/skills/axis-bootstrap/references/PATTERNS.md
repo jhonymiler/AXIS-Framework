@@ -8,11 +8,11 @@ Reusable patterns that the bootstrap applies and that should be followed in any 
 
 The spec loads in three distinct moments to minimize tokens:
 
-| Layer             | When it loads    | Content                               | Cost            |
-| ----------------- | ---------------- | ------------------------------------- | --------------- |
+| Layer             | When it loads    | Content                                 | Cost           |
+| ----------------- | ---------------- | --------------------------------------- | -------------- |
 | **1 — Discovery** | Always (startup) | `name` + `description` from frontmatter | ~3 lines/skill |
-| **2 — Index**     | When relevant    | Full `SKILL.md`                       | ~40-60 lines    |
-| **3 — On-demand** | When needed      | `references/*.md`                     | on demand       |
+| **2 — Index**     | When relevant    | Full `SKILL.md`                         | ~40-60 lines   |
+| **3 — On-demand** | When needed      | `references/*.md`                       | on demand      |
 
 The agent knows a skill exists (layer 1), decides if it needs it (layer 2), only pulls deep details when implementing (layer 3).
 
@@ -22,12 +22,12 @@ The agent knows a skill exists (layer 1), decides if it needs it (layer 2), only
 
 Progressive Disclosure only works with explicit limits. Define:
 
-| Category                                   | Budget               | Rule                                 |
-| ------------------------------------------ | -------------------- | ------------------------------------ |
-| **Fixed base** (INSTRUCTIONS + frontmatter) | ~1,500-2,000 tokens  | Always loaded                        |
-| **Active skills** (full SKILL.md)          | ~3,000-5,000 tokens  | Only relevant ones for the task      |
-| **References on-demand**                   | ~5,000-10,000 tokens | Only when necessary                  |
-| **Target total**                           | <15,000 tokens       | Reserve maximum for reasoning        |
+| Category                                    | Budget               | Rule                            |
+| ------------------------------------------- | -------------------- | ------------------------------- |
+| **Fixed base** (INSTRUCTIONS + frontmatter) | ~1,500-2,000 tokens  | Always loaded                   |
+| **Active skills** (full SKILL.md)           | ~3,000-5,000 tokens  | Only relevant ones for the task |
+| **References on-demand**                    | ~5,000-10,000 tokens | Only when necessary             |
+| **Target total**                            | <15,000 tokens       | Reserve maximum for reasoning   |
 
 **Loading rules:**
 
@@ -66,12 +66,12 @@ This chain must be referenced in `CONVENTIONS.md` and can be an independent rule
 
 Not every task needs the same level of planning. Before starting, the agent evaluates:
 
-| Complexity | Indicators                     | Documentation                       | What to skip                 |
-| ---------- | ------------------------------ | ----------------------------------- | ---------------------------- |
-| **Small**  | ≤3 files, scope in 1 sentence  | Describe → Implement → Verify       | Spec, design, task breakdown |
-| **Medium** | Clear feature, <10 steps       | Brief spec + inline design          | Formal design                |
-| **Large**  | Multi-component, >10 steps     | Full spec + design + tasks          | Nothing                      |
-| **Complex** | Ambiguity, new domain         | Spec + discussion + research        | Nothing + interactive validation |
+| Complexity  | Indicators                    | Documentation                 | What to skip                     |
+| ----------- | ----------------------------- | ----------------------------- | -------------------------------- |
+| **Small**   | ≤3 files, scope in 1 sentence | Describe → Implement → Verify | Spec, design, task breakdown     |
+| **Medium**  | Clear feature, <10 steps      | Brief spec + inline design    | Formal design                    |
+| **Large**   | Multi-component, >10 steps    | Full spec + design + tasks    | Nothing                          |
+| **Complex** | Ambiguity, new domain         | Spec + discussion + research  | Nothing + interactive validation |
 
 **Rules:**
 
@@ -135,12 +135,12 @@ description: Complete reference for the Payments API integration.
 
 ## 7. Flows vs State
 
-| Type              | Where                               | Example                    |
-| ----------------- | ----------------------------------- | -------------------------- |
-| Workflow          | `skills/<name>/SKILL.md`            | "How to collect API data"  |
-| Algorithm/logic   | `skills/<name>/references/GUIDE.md` | "Deduplication logic"      |
-| Schema/contract   | `docs/database-schema.md`           | "Transactions table"       |
-| Current state     | `docs/STATE.md`                     | "Feature X in progress"    |
+| Type            | Where                               | Example                   |
+| --------------- | ----------------------------------- | ------------------------- |
+| Workflow        | `skills/<name>/SKILL.md`            | "How to collect API data" |
+| Algorithm/logic | `skills/<name>/references/GUIDE.md` | "Deduplication logic"     |
+| Schema/contract | `docs/database-schema.md`           | "Transactions table"      |
+| Current state   | `docs/STATE.md`                     | "Feature X in progress"   |
 
 **Rule:** skills document **flows**; docs document **state**.
 
@@ -178,13 +178,13 @@ Unmaintained documentation becomes misinformation — worse than absent, because
 
 **Triggers:**
 
-| Event                              | Expected action                               |
-| ---------------------------------- | --------------------------------------------- |
-| Code changes a skill's flow        | Propose skill update before closing session   |
-| Business rule emerges              | Ask if it should be documented in skill/docs  |
-| Bug reveals undocumented behavior  | Propose documenting it                        |
-| New integration                    | Evaluate new skill or expansion               |
-| Session paused with work in progress | Update `STATE.md`                           |
+| Event                                | Expected action                              |
+| ------------------------------------ | -------------------------------------------- |
+| Code changes a skill's flow          | Propose skill update before closing session  |
+| Business rule emerges                | Ask if it should be documented in skill/docs |
+| Bug reveals undocumented behavior    | Propose documenting it                       |
+| New integration                      | Evaluate new skill or expansion              |
+| Session paused with work in progress | Update `STATE.md`                            |
 
 **Closing protocol:**
 
@@ -262,11 +262,11 @@ New dev uses Windsurf while team uses Cursor. Without additional configuration, 
 
 The ACE approach treats `STATE.md` as a **self-curating playbook** — not as a history log. Three operations per session:
 
-| Operation      | What it does                                | Frequency                   |
-| -------------- | ------------------------------------------- | --------------------------- |
-| **Generation** | Adds new learning, decision, blocker        | Every session with changes  |
-| **Reflection** | Identifies what is resolved or obsolete     | Every session               |
-| **Curation**   | Removes the obsolete, elevates the useful   | Every session               |
+| Operation      | What it does                              | Frequency                  |
+| -------------- | ----------------------------------------- | -------------------------- |
+| **Generation** | Adds new learning, decision, blocker      | Every session with changes |
+| **Reflection** | Identifies what is resolved or obsolete   | Every session              |
+| **Curation**   | Removes the obsolete, elevates the useful | Every session              |
 
 **Curation rules:**
 
@@ -284,11 +284,11 @@ The ACE approach treats `STATE.md` as a **self-curating playbook** — not as a 
 
 Instead of measuring only "did the agent pass this task?", AXIS recommends measuring consistency:
 
-| Metric           | What it measures                    | How to apply                              |
-| ---------------- | ----------------------------------- | ----------------------------------------- |
-| **pass@1**       | Passed on the first attempt         | Baseline — do not use alone               |
-| **pass@k**       | Passed in k independent runs        | Smoke test the same flow 3x               |
-| **ε-robustness** | Passed with variation in input      | Test with slight reformulation of request |
+| Metric           | What it measures               | How to apply                              |
+| ---------------- | ------------------------------ | ----------------------------------------- |
+| **pass@1**       | Passed on the first attempt    | Baseline — do not use alone               |
+| **pass@k**       | Passed in k independent runs   | Smoke test the same flow 3x               |
+| **ε-robustness** | Passed with variation in input | Test with slight reformulation of request |
 
 **Minimum protocol for smoke test in Phase 5:**
 
@@ -308,17 +308,45 @@ Instead of measuring only "did the agent pass this task?", AXIS recommends measu
 
 Long specs are not better specs. AXIS enforces:
 
-| Artifact          | Limit          | Consequence of exceeding                        |
-| ----------------- | -------------- | ----------------------------------------------- |
-| `INSTRUCTIONS.md` | 100-180 lines  | Context loaded always — direct noise            |
-| `SKILL.md`        | ≤ 60 lines     | Indexed always — each line costs tokens         |
-| `STATE.md`        | ≤ 80 lines     | Read at session start — must be focused         |
+| Artifact          | Limit         | Consequence of exceeding                |
+| ----------------- | ------------- | --------------------------------------- |
+| `INSTRUCTIONS.md` | 100-180 lines | Context loaded always — direct noise    |
+| `SKILL.md`        | ≤ 60 lines    | Indexed always — each line costs tokens |
+| `STATE.md`        | ≤ 80 lines    | Read at session start — must be focused |
 
 **Testability criterion for a spec:** a spec item is testable if you can answer "how would I know the agent followed this?". If you can't answer, the item is too vague.
 
 Examples:
 
-| Vague (noise)                  | Testable (signal)                                                   |
-| ------------------------------ | ------------------------------------------------------------------- |
-| "Follow best practices"        | "Use `createQueryBuilder` for bulk insert >100 records"             |
-| "Be careful with data"         | "Never execute `DROP` or `TRUNCATE` without explicit confirmation"  |
+| Vague (noise)           | Testable (signal)                                                  |
+| ----------------------- | ------------------------------------------------------------------ |
+| "Follow best practices" | "Use `createQueryBuilder` for bulk insert >100 records"            |
+| "Be careful with data"  | "Never execute `DROP` or `TRUNCATE` without explicit confirmation" |
+
+---
+
+## 10. Bidirectional Spec-Code Sync
+
+When code and spec diverge, the direction of the fix depends on the **type of change**:
+
+| Change type                                               | Direction   | Rule                                                                                                           |
+| --------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------- |
+| **Requirements changed** (new AC, business rule modified) | spec → code | Update the Canvas/skill/STATE first. Then regenerate or modify code guided by the updated spec.                |
+| **Refactoring** (structure/style, no behavior change)     | code → spec | Refactor code first. Then sync the spec back to reflect the new structure.                                     |
+| **Bug fix** (behavior was wrong)                          | spec → code | Clarify the correct behavior in the spec. Then fix the code. Never patch code without closing the intent loop. |
+
+**The golden rule:** when reality diverges from the spec, fix the spec first — then the code. The only exception is refactoring: clean the code, then sync.
+
+**Why it matters:** if you patch code without updating the spec, the next session starts with wrong context. The agent "rediscovers" the bug. The spec is the upstream source of truth — code is its output.
+
+**In AXIS terms:**
+
+- `STATE.md` is updated before implementation when requirements change
+- Skills are updated in the same session as the code that makes them stale
+- The Maintenance Loop (Pattern #9) triggers at session end — this pattern triggers at change time
+
+**Practical signals that divergence happened:**
+
+- Agent proposes something the spec explicitly contradicts → spec is stale
+- Code review reveals a pattern not in any rule → rule is missing
+- Bug surfaces that a Safeguard should have caught → Safeguard was absent or vague

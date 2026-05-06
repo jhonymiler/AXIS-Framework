@@ -41,12 +41,17 @@ Full conceptual model in [FRAMEWORK.md](FRAMEWORK.md).
 3. **Gates between phases** — no artifact from a phase is generated before the gate of the previous phase has been approved.
 4. **No fabrication** — if information is missing, ask. Inventing breaks the contract with the user.
 5. **Recursiveness** — this repository itself follows the pattern it teaches. If you modify the framework, maintain the recursiveness.
+6. **Fix spec first, then code** — when reality diverges from the spec, update the skill/Canvas/STATE before touching the code. Exception: refactoring (clean code first, sync spec after). See [PATTERNS.md → Bidirectional Spec-Code Sync](./skills/axis-bootstrap/references/PATTERNS.md).
 
 ## Available Skills
 
-| Skill                                                          | When to use                                                                                                  |
-| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| [`axis-bootstrap`](.ai/skills/axis-bootstrap/SKILL.md) | Bootstrap new project, migrate from monolithic CLAUDE.md, or audit existing project for AI infrastructure |
+| Skill                                                        | When to use                                                                                               |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| [`axis-bootstrap`](.ai/skills/axis-bootstrap/SKILL.md)       | Bootstrap new project, migrate from monolithic CLAUDE.md, or audit existing project for AI infrastructure |
+| [`story-decompose`](.ai/skills/story-decompose/SKILL.md)     | Decompose large requirements into INVEST stories with Given/When/Then ACs                                 |
+| [`abstraction-first`](.ai/skills/abstraction-first/SKILL.md) | Design objects, responsibilities, and layer boundaries before generating code                             |
+| [`alignment`](.ai/skills/alignment/SKILL.md)                 | Lock intent, scope boundaries, and DoD before implementation starts                                       |
+| [`iterative-review`](.ai/skills/iterative-review/SKILL.md)   | Review AI-generated code and iterate via logic-correction or refactoring track                            |
 
 ## Maintenance Conventions
 

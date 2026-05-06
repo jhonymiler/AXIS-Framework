@@ -457,3 +457,146 @@ echo "Symlinks created/updated successfully."
 - <rule 1>
 - <rule 2>
 ```
+
+---
+
+## REASONS Canvas (feature-level spec)
+
+Use when specifying a complex feature before generating code. Follows the SPDD structure: abstract parts (intent & design) → specific parts (execution) → governance parts.
+
+```markdown
+# REASONS Canvas — <Feature Name>
+
+**ID:** <YYYY-MM-DD-feature-slug>
+**Status:** draft | reviewed | locked
+
+---
+
+## R — Requirements
+<!-- What problem are we solving? What is the Definition of Done? -->
+
+**Problem:** <1-2 sentences>
+
+**Acceptance Criteria (Given/When/Then):**
+- Given <context>, When <action>, Then <expected result with concrete values>
+- Given <context>, When <action>, Then <expected result with concrete values>
+
+**Out of scope:**
+- <explicit exclusion 1>
+- <explicit exclusion 2>
+
+---
+
+## E — Entities
+<!-- Domain entities, their attributes, and relationships relevant to this feature -->
+
+| Entity | Key Attributes | Relationships              |
+| ------ | -------------- | -------------------------- |
+| <name> | <attr1, attr2> | <belongs to X, has many Y> |
+
+---
+
+## A — Approach
+<!-- Strategic direction: which pattern/design solves the problem? Why? -->
+
+**Selected approach:** <e.g., Strategy pattern for billing calculator>
+
+**Rationale:** <why this approach over alternatives>
+
+**Key architectural decisions:**
+- <decision 1>
+- <decision 2>
+
+---
+
+## S — Structure
+<!-- Where does the change fit? Which components are affected? Dependencies? -->
+
+**Components affected:**
+| Component | File/Path | Type of change        |
+| --------- | --------- | --------------------- |
+| <name>    | <path>    | new / modify / delete |
+
+**External dependencies:** <APIs, libs, services>
+
+---
+
+## O — Operations
+<!-- Concrete, testable implementation steps (method-level precision) -->
+
+1. **<Step name>**
+   - Input: <params>
+   - Logic: <what to do>
+   - Output: <return/side effect>
+   - Test: <how to verify>
+
+2. **<Step name>**
+   - Input: <params>
+   - Logic: <what to do>
+   - Output: <return/side effect>
+   - Test: <how to verify>
+
+---
+
+## N — Norms
+<!-- Cross-cutting engineering standards that apply to this feature -->
+
+- Naming: <convention>
+- Error handling: <pattern>
+- Logging/observability: <what to log>
+- Test coverage: <minimum requirement>
+
+---
+
+## S — Safeguards
+<!-- Non-negotiable invariants, performance limits, security rules -->
+
+- [ ] <invariant 1 — e.g., never persist without validating X>
+- [ ] <invariant 2 — e.g., latency must stay under Xms for Y operation>
+- [ ] <security rule — e.g., sanitize input before passing to query>
+```
+
+**When to use:** features with >3 steps, business logic with multiple paths, or any change that touches more than 2 components. Skip for trivial fixes (<3 files, 1 obvious step).
+
+**Sync protocol (inviolable):**
+
+| Change type                          | Direction   | Action                                                       |
+| ------------------------------------ | ----------- | ------------------------------------------------------------ |
+| Requirements changed                 | spec → code | Update Canvas first, then regenerate affected Operations     |
+| Code refactored (no behavior change) | code → spec | Refactor code, then sync Operations/Structure back to Canvas |
+
+> **Rule:** when reality diverges, fix the Canvas first — then update the code. The Canvas is the source of truth.
+
+---
+
+## Test Spec (derived from REASONS Canvas)
+
+Generated from the Canvas Operations + Acceptance Criteria. Use alongside or after `/spdd-api-test` equivalent.
+
+```markdown
+# Test Spec — <Feature Name>
+
+**Source Canvas:** <canvas file or ID>
+
+## Scenarios
+
+### Normal flow
+| #   | Given     | When     | Then       | Priority |
+| --- | --------- | -------- | ---------- | -------- |
+| 1   | <context> | <action> | <expected> | high     |
+
+### Boundary conditions
+| #   | Given       | When     | Then       | Priority |
+| --- | ----------- | -------- | ---------- | -------- |
+| 1   | <edge case> | <action> | <expected> | medium   |
+
+### Error scenarios
+| #   | Given           | When     | Then                 | Priority |
+| --- | --------------- | -------- | -------------------- | -------- |
+| 1   | <invalid input> | <action> | <HTTP 4xx + message> | high     |
+
+## Coverage Gate
+- [ ] All Acceptance Criteria from Canvas covered
+- [ ] At least 1 boundary test per numeric/date input
+- [ ] All error paths in Safeguards covered
+```
