@@ -31,7 +31,7 @@ Full conceptual model in [FRAMEWORK.md](FRAMEWORK.md).
 ### Scenario 3 — User asks to understand the framework
 
 1. Point to [FRAMEWORK.md](FRAMEWORK.md) (conceptual model)
-2. Point to [README.en.md](README.en.md) (quick start)
+2. Point to [README.md](README.md) (quick start)
 3. Do not execute the bootstrap until the user explicitly asks
 
 ## Inviolable Principles

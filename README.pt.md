@@ -28,25 +28,48 @@ Detalhes completos em [FRAMEWORK.md](FRAMEWORK.md).
 
 ## Quick Start — 5 Minutos
 
-### Opção A — Bootstrap novo projeto (caminho rápido)
+### Opção A — CLI (mais rápido)
 
-Em qualquer agente (Claude Code, Cursor, Windsurf, Copilot):
+```bash
+# uso único, sem instalar — auto-detecta projeto novo vs existente, pergunta PT/EN
+npx @axis-bootstrap/cli init
+
+# ou instale globalmente
+npm i -g @axis-bootstrap/cli
+axis init        # bootstrap interativo (Spec + Harness + Memory)
+axis doctor      # valida limites, symlinks, contrato de recursividade
+```
+
+O CLI detecta automaticamente:
+
+| Detectado                                                  | Modo padrão                    | O que acontece                                                                                                                                          |
+| ---------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Diretório vazio                                            | **Quick scaffold**             | Prompts interativos preenchem templates                                                                                                                 |
+| Projeto existente (`package.json`, `pyproject.toml`, etc.) | **AI-driven**                  | Instala a skill `axis-bootstrap` → você pede ao agente "execute axis-bootstrap" → agente lê seu código e gera skills/rules/docs customizadas            |
+| Já tem `.ai/`                                              | Pergunta antes de sobrescrever | —                                                                                                                                                       |
+
+Por feature (depois do bootstrap):
+
+```bash
+axis spdd canvas pricing-quote   # cria Canvas REASONS
+axis spdd story                  # → IA preenche seção R
+axis spdd align                  # → IA preenche O + N + S₂
+axis spdd design                 # → IA preenche E + A + S₁
+# … gerar código no seu agente …
+axis spdd review                 # IA verifica diff contra o Canvas
+```
+
+Referência completa do CLI em [cli/README.md](cli/README.md).
+
+### Opção B — A partir de qualquer agente de IA (sem instalar CLI)
+
+No Claude Code, Cursor, Windsurf ou Copilot:
 
 ```text
 Use a skill axis-bootstrap para inicializar este projeto.
 ```
 
 O agente conduz você por 5 fases com gates explícitos. Você confirma antes de cada fase avançar.
-
-### Opção B — Instalar manualmente
-
-```bash
-# 1. Copie a estrutura .ai/ para seu projeto
-cp -r /path/to/AXIS/.ai/ seu-projeto/.ai/
-
-# 2. Execute o setup de symlinks
-cd seu-projeto && bash setup-ide-links.sh
-```
 
 ### O que o bootstrap entrega
 
@@ -58,6 +81,7 @@ Em ~30 minutos de interação:
 - Hooks de formatação, bloqueio destrutivo e testes automáticos
 - Symlinks multi-IDE (Claude Code, Cursor, Windsurf, Copilot, etc.)
 - `STATE.md` para continuidade entre sessões
+- Após `axis cleanup`: projeto **autossuficiente**, sem dependência do CLI
 
 ---
 
@@ -97,26 +121,36 @@ Ver [FRAMEWORK.md](FRAMEWORK.md#trade-offs) para o trade-off completo.
 
 ```text
 AXIS/
-├── README.md                                    ← você está aqui
+├── README.md                                    ← inglês
+├── README.pt.md                                 ← você está aqui
 ├── FRAMEWORK.md                                 ← modelo conceitual (humanos)
+├── cli/                                         ← @axis-bootstrap/cli (Node + Clack)
+│   ├── package.json                             ← bin: axis
+│   ├── src/                                     ← dispatcher + comandos
+│   │   ├── index.js
+│   │   ├── lib/{i18n,detect,paths,copy,ui}.js
+│   │   └── commands/{init,audit,doctor,link,state,spdd,cleanup}.js
+│   └── templates/                               ← bundles distribuídos pelo CLI
+│       ├── INSTRUCTIONS.md, CONVENTIONS.md, STATE.md, CANVAS.md
+│       ├── settings.json, setup-ide-links.sh
+│       ├── skills/                              ← 4 skills SPDD prontas
+│       └── bootstrap-skill/                     ← bundle do axis-bootstrap (modo AI)
 └── .ai/                                         ← o framework executável (fonte única)
     ├── INSTRUCTIONS.md                          ← entry point para IA
     ├── CONVENTIONS.md                           ← como o framework se mantém
+    ├── docs/STATE.md                            ← memory layer
     └── skills/
-        └── axis-bootstrap/                      ← a spec executável
-            ├── SKILL.md                         ← índice do skill
-            ├── PLANNER.md                       ← fases + gates
-            ├── PROMPT-TEMPLATE.md               ← contrato do output
-            └── references/                      ← detalhes on-demand
-                ├── QUICKSTART.md                ← caminho de 5 minutos
-                ├── PHASE-1-DISCOVERY.md
-                ├── PHASE-2-SPEC.md
-                ├── PHASE-3-HARNESS.md           ← inclui failure attribution
-                ├── PHASE-4-MEMORY.md            ← inclui princípios ACE
-                ├── PHASE-5-VALIDATION.md
-                ├── TEMPLATES.md
-                ├── PATTERNS.md                  ← PD, KVC, ACE, k-trial
-                └── UNIVERSAL-MAP.md
+        ├── axis-bootstrap/                      ← a spec executável
+        │   ├── SKILL.md, PLANNER.md, PROMPT-TEMPLATE.md
+        │   └── references/                      ← detalhes on-demand
+        │       ├── QUICKSTART.md
+        │       ├── PHASE-1-DISCOVERY.md … PHASE-5-VALIDATION.md
+        │       ├── TEMPLATES.md, PATTERNS.md, UNIVERSAL-MAP.md
+        │       └── CANVAS-REASONS.md            ← artefato SPDD
+        ├── story-decompose/                     ← SPDD: requisito → INVEST stories
+        ├── alignment/                           ← SPDD: trava intent + DoD
+        ├── abstraction-first/                   ← SPDD: design objetos + camadas
+        └── iterative-review/                    ← SPDD: loop de revisão 2 trilhas
 ```
 
 O framework é **self-hosting** — sua própria estrutura segue o padrão que ensina.
@@ -148,4 +182,23 @@ AGENTS.md                        → .ai/INSTRUCTIONS.md
 .github/copilot-instructions.md  → .ai/INSTRUCTIONS.md
 ```
 
-Para configurar em um projeto novo: `bash setup-ide-links.sh`
+Para configurar em um projeto novo: `bash setup-ide-links.sh` (gerado automaticamente pelo `axis init`).
+
+---
+
+## Remoção Limpa
+
+AXIS é um **bootstrap one-shot**. Depois que o agente termina seu trabalho, o projeto é autossuficiente:
+
+```bash
+# 1. Remover apenas a meta-skill bootstrap (mantém tudo gerado)
+axis cleanup
+
+# 2. (Opcional) Desinstalar o CLI globalmente
+npm uninstall -g @axis-bootstrap/cli
+
+# 3. Remoção total — apaga toda a infraestrutura AXIS gerada
+rm -rf .ai .claude .cursor .agents AGENTS.md CLAUDE.md setup-ide-links.sh
+```
+
+Sem `node_modules` poluindo seu projeto, sem entradas no `package.json`, sem dependência runtime. O CLI vive **fora** do seu projeto (instalado globalmente ou via `npx`).

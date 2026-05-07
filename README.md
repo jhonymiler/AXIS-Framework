@@ -28,9 +28,34 @@ Full details in [FRAMEWORK.md](FRAMEWORK.md).
 
 ## Quick Start — 5 Minutes
 
-### Option A — Bootstrap a new project (fast path)
+### Option A — CLI (fastest)
 
-In any agent (Claude Code, Cursor, Windsurf, Copilot):
+```bash
+# one-shot, no install — auto-detects new vs existing project, asks PT/EN
+npx @axis-bootstrap/cli init
+
+# or install globally
+npm i -g @axis-bootstrap/cli
+axis init        # interactive bootstrap (Spec + Harness + Memory)
+axis doctor      # validate limits, symlinks, recursiveness
+```
+
+Then per feature:
+
+```bash
+axis spdd canvas pricing-quote   # scaffold REASONS Canvas
+axis spdd story                  # → AI fills R section
+axis spdd align                  # → AI fills O + N + S₂
+axis spdd design                 # → AI fills E + A + S₁
+# … generate code in your AI tool …
+axis spdd review                 # verify diff against Canvas
+```
+
+Full CLI reference in [cli/README.md](cli/README.md).
+
+### Option B — From any AI agent (no CLI install)
+
+In Claude Code, Cursor, Windsurf, or Copilot:
 
 ```text
 Use the axis-bootstrap skill to initialize this project.
@@ -97,8 +122,8 @@ See [FRAMEWORK.md](FRAMEWORK.md#trade-offs) for the full trade-off analysis.
 
 ```text
 AXIS/
-├── README.md                                    ← Portuguese readme
-├── README.en.md                                 ← you are here
+├── README.md                                    ← you are here (English)
+├── README.pt.md                                 ← Portuguese readme
 ├── FRAMEWORK.md                                 ← conceptual model (humans)
 └── .ai/                                         ← the executable framework (single source)
     ├── INSTRUCTIONS.md                          ← AI entry point

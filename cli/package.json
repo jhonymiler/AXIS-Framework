@@ -1,0 +1,42 @@
+{
+  "name": "@axis-bootstrap/cli",
+  "version": "0.1.0",
+  "description": "AXIS — Harness-first scaffolding & SPDD pipeline CLI for AI-augmented projects",
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "axis": "src/index.js"
+  },
+  "files": [
+    "src",
+    "templates",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node src/index.js --help",
+    "pack:dry": "npm pack --dry-run",
+    "pack:tarball": "npm pack",
+    "prepublishOnly": "node src/index.js --help"
+  },
+  "keywords": [
+    "axis",
+    "spdd",
+    "ai",
+    "harness",
+    "spec-driven",
+    "claude-code",
+    "cursor",
+    "scaffolding"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "picocolors": "^1.0.1"
+  }
+}

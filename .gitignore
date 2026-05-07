@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Build output / pack artifacts
+cli/dist/
+*.tgz
+
+# OS / editor
+.DS_Store
+*.log
+*.tmp
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Env
+.env
+.env.*
+!.env.example

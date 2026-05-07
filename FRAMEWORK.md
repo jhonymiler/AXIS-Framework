@@ -2,7 +2,7 @@
 
 > Harness-first framework for AI-augmented projects.
 
-This document is the **mental map** of AXIS. For the execution roadmap, see [.ai/skills/axis-bootstrap/SKILL.md](.ai/skills/axis-bootstrap/SKILL.md). For the quick start, see [README.en.md](README.en.md).
+This document is the **mental map** of AXIS. For the execution roadmap, see [.ai/skills/axis-bootstrap/SKILL.md](.ai/skills/axis-bootstrap/SKILL.md). For the quick start, see [README.md](README.md).
 
 ---
 
@@ -114,6 +114,33 @@ Skills load at three distinct moments to minimize tokens:
 | **1 — Discovery** | Always (startup) | `name` + `description` from frontmatter | ~3 lines/skill |
 | **2 — Index** | When relevant | Full `SKILL.md` | ~40-60 lines |
 | **3 — On-demand** | When needed | Specific `references/*.md` | on-demand |
+
+### Static knowledge vs SPDD pipeline
+
+The Spec Layer has two sub-modes that should not be confused:
+
+- **Static knowledge** — `INSTRUCTIONS.md`, `rules/`, `docs/`, skill index. Long-lived, rarely changes per feature.
+- **SPDD pipeline (dynamic)** — produces a per-feature **REASONS Canvas** before code is generated. This is where the four AXIS production skills live:
+
+```text
+┌────────────────┐   ┌──────────┐   ┌──────────────────┐   ┌──────────┐   ┌──────────────────┐
+│ story-decompose│ → │alignment │ → │abstraction-first │ → │ generate │ → │iterative-review  │
+│ R              │   │ O+N+S₂   │   │ E + A + S₁       │   │ code     │   │ Canvas ⇄ code    │
+└────────────────┘   └──────────┘   └──────────────────┘   └──────────┘   └──────────────────┘
+                                                                                  │
+                                                                                  ▼
+                                                                          STATE.md (memory)
+```
+
+The **REASONS Canvas** is a single-page artifact (aligned with [Fowler's SPDD](https://martinfowler.com/articles/structured-prompt-driven)):
+
+- **Abstract:** **R**equirements · **E**ntities · **A**pproach (strategy) · **S₁** System structure
+- **Specific:** **O**perations
+- **Governance:** **N**orms · **S₂** Safeguards
+
+If a feature doesn't fit one page, re-decompose. Full template in [.ai/skills/axis-bootstrap/references/CANVAS-REASONS.md](.ai/skills/axis-bootstrap/references/CANVAS-REASONS.md).
+
+**Why a pipeline, not a single skill:** each step has a distinct exit gate. Skipping `alignment` produces fast code with wrong intent; skipping `abstraction-first` produces working code with structural drift; skipping `iterative-review` produces patches that diverge from the spec. The pipeline mirrors Anthropic's Planner → Generator → Evaluator separation (Pattern #10).
 
 ---
 
@@ -261,7 +288,7 @@ Pipelines may not resolve symlinks. **Mitigation:** full clone or `core.symlinks
 | You want to... | Go to |
 | -------------- | ----- |
 | Understand the overview | this document |
-| Quick start | [README.en.md](README.en.md) |
+| Quick start | [README.md](README.md) |
 | Bootstrap in 5 minutes | [.ai/skills/axis-bootstrap/references/QUICKSTART.md](.ai/skills/axis-bootstrap/references/QUICKSTART.md) |
 | Bootstrap a project | [.ai/skills/axis-bootstrap/SKILL.md](.ai/skills/axis-bootstrap/SKILL.md) |
 | Learn patterns (PD, KVC, ACE, k-trial) | [.ai/skills/axis-bootstrap/references/PATTERNS.md](.ai/skills/axis-bootstrap/references/PATTERNS.md) |
