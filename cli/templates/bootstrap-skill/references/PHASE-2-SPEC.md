@@ -43,8 +43,9 @@ Use the template from [TEMPLATES.md → INSTRUCTIONS.md](TEMPLATES.md#instructio
 4. **Architecture** (table: component → responsibility → technology → location)
 5. **Design Principles** (3-7 bullets with short rationale)
 6. **Conventions** (summary — details in rules)
-7. **Available Skills** (table: skill → when to use)
-8. **Links** (to detailed docs)
+7. **Workflow & Tools** (task tracker, branch model, commit/PR standards — details in `rules/workflow.md`). Skip only if Phase 1 Block 4 was fully skipped.
+8. **Available Skills** (table: skill → when to use)
+9. **Links** (to detailed docs)
 
 **Target size:** 100-180 lines. Below 100 is superficial; above 200 loses focus.
 
@@ -133,8 +134,11 @@ For software projects, create 3-7 rules in `.ai/rules/`. Use template [Rule in T
 ├── architecture-patterns.md (DI, modules, framework patterns)
 ├── database.md              (ORM, migrations, queries)
 ├── testing.md               (test structure, mocks)
-└── cli.md                   (commands and scripts)
+├── cli.md                   (commands and scripts)
+└── workflow.md              (PM tool, branch model, commit & PR standards — populated from Phase 1 Block 4)
 ```
+
+**`workflow.md`** is created whenever Phase 1 Block 4 produced answers (PM tool, commit convention, branch model, PR rules, task/release standards). Even non-software projects that use git benefit from it — keep only the sections that apply. Template in [TEMPLATES.md → workflow.md](TEMPLATES.md#workflowmd-rule).
 
 **Frontmatter for scope:**
 

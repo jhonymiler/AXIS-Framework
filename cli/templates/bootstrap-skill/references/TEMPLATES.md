@@ -50,6 +50,16 @@ Summary here; details in [.ai/rules/](rules/):
 - Error handling: <rule>
 - Tests: <rule>
 
+## Workflow & Tools
+
+Summary here; full standards in [.ai/rules/workflow.md](rules/workflow.md):
+
+- **Task tracker:** <e.g., Jira board ENG, tickets ENG-XXX>
+- **Commits:** <e.g., Conventional Commits with ticket trailer>
+- **Branches:** <e.g., feature/<ticket>-<slug>, PR-only into main>
+- **PRs:** <e.g., 1 approval + green CI, squash merge>
+- **Versioning:** <e.g., SemVer, changelog auto-generated>
+
 ## Available Skills
 
 | Skill                                  | When to use   |
@@ -133,6 +143,77 @@ paths:
 ## <Section 2>
 
 - <Concise guideline>
+```
+
+---
+
+## workflow.md (rule)
+
+Populated from Phase 1 Block 4. Keep only the sections that apply — empty sections add noise.
+
+```markdown
+---
+applyTo: "**"
+---
+
+# Workflow & Governance
+
+> Source of truth for branch, commit, PR, task, and release standards. The agent must follow this without being reminded.
+
+## Task / Project Management
+
+- **Tool:** <Jira | Linear | GitHub Projects | Trello | Asana | ClickUp | Notion | none>
+- **Board / project:** <e.g., Jira board ENG, URL or MCP reference>
+- **Ticket prefix:** <e.g., ENG-XXX, PROJ-XXX>
+- **Workflow states:** <e.g., Backlog → Ready → In Progress → Review → Done>
+- **Required fields when creating a task:** <description, AC, story points, epic, labels>
+- **Definition of Ready / Done:** <link or inline checklist>
+
+## Commit Messages
+
+- **Convention:** <Conventional Commits | Gitmoji | free-form | other>
+- **Format example:**
+  ```
+  feat(api): add idempotency key validation [ENG-1234]
+  ```
+- **Ticket ID:** <required in subject | required as trailer | optional>
+- **Sign-off / GPG / Co-authored-by:** <DCO sign-off required | GPG required | Co-authored-by trailers for pairing>
+- **Length:** subject ≤ 72 chars; body wrapped at 100; imperative mood.
+
+## Branches
+
+- **Main branch:** <main | master | trunk>
+- **Naming pattern:** `<type>/<ticket>-<slug>` — examples:
+  - `feature/ENG-1234-add-webhook`
+  - `fix/ENG-1310-null-pointer-checkout`
+  - `chore/upgrade-node-20`
+- **Allowed prefixes:** <feature/, fix/, hotfix/, chore/, release/, docs/>
+- **Strategy:** <trunk-based | GitHub Flow | Git Flow | release branches>
+- **Branch protection:** <PR-only into main | required status checks | linear history | no force-push>
+
+## Pull Requests
+
+- **Title format:** <Conventional, ticket prefix in title, free>
+- **Template / required sections:** Summary, Changes, Test Plan, Screenshots, Rollback, Linked Issues
+- **Approvals required:** <N approvals, CODEOWNERS for paths X/Y>
+- **Required CI checks:** <build, unit tests, integration tests, lint, type-check>
+- **Merge strategy:** <squash | merge commit | rebase-and-merge>
+- **Post-merge:** <auto-delete branch | auto-deploy to staging>
+
+## Releases & Versioning
+
+- **Scheme:** <SemVer (MAJOR.MINOR.PATCH) | CalVer | none>
+- **Changelog:** <Keep a Changelog | auto-generated from Conventional Commits | none>
+- **Cadence:** <continuous | weekly | sprint | scheduled>
+- **Tagging:** <v1.2.3 | release/2026-05 | none>
+
+## Agent Behavior Rules
+
+- Never push directly to `<main>` — always open a PR.
+- Always include the ticket ID in the commit subject/trailer when the change traces to a ticket.
+- Branch name must match the pattern above before the first commit; fix it locally before pushing.
+- PR description must reference the ticket and include a test plan; do not request review without these.
+- Do not merge a PR without the required approvals and green CI — even if "obviously safe".
 ```
 
 ---

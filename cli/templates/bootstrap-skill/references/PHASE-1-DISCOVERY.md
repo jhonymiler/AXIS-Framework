@@ -118,3 +118,46 @@ Apply principles from [UNIVERSAL-MAP.md](UNIVERSAL-MAP.md) and adapt. Ultimately
 14. What level of validation is acceptable? (vibe-check, human review, automated gates, all)
 15. Is there a history of problems the framework should prevent? (e.g., "we lose context whenever the dev changes", "AI responses diverge between IDEs")
 ```
+
+---
+
+## Block 4 — Collaboration & Governance
+
+Apply whenever the project uses version control or any task tracker (most projects). Skip individual questions that visibly don't apply (e.g., solo project with no PR flow).
+
+```text
+16. Task / project management tool? (Jira, Linear, GitHub Projects, Trello, Asana, ClickUp, Notion, none)
+    - If applicable: board / project ID and ticket prefix (e.g., PROJ-123, ENG-456)
+    - Workflow states used (To Do → In Progress → Review → Done) or custom?
+    - Where to find the board (URL or MCP reference)?
+
+17. Commit message standard?
+    - Convention: Conventional Commits (feat:, fix:, chore:, ...), Gitmoji, free-form, other
+    - Ticket ID required in subject or trailer? Format example?
+    - Sign-off (DCO), GPG signing, or Co-authored-by trailers required?
+
+18. Branch model & naming?
+    - Main branch name (main / master / trunk)
+    - Naming pattern (feature/, fix/, hotfix/, chore/, release/, <user>/<slug>)
+    - Strategy: trunk-based, GitHub Flow, Git Flow, release branches
+    - Direct push to main allowed, or PR-only? Branch protection rules?
+
+19. Pull Request rules?
+    - PR title format (Conventional, ticket prefix, free)
+    - PR template / required sections (summary, test plan, screenshots, rollback)
+    - Minimum approvals, CODEOWNERS, required CI checks
+    - Merge strategy: squash, merge commit, rebase-and-merge
+    - Auto-delete branch after merge? Linear history enforced?
+
+20. Task / story creation standards?
+    - Required fields (description, AC, story points, epic, labels, components)
+    - Definition of Ready / Definition of Done templates?
+    - Estimation system (story points, t-shirt sizes, hours, none)?
+
+21. Release & versioning?
+    - Versioning scheme (SemVer, CalVer, none)
+    - Changelog (Keep a Changelog, auto-generated from commits, none)
+    - Release cadence (continuous, sprint, scheduled)
+```
+
+If the project does not use git or any tracker (rare — usually a solo content or research draft), skip this block entirely and note it in the Project Profile.

@@ -29,6 +29,8 @@ This phase also runs in standalone mode when the user asks to **audit an existin
 [ ] Each SKILL.md has frontmatter with `name` and `description`
 [ ] Each `description` has 2-4 lines and mentions trigger terms
 [ ] For software projects: at least 3 rules in .ai/rules/ with `applyTo`
+[ ] If Phase 1 Block 4 was answered: .ai/rules/workflow.md exists with the populated sections (PM tool, commits, branches, PRs)
+[ ] INSTRUCTIONS.md has a "Workflow & Tools" section pointing to rules/workflow.md (or block 4 was explicitly skipped)
 [ ] At least 1 stub in .ai/docs/ (architecture.md, glossary.md, or equivalent)
 [ ] .ai/CONVENTIONS.md exists and contains symlink map
 [ ] .ai/docs/STATE.md exists with the 6 mandatory sections

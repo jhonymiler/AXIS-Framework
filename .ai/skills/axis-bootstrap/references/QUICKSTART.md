@@ -24,6 +24,7 @@ Answer mentally or paste the answers to the agent:
 2. **Main stack/tools?** (or "non-technical" if content/research)
 3. **Which IDE(s) do you use?** (Claude Code / Cursor / Windsurf / Copilot — mark all)
 4. **Is there anything the agent should NEVER do?** (e.g., push directly to main, delete production data)
+5. **Workflow basics** (1 line each — skip what doesn't apply): task tracker (Jira/Linear/GitHub/none) + ticket prefix; commit standard (Conventional / free); branch pattern (e.g., `feature/<ticket>-<slug>`); PR rules (approvals, CI, merge strategy). For the full version, see Block 4 of [PHASE-1-DISCOVERY.md](PHASE-1-DISCOVERY.md#block-4--collaboration--governance).
 
 ---
 

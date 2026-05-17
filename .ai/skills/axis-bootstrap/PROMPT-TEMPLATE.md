@@ -18,6 +18,7 @@ target-project/
 │   ├── rules/                                     (3-7 rules — if applicable)
 │   │   ├── code-style.md
 │   │   ├── architecture-patterns.md
+│   │   ├── workflow.md                            (PM tool + commit/branch/PR standards — if Phase 1 Block 4 produced answers)
 │   │   └── ...
 │   └── docs/
 │       ├── architecture.md                        (if software)
@@ -58,8 +59,9 @@ Order (consultation frequency, not logical importance):
 4. Architecture in table (components + responsibility)
 5. Design principles (3-7 bullets with rationale)
 6. Code conventions (summary — details in rules)
-7. Available skills (table with when to use)
-8. Links to docs and references
+7. Workflow & Tools (PM tool, branch/commit/PR standards — details in `rules/workflow.md`)
+8. Available skills (table with when to use)
+9. Links to docs and references
 
 **Size:** 100-180 lines. Below 100 is superficial; above 200 loses focus.
 
