@@ -42,7 +42,10 @@ echo "→ GitHub Copilot (.github/)"
 mkdir -p .github
 ln -sf ../.ai/INSTRUCTIONS.md .github/copilot-instructions.md
 ln -sf ../.ai/skills          .github/skills
-[ -d .ai/rules ] && ln -sf ../.ai/rules .github/instructions || true
+# Path-targeted Copilot Code Review instructions live in .ai/instructions/
+# (single source of truth). Files there must end in .instructions.md and carry
+# an `applyTo:` frontmatter glob — Copilot Code Review's required format.
+[ -d .ai/instructions ] && ln -sf ../.ai/instructions .github/instructions || true
 
 echo
 echo "✓ symlinks installed. Verify:"
