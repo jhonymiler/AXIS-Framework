@@ -2,8 +2,13 @@
 # setup-ide-links.sh — Idempotent multi-IDE symlink installer for AXIS.
 #
 # Creates the symlink fan-out from .ai/ (single source of truth) into
-# IDE-specific directories. Safe to re-run: ln -sf overwrites existing links
-# of the same name without touching real files.
+# IDE-specific directories. Safe to re-run.
+#
+# Uses `ln -sfn` (not `ln -sf`) for directory targets. Without `-n`, if the
+# link already exists as a symlink-to-directory pointing somewhere else,
+# `ln -sf` dereferences the old link and creates a NESTED link inside the
+# old target instead of replacing it. `-n` (no-dereference) ensures
+# re-running this script actually re-points links to the new target.
 #
 # Run from project root:
 #   bash setup-ide-links.sh
@@ -18,34 +23,36 @@ if [ ! -d .ai ]; then
 fi
 
 echo "→ root entry points"
-ln -sf .ai/INSTRUCTIONS.md AGENTS.md
-ln -sf .ai/INSTRUCTIONS.md CLAUDE.md
+ln -sf  .ai/INSTRUCTIONS.md AGENTS.md
+ln -sf  .ai/INSTRUCTIONS.md CLAUDE.md
 
 echo "→ Claude Code (.claude/)"
 mkdir -p .claude
-ln -sf ../.ai/INSTRUCTIONS.md .claude/CLAUDE.md
-ln -sf ../.ai/skills          .claude/skills
-[ -d .ai/rules ] && ln -sf ../.ai/rules .claude/rules || true
+ln -sf  ../.ai/INSTRUCTIONS.md .claude/CLAUDE.md
+ln -sfn ../.ai/skills          .claude/skills
+[ -d .ai/rules ] && ln -sfn ../.ai/rules .claude/rules || true
 
 echo "→ Cursor (.cursor/)"
 mkdir -p .cursor
-ln -sf ../.ai/skills          .cursor/skills
-[ -d .ai/rules ] && ln -sf ../.ai/rules .cursor/rules || true
+ln -sfn ../.ai/skills          .cursor/skills
+[ -d .ai/rules ] && ln -sfn ../.ai/rules .cursor/rules || true
 
 echo "→ Generic agents (.agents/)"
 mkdir -p .agents
-ln -sf ../.ai/INSTRUCTIONS.md .agents/AGENTS.md
-ln -sf ../.ai/skills          .agents/skills
-[ -d .ai/rules ] && ln -sf ../.ai/rules .agents/rules || true
+ln -sf  ../.ai/INSTRUCTIONS.md .agents/AGENTS.md
+ln -sfn ../.ai/skills          .agents/skills
+[ -d .ai/rules ] && ln -sfn ../.ai/rules .agents/rules || true
 
 echo "→ GitHub Copilot (.github/)"
 mkdir -p .github
-ln -sf ../.ai/INSTRUCTIONS.md .github/copilot-instructions.md
-ln -sf ../.ai/skills          .github/skills
+ln -sf  ../.ai/INSTRUCTIONS.md .github/copilot-instructions.md
+ln -sfn ../.ai/skills          .github/skills
 # Path-targeted Copilot Code Review instructions live in .ai/instructions/
 # (single source of truth). Files there must end in .instructions.md and carry
 # an `applyTo:` frontmatter glob — Copilot Code Review's required format.
-[ -d .ai/instructions ] && ln -sf ../.ai/instructions .github/instructions || true
+# `-n` is critical here: older checkouts had .github/instructions → .ai/rules,
+# and without `-n` we'd create .ai/rules/instructions instead of replacing.
+[ -d .ai/instructions ] && ln -sfn ../.ai/instructions .github/instructions || true
 
 echo
 echo "✓ symlinks installed. Verify:"

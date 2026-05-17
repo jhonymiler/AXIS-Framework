@@ -28,7 +28,7 @@ GitHub Copilot Code Review configuration for this repo only. Defines what Copilo
 1. **Purpose fidelity** — AXIS is about `.md` documentation for AI agents. Reject features unrelated to that mission.
 2. **Security** — see `.ai/instructions/scripts-security.instructions.md` for shell/Actions/secret rules.
 3. **Recursiveness** — see `.ai/instructions/spec-changes.instructions.md`. `bash scripts/validate-axis.sh` must pass.
-4. **Sync** — `.ai/skills/axis-bootstrap/` ⇄ `cli/templates/bootstrap-skill/` byte-identical; satellites mirrored too.
+4. **Sync** — CLI-distributable skills (`axis-bootstrap` + 4 satellites in `scripts/sync-cli-templates.sh`) must stay byte-identical to `cli/templates/`. Repo-only skills (like this one) are exempt — they are not propagated to bootstrapped projects.
 5. **Complexity** — prefer the smaller change. Reject premature abstraction.
 
 ## How to trigger Copilot review

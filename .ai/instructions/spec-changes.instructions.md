@@ -15,24 +15,39 @@ This repo follows the AXIS framework it teaches. Size gates from `scripts/valida
 
 Reject the PR if `bash scripts/validate-axis.sh` would fail. Always require the PR description to include validator output when spec is touched.
 
-## Live ⇄ CLI template sync
+## Live ⇄ CLI template sync (CLI-distributable skills only)
 
 `.ai/skills/axis-bootstrap/` is the live spec. `cli/templates/bootstrap-skill/` is its distributable copy. They MUST be byte-identical.
 
-Similarly, each satellite skill at `.ai/skills/<name>/SKILL.md` must equal `cli/templates/skills/<name>.md`.
+Each **CLI-distributable** satellite skill at `.ai/skills/<name>/SKILL.md` must equal `cli/templates/skills/<name>.md`. The canonical list is the for-loop in `scripts/sync-cli-templates.sh`.
 
-Reject if a PR edits only one side. Fix: `bash scripts/sync-cli-templates.sh`. Then commit the mirrored file.
+**Repo-only skills** (those NOT in the sync for-loop — e.g., `copilot-review`) are exempt from this mirror. They are specific to AXIS-Framework's own infrastructure and would be noise in bootstrapped projects.
+
+Reject a CLI-distributable skill PR that edits only one side. Fix: `bash scripts/sync-cli-templates.sh`.
 
 ## New skill checklist
 
-A new skill under `.ai/skills/<name>/` must:
+Skills fall in two scopes; registration rules differ.
 
-- Have `SKILL.md` ≤ 60 lines with frontmatter `name:` and `description:` (2-4 lines, third person, listing trigger terms).
-- Optionally have a `references/` subfolder with operational guide / checklist / templates.
-- Be registered in `scripts/sync-cli-templates.sh` (added to the for-loop) and `scripts/validate-axis.sh` (added to the drift check).
-- Appear in the skill table in `.ai/INSTRUCTIONS.md`.
+**CLI-distributable** (propagated by `axis init` — currently: `axis-bootstrap`, `abstraction-first`, `alignment`, `iterative-review`, `story-decompose`):
 
-Reject if any of these are missing.
+- `SKILL.md` ≤ 60 lines with proper frontmatter (`name:`, `description:` 2-4 lines, third-person, with trigger terms).
+- Optionally `references/` subfolder.
+- Registered in `scripts/sync-cli-templates.sh` (for-loop) AND `scripts/validate-axis.sh` (drift check).
+- Listed in the skill table in `.ai/INSTRUCTIONS.md`.
+- Mirrored in `cli/templates/skills/<name>.md` (or `cli/templates/bootstrap-skill/` for the bootstrap skill).
+
+**Repo-only** (specific to AXIS infrastructure, useless in bootstrapped projects — e.g., `copilot-review`):
+
+- `SKILL.md` ≤ 60 lines; `description:` must include "repo-only" or "not propagated" so the scope is unambiguous.
+- Listed in the skill table in `.ai/INSTRUCTIONS.md` with an AXIS-specific label.
+- **NOT** in `scripts/sync-cli-templates.sh` or `scripts/validate-axis.sh` sync loops.
+
+Reject a PR that:
+
+- Adds a CLI-distributable skill missing any required item.
+- Adds a repo-only skill that creeps into the sync scripts (it would silently start being copied to user projects).
+- Adds a skill whose scope (CLI-distributable vs repo-only) is unclear from its description.
 
 ## STATE.md curation
 
