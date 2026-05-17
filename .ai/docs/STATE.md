@@ -6,6 +6,7 @@
 
 - **[2026-05-17] Discovery Block 4 (Collaboration & Governance)** added — PM tool, commits, branches, PRs, releases. Generates `.ai/rules/workflow.md` in target projects. Propagates through PHASE-2-SPEC, TEMPLATES, PROMPT-TEMPLATE, PHASE-5-VALIDATION, QUICKSTART (live + CLI templates).
 - **[2026-05-17] Harness automation in this repo** — `scripts/sync-cli-templates.sh` enforces live ⇄ CLI parity; `scripts/validate-axis.sh` enforces 4 gates (sizes, sync, symlinks); `.github/workflows/validate.yml` runs them on PR/push. Removes dependency on manual discipline.
+- **[2026-05-17] CLI publish is release-driven, not merge-driven** — [`publish-cli.yml`](../../.github/workflows/publish-cli.yml) fires on GitHub Release with tag `cli-vX.Y.Z`. Target registry: npmjs.com (public). NPM_TOKEN scoped to `PRD` GitHub environment. Tag must match `cli/package.json#version` or publish fails. Provenance attestation enabled. Operator flow documented in [rules/workflow.md → Releases & Versioning](../rules/workflow.md).
 - **Harness-first positioning** — settings.json/hooks precede prompt optimization. Differentiator vs Spec Kit / Kiro / Tessl.
 - **Three-layer model** — Spec / Harness / Memory. Memory layer (ACE-inspired) is the addition vs literature.
 - **REASONS Canvas** is the SPDD artifact (R/E/A/S₁/O/N/S₂ — aligned with [Fowler 2025](https://martinfowler.com/articles/structured-prompt-driven)) bound by `story-decompose → alignment → abstraction-first → iterative-review`. Defined in `.ai/skills/axis-bootstrap/references/CANVAS-REASONS.md`.

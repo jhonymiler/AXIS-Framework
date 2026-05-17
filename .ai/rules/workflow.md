@@ -40,8 +40,13 @@ applyTo: "**"
   - PATCH: bug fixes in scripts or commands.
   - MINOR: new commands, new skill templates, additive changes to discovery questions.
   - MAJOR: breaking changes to template format, removed phases, renamed artifacts.
+- **CLI publish flow** (release-driven):
+  1. PR bumps `cli/package.json` version → merges to `main`.
+  2. GitHub UI → Releases → "Draft a new release".
+  3. Create tag `cli-v<version>` (must match `package.json`).
+  4. Publish release → [`publish-cli.yml`](../../.github/workflows/publish-cli.yml) fires and publishes to npmjs.com with provenance.
 - **Framework spec** (`.ai/skills/`, `FRAMEWORK.md`): not versioned numerically — tagged with the date of significant restructuring (e.g., `spec-2026-05`).
-- **Changelog:** none yet (deferred until first npm publish).
+- **Changelog:** auto-generated via GitHub's "Generate release notes" button when drafting the release.
 
 ## Agent Behavior Rules
 

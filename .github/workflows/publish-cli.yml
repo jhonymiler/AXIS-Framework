@@ -1,33 +1,39 @@
 name: Publish CLI to npm
 
-# Triggers on every push to main that touches cli/** (or this workflow).
-# Publishes @axis-bootstrap/cli when cli/package.json#version is not yet on npm.
-# Versioning model: bump cli/package.json version in the PR; merge to main publishes.
-# Idempotent: re-runs do nothing if the version is already published.
+# Release-driven publish. Fires when a GitHub Release is published.
+# Expected tag format: `cli-vX.Y.Z` matching cli/package.json#version.
+# Target registry: npmjs.com (public). Provenance attestation enabled.
+#
+# Operator flow:
+#   1. PR bumps cli/package.json version → merges to main.
+#   2. GitHub UI → Releases → "Draft a new release".
+#   3. Create tag `cli-v<version>` (must match package.json).
+#   4. Publish release → this workflow fires.
+#
+# Idempotency: npm will reject a duplicate version with a clear error.
+# Safety: the workflow validates AXIS gates AND verifies the tag matches
+# the package.json version before publishing.
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'cli/**'
-      - '.github/workflows/publish-cli.yml'
+  release:
+    types: [published]
 
 permissions:
-  contents: write   # to push the release tag
-  id-token: write   # for npm provenance attestation
+  contents: read
+  id-token: write   # required for npm provenance attestation
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: PRD   # gates access to NPM_TOKEN (environment-scoped secret)
+    environment: PRD   # NPM_TOKEN lives in the PRD environment
     defaults:
       run:
         working-directory: cli
     steps:
-      - name: Checkout
+      - name: Checkout tagged commit
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # tag step needs full history
+          ref: ${{ github.event.release.tag_name }}
 
       - name: Validate AXIS (gate before publish)
         working-directory: .
@@ -39,41 +45,25 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Detect version change
-        id: version
+      - name: Verify tag matches package.json version
         run: |
-          VERSION=$(node -p "require('./package.json').version")
-          NAME=$(node -p "require('./package.json').name")
-          echo "name=$NAME"       >> "$GITHUB_OUTPUT"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::$NAME@$VERSION already on npm — skipping publish."
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::$NAME@$VERSION not on npm — will publish."
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          TAG="${{ github.event.release.tag_name }}"
+          EXPECTED="cli-v${PKG_VERSION}"
+          if [ "$TAG" != "$EXPECTED" ]; then
+            echo "::error::Tag '$TAG' does not match expected '$EXPECTED' (from cli/package.json)."
+            echo "::error::Either bump cli/package.json#version to match the tag, or recreate the release with the correct tag."
+            exit 1
           fi
+          echo "::notice::Publishing @axis-bootstrap/cli@${PKG_VERSION}"
 
       - name: Install dependencies
-        if: steps.version.outputs.skip == 'false'
         run: npm install --no-fund --no-audit
 
       - name: Verify package contents
-        if: steps.version.outputs.skip == 'false'
         run: npm pack --dry-run
 
       - name: Publish to npm
-        if: steps.version.outputs.skip == 'false'
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Tag release
-        if: steps.version.outputs.skip == 'false'
-        working-directory: .
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          TAG="cli-v${{ steps.version.outputs.version }}"
-          git tag "$TAG"
-          git push origin "$TAG"
