@@ -12,6 +12,12 @@ This repository contains an **executable spec** that bootstraps any project (tec
 
 Full conceptual model in [FRAMEWORK.md](FRAMEWORK.md).
 
+## Code Review (Copilot)
+
+GitHub Copilot Code Review is enforced on PRs to `main`. It reads this file as the repo-wide protocol (first ~4000 chars) and path-targeted rules from [`.ai/instructions/`](.ai/instructions/) (symlinked to `.github/instructions/`). Maintenance and operator flow live in the [`copilot-review`](.ai/skills/copilot-review/SKILL.md) skill — AXIS-specific, not propagated to bootstrapped projects.
+
+**Accept** PRs that improve `.md` documentation generation, the harness (validators, sync, CI), or spec content within size gates (`INSTRUCTIONS.md` 100-180 lines, each `SKILL.md` ≤ 60). **Reject** PRs adding runtime features unrelated to AI-context docs, locking AXIS to one IDE, breaking the live ⇄ `cli/templates/` sync, or committing secrets.
+
 ## Stack / Tools
 
 - **Language:** Bash (scripts/), Node.js ≥ 18 (cli/)
@@ -111,6 +117,7 @@ Summary (full standards in [.ai/rules/workflow.md](.ai/rules/workflow.md)):
 | [`abstraction-first`](.ai/skills/abstraction-first/SKILL.md) | Design objects, responsibilities, and layer boundaries before generating code                             |
 | [`alignment`](.ai/skills/alignment/SKILL.md)                 | Lock intent, scope boundaries, and DoD before implementation starts                                       |
 | [`iterative-review`](.ai/skills/iterative-review/SKILL.md)   | Review AI-generated code and iterate via logic-correction or refactoring track                            |
+| [`copilot-review`](.ai/skills/copilot-review/SKILL.md)       | GitHub Copilot Code Review protocol for this repo (AXIS-specific, not propagated to bootstrapped projects) |
 
 ## Links
 
