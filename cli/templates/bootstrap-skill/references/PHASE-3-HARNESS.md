@@ -231,6 +231,36 @@ Symlinks on Windows require administrator permission or Developer Mode enabled. 
 
 ---
 
+## Step 4.5 — Copilot Code Review (conditional)
+
+**Apply only if the user declared GitHub Copilot in Phase 1.** Skip otherwise.
+
+GitHub Copilot Code Review reads two file shapes (both with a **4000-char hard limit per file**):
+
+1. `.github/copilot-instructions.md` — repo-wide. Already a symlink to `.ai/INSTRUCTIONS.md` created by `setup-ide-links.sh`. Ensure the project purpose and accept/reject criteria appear in the first 4000 chars of INSTRUCTIONS (i.e., near the top — don't bury them past the truncation point).
+2. `.github/instructions/*.instructions.md` — path-targeted. Each file must end in `.instructions.md` and carry an `applyTo:` frontmatter glob.
+
+**Scaffold:**
+
+```bash
+mkdir -p .ai/instructions
+# Copy the .instructions.md template from references/TEMPLATES.md
+# into .ai/instructions/code-review.instructions.md and fill placeholders.
+```
+
+Run `setup-ide-links.sh` — it now symlinks `.github/instructions` → `.ai/instructions/` when the latter exists, so the path-targeted files become visible to Copilot Code Review automatically.
+
+**Validate after scaffolding:**
+
+```bash
+wc -c .ai/instructions/*.instructions.md   # each must be < 4000
+readlink .github/instructions              # must resolve to ../.ai/instructions
+```
+
+**For non-Copilot teams:** skip this step entirely. The `.ai/instructions/` directory is not created, `setup-ide-links.sh`'s conditional skips the symlink, and Copilot configuration is absent — no harm, no noise.
+
+---
+
 ## Step 5 — Smoke Test and Gate
 
 ```bash

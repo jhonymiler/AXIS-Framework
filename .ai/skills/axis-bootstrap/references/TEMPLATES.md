@@ -147,6 +147,65 @@ paths:
 
 ---
 
+## Copilot Code Review — path-targeted (`.instructions.md`)
+
+Create only if the user declared **GitHub Copilot** in Phase 1. Lives in `.ai/instructions/` (single source of truth) and is exposed to Copilot via `.github/instructions/` symlink (handled by `setup-ide-links.sh`).
+
+**Hard constraint:** Copilot Code Review reads only the first **4000 chars** of each file. Stay under it. Verify with `wc -c .ai/instructions/*.instructions.md`.
+
+```markdown
+---
+applyTo: "src/**,lib/**"
+---
+
+# Code Review — <Project Name>
+
+> Copilot Code Review reads this file when a PR touches a path matching `applyTo`. Keep it under 4000 chars.
+
+## Project purpose
+
+<1-2 sentences from .ai/INSTRUCTIONS.md describing what the project does and for whom.>
+
+A PR is in scope when it serves this purpose. Reject changes that drift.
+
+## Accept when
+
+- It advances the project's stated purpose.
+- It respects the conventions in `.ai/INSTRUCTIONS.md` and `.ai/rules/`.
+- Tests cover new behavior (if `.ai/rules/testing.md` exists).
+- Naming, error handling, and dependencies match the project's rules.
+
+## Reject when
+
+- Runtime features outside the project's domain.
+- Commits secrets, tokens, or `.env*`.
+- Removes tests without justification.
+- Adds dependencies without explanation in the PR description.
+
+## Security checks
+
+- External inputs sanitized before queries / shell / paths.
+- Auth checks before data access / mutation.
+- No secrets in logs.
+- Error messages don't expose internals.
+
+## Output format
+
+Group findings: **blocker** / **warning** / **suggestion**. Each: location · what · why · suggested fix.
+```
+
+**Recommended split for medium/large projects:**
+
+| File | `applyTo:` | Focus |
+| ---- | ---------- | ----- |
+| `code-review.instructions.md` | `src/**,lib/**` (or equivalent) | Project purpose, code quality, security |
+| `tests.instructions.md` | `**/*.test.*,**/*_test.*,tests/**` | Test coverage rules, fixture conventions |
+| `infra.instructions.md` | `.github/**,infra/**,Dockerfile*` | Workflow permissions, secret handling, image hardening |
+
+Stop at 2-3 files. More fragmentation reduces signal.
+
+---
+
 ## workflow.md (rule)
 
 Populated from Phase 1 Block 4. Keep only the sections that apply — empty sections add noise.
