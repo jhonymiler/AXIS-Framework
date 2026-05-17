@@ -1,0 +1,78 @@
+name: Publish CLI to npm
+
+# Triggers on every push to main that touches cli/** (or this workflow).
+# Publishes @axis-bootstrap/cli when cli/package.json#version is not yet on npm.
+# Versioning model: bump cli/package.json version in the PR; merge to main publishes.
+# Idempotent: re-runs do nothing if the version is already published.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cli/**'
+      - '.github/workflows/publish-cli.yml'
+
+permissions:
+  contents: write   # to push the release tag
+  id-token: write   # for npm provenance attestation
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cli
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # tag step needs full history
+
+      - name: Validate AXIS (gate before publish)
+        working-directory: .
+        run: bash scripts/validate-axis.sh
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Detect version change
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          NAME=$(node -p "require('./package.json').name")
+          echo "name=$NAME"       >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::$NAME@$VERSION already on npm — skipping publish."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::$NAME@$VERSION not on npm — will publish."
+          fi
+
+      - name: Install dependencies
+        if: steps.version.outputs.skip == 'false'
+        run: npm install --no-fund --no-audit
+
+      - name: Verify package contents
+        if: steps.version.outputs.skip == 'false'
+        run: npm pack --dry-run
+
+      - name: Publish to npm
+        if: steps.version.outputs.skip == 'false'
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Tag release
+        if: steps.version.outputs.skip == 'false'
+        working-directory: .
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          TAG="cli-v${{ steps.version.outputs.version }}"
+          git tag "$TAG"
+          git push origin "$TAG"
