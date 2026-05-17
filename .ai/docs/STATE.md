@@ -4,6 +4,7 @@
 
 ## Active Decisions
 
+- **[2026-05-17] `project-review` skill added** — dual-awareness review skill: Purpose Mode (loads INSTRUCTIONS.md + STATE.md + Canvas Safeguards) before Technical Quality Mode (security, architecture, best practices, coverage, observability). Complements `iterative-review`; triggered before merge. Registered in INSTRUCTIONS.md Available Skills, workflow.md Agent Behavior Rules, sync-cli-templates.sh, and validate-axis.sh drift check.
 - **[2026-05-17] Discovery Block 4 (Collaboration & Governance)** added — PM tool, commits, branches, PRs, releases. Generates `.ai/rules/workflow.md` in target projects. Propagates through PHASE-2-SPEC, TEMPLATES, PROMPT-TEMPLATE, PHASE-5-VALIDATION, QUICKSTART (live + CLI templates).
 - **[2026-05-17] Harness automation in this repo** — `scripts/sync-cli-templates.sh` enforces live ⇄ CLI parity; `scripts/validate-axis.sh` enforces 4 gates (sizes, sync, symlinks); `.github/workflows/validate.yml` runs them on PR/push. Removes dependency on manual discipline.
 - **[2026-05-17] CLI publish is release-driven, not merge-driven** — [`publish-cli.yml`](../../.github/workflows/publish-cli.yml) fires on GitHub Release with tag `cli-vX.Y.Z`. Target registry: npmjs.com (public). NPM_TOKEN scoped to `PRD` GitHub environment. Tag must match `cli/package.json#version` or publish fails. Provenance attestation enabled. Operator flow documented in [rules/workflow.md → Releases & Versioning](../rules/workflow.md).

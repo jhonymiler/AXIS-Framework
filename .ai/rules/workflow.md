@@ -55,3 +55,4 @@ applyTo: "**"
 - Never push directly to `main` for changes that touch the spec, harness, or CLI source.
 - Always include a `feat:`/`fix:`/`docs:` prefix in commit subjects.
 - PR description without validation evidence for spec changes = blocking review comment.
+- Run `project-review` skill before requesting human review on any PR that touches `.ai/`, `scripts/`, or `cli/src/`.

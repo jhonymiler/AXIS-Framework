@@ -111,6 +111,7 @@ Summary (full standards in [.ai/rules/workflow.md](.ai/rules/workflow.md)):
 | [`abstraction-first`](.ai/skills/abstraction-first/SKILL.md) | Design objects, responsibilities, and layer boundaries before generating code                             |
 | [`alignment`](.ai/skills/alignment/SKILL.md)                 | Lock intent, scope boundaries, and DoD before implementation starts                                       |
 | [`iterative-review`](.ai/skills/iterative-review/SKILL.md)   | Review AI-generated code and iterate via logic-correction or refactoring track                            |
+| [`project-review`](.ai/skills/project-review/SKILL.md)       | PR review with dual awareness: purpose fidelity + security, architecture, best practices  |
 
 ## Links
 

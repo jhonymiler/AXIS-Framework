@@ -16,7 +16,7 @@ rsync -a --delete \
   cli/templates/bootstrap-skill/
 
 # 2) Satellite skills: flatten SKILL.md → <name>.md
-for skill in abstraction-first alignment iterative-review story-decompose; do
+for skill in abstraction-first alignment iterative-review story-decompose project-review; do
   cp .ai/skills/$skill/SKILL.md cli/templates/skills/$skill.md
 done
 

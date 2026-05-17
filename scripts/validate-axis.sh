@@ -50,7 +50,7 @@ for f in PLANNER.md PROMPT-TEMPLATE.md SKILL.md; do
     sync_fail=1
   fi
 done
-for s in abstraction-first alignment iterative-review story-decompose; do
+for s in abstraction-first alignment iterative-review story-decompose project-review; do
   if ! diff -q .ai/skills/$s/SKILL.md cli/templates/skills/$s.md > /dev/null 2>&1; then
     fail "$s skill drift between .ai/skills and cli/templates"
     sync_fail=1
