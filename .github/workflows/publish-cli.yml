@@ -19,6 +19,7 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    environment: PRD   # gates access to NPM_TOKEN (environment-scoped secret)
     defaults:
       run:
         working-directory: cli
