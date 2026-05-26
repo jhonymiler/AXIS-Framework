@@ -41,7 +41,8 @@ Detailed orchestration in [PLANNER.md](PLANNER.md). Final output contract in [PR
 - [PLANNER.md](PLANNER.md) — phase orchestration and gate rules
 - [PROMPT-TEMPLATE.md](PROMPT-TEMPLATE.md) — expected final structure of the bootstrapped project
 - [references/QUICKSTART.md](references/QUICKSTART.md) — 5-minute path
-- [references/PHASE-1-DISCOVERY.md](references/PHASE-1-DISCOVERY.md) — interview and decision tree
+- [references/PHASE-1-DISCOVERY.md](references/PHASE-1-DISCOVERY.md) — discoverer sub-agents + interview
+- [agents/discoverers/](agents/discoverers/) — 5 read-only sub-agents dispatched in parallel during Phase 1
 - [references/PHASE-2-SPEC.md](references/PHASE-2-SPEC.md) — Spec Layer generation
 - [references/PHASE-3-HARNESS.md](references/PHASE-3-HARNESS.md) — Harness Layer configuration + failure attribution
 - [references/PHASE-4-CONTINUITY.md](references/PHASE-4-CONTINUITY.md) — Continuity Layer initialization + ACE principles

@@ -68,7 +68,14 @@ for h in _lib session-start post-spec-edit stop; do
     sync_fail=1
   fi
 done
-[ $sync_fail -eq 0 ] && pass "all skill + rule + hook files in sync — run scripts/sync-cli-templates.sh to fix drift"
+for d in business-rules-extractor flow-extractor architecture-mapper stack-profiler conventions-detector; do
+  if ! diff -q .ai/skills/axis-bootstrap/agents/discoverers/$d.md \
+                cli/templates/bootstrap-skill/agents/discoverers/$d.md > /dev/null 2>&1; then
+    fail "agents/discoverers/$d.md drift between live and CLI templates"
+    sync_fail=1
+  fi
+done
+[ $sync_fail -eq 0 ] && pass "all skill + rule + hook + discoverer files in sync — run scripts/sync-cli-templates.sh to fix drift"
 
 echo "[4/4] Root symlinks resolve"
 for f in CLAUDE.md AGENTS.md; do

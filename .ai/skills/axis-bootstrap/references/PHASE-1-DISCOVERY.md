@@ -10,14 +10,52 @@
 
 ## Principle: Read Before Asking
 
-Before the first question, the agent:
+Before the first question, the agent (a) gathers everything that's already visible in the codebase, and (b) only then asks the human for what only they can answer. Discovery has **two stages**: a deep automated extraction via specialized discoverer sub-agents, then a focused interview informed by the extraction.
 
-1. Lists the target project files (up to 2 levels deep)
-2. Reads `README.md`, `package.json`/`pyproject.toml`/equivalent, and any pre-existing AI file (`CLAUDE.md`, `AGENTS.md`)
-3. Identifies the stack if possible
-4. **Only then asks** — and never asks what is already in the files
+---
 
-This reduces friction and demonstrates attention to context.
+## Step 0 — Install + Dispatch Discoverer Sub-agents
+
+The five discoverers ship as `.md` files inside the skill bundle. **Install them once** at the start of Phase 1 so the IDE picks them up as sub-agent types, then dispatch all five **in parallel** in a single message.
+
+### 0.1 — Install (Claude Code path)
+
+```bash
+mkdir -p .claude/agents
+cp .ai/skills/axis-bootstrap/agents/discoverers/*.md .claude/agents/
+```
+
+(For Cursor and other IDEs without native sub-agent support, skip the install and run the discoverers' methodologies inline yourself, sequentially.)
+
+### 0.2 — Dispatch (single message, five parallel Task calls)
+
+| Sub-agent | Returns |
+|-----------|---------|
+| `business-rules-extractor` | Table of validation / invariant / policy rules with evidence |
+| `flow-extractor` | Per-flow ASCII diagrams (HTTP endpoints, jobs, events, CLI) |
+| `architecture-mapper` | Layer diagram + module responsibility table |
+| `stack-profiler` | Language/framework/build/test/lint table — feeds `settings.json` |
+| `conventions-detector` | Detected naming/error-handling/logging/test/commit conventions with ≥2 evidence each |
+
+All five are **read-only** (Read/Grep/Glob + minimal Bash) and self-bounded by tool budget. Total wall time ≈ the slowest, not the sum.
+
+### 0.3 — Consolidate
+
+Aggregate the five reports into a single **Project Profile draft** containing:
+
+- Stack table (from `stack-profiler`)
+- Architecture diagram (from `architecture-mapper`)
+- 3-7 candidate domains (clusters of business rules + flows that share modules)
+- Detected conventions to seed `.ai/rules/`
+- A consolidated **Ambiguities list** — every `[AMBÍGUO]` entry from the five reports, deduplicated
+
+The Ambiguities list **drives the human interview**: don't ask blind questions when a discoverer already surfaced specific uncertainties.
+
+---
+
+## The Interview (informed by Step 0)
+
+Use the discoverer reports as input. **Skip questions the discoverers already answered**: don't ask "what's the stack?" if `stack-profiler` returned a confident manifest-based answer. Use the time saved to dig into the Ambiguities list and the human-only questions below (intent, audience, constraints).
 
 ---
 

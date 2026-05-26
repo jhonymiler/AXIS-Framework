@@ -31,13 +31,17 @@ Ask the user which mode applies if detection is ambiguous.
 
 **Input:** target project + user intent
 
+**Step 0 (mandatory before any question):** install the 5 discoverer sub-agents from `agents/discoverers/` into `.claude/agents/` and **dispatch all five in parallel** to extract business rules, flows, architecture, stack, and conventions from the codebase. Consolidate their reports into a Project Profile draft. The Ambiguities list from the reports seeds the interview that follows. See PHASE-1-DISCOVERY § Step 0.
+
 **Expected output:**
 
 - Project type identified (software / content / research / business / legal / educational / other)
-- Main stack or tools (if applicable)
-- 3-7 candidate domains to become skills
-- Critical constraints (compliance, deadline, team, preferred IDE)
-- Output quality criteria (proof-of-concept vs production)
+- Main stack or tools — usually answered by `stack-profiler`
+- 3-7 candidate domains to become skills — clusters drawn from `business-rules-extractor` + `flow-extractor`
+- Architecture diagram — from `architecture-mapper`
+- Detected conventions to seed `.ai/rules/` — from `conventions-detector`
+- Critical constraints (compliance, deadline, team, preferred IDE) — human-only, asked in interview
+- Output quality criteria (proof-of-concept vs production) — human-only
 
 **Exit gate:**
 
