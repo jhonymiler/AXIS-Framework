@@ -114,15 +114,15 @@ axis spdd review   # AI checks the diff against the canvas — did the code hono
 
 The canvas has 7 dimensions (REASONS):
 
-| | Dimension | What it captures |
-| --- | --- | --- |
-| **R** | Requirements | INVEST story + Given/When/Then ACs + Definition of Done |
-| **E** | Entities | Domain objects, relationships, single responsibility |
-| **A** | Approach | High-level strategy to satisfy R |
-| **S₁** | System structure | Components, layer boundaries, file tree |
-| **O** | Operations | Concrete steps / endpoints / methods |
-| **N** | Norms | Engineering standards (naming, logging, security) |
-| **S₂** | Safeguards | Non-negotiable invariants (correctness, perf, security) |
+|        | Dimension        | What it captures                                        |
+| ------ | ---------------- | ------------------------------------------------------- |
+| **R**  | Requirements     | INVEST story + Given/When/Then ACs + Definition of Done |
+| **E**  | Entities         | Domain objects, relationships, single responsibility    |
+| **A**  | Approach         | High-level strategy to satisfy R                        |
+| **S₁** | System structure | Components, layer boundaries, file tree                 |
+| **O**  | Operations       | Concrete steps / endpoints / methods                    |
+| **N**  | Norms            | Engineering standards (naming, logging, security)       |
+| **S₂** | Safeguards       | Non-negotiable invariants (correctness, perf, security) |
 
 If the canvas doesn’t fit one page, the feature is too large — go back to `axis spdd story` and decompose it first.
 

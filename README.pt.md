@@ -114,15 +114,15 @@ axis spdd review   # agente verifica o diff contra o canvas — o código honrou
 
 O canvas tem 7 dimensões (REASONS):
 
-| | Dimensão | O que captura |
-| --- | --- | --- |
-| **R** | Requirements | História INVEST + ACs Given/When/Then + Definition of Done |
-| **E** | Entities | Objetos de domínio, relacionamentos, responsabilidade única |
-| **A** | Approach | Estratégia de alto nível para satisfazer R |
-| **S₁** | System structure | Componentes, camadas, árvore de arquivos |
-| **O** | Operations | Passos concretos / endpoints / métodos |
-| **N** | Norms | Padrões de engenharia (nomenclatura, logging, segurança) |
-| **S₂** | Safeguards | Invariantes não-negociáveis (correção, perf, segurança) |
+|        | Dimensão         | O que captura                                               |
+| ------ | ---------------- | ----------------------------------------------------------- |
+| **R**  | Requirements     | História INVEST + ACs Given/When/Then + Definition of Done  |
+| **E**  | Entities         | Objetos de domínio, relacionamentos, responsabilidade única |
+| **A**  | Approach         | Estratégia de alto nível para satisfazer R                  |
+| **S₁** | System structure | Componentes, camadas, árvore de arquivos                    |
+| **O**  | Operations       | Passos concretos / endpoints / métodos                      |
+| **N**  | Norms            | Padrões de engenharia (nomenclatura, logging, segurança)    |
+| **S₂** | Safeguards       | Invariantes não-negociáveis (correção, perf, segurança)     |
 
 Se o canvas não couber em uma página, a feature é grande demais — volte ao `axis spdd story` e decomponha primeiro.
 
