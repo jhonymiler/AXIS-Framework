@@ -25,10 +25,11 @@ The authoritative source for *how* AXIS works lives in the skills themselves:
   engineering-discipline, knowledge-verification, constitutional, …)
 - [`cli/templates/`](../cli/templates/) — what `axis init` lands in a new project
 
-## Roadmap
+## Release history
 
-[`ROADMAP.md`](../ROADMAP.md) tracks open work. The completed features
-(F9, F10, F11, F12, F13, F14, F4C) are documented in the guides above.
+[`CHANGELOG.md`](../CHANGELOG.md) lists what shipped in each version.
+The features the comparison page references (F9–F15, F4C) all landed in
+CLI v2.1.0.
 
 ## Hosting these docs as a site
 
