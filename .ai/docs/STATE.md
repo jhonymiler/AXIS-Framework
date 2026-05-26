@@ -1,99 +1,46 @@
-# STATE — AXIS Framework Playbook (Summary)
+# STATE — AXIS Framework Playbook
 
-## Memory Structure
-- **Hot:** active decisions, progress, and blockers (auto-loaded at session start, ≤80 lines)
-- **Warm:** deferred ideas, lessons learned, and TODOs (loaded on demand)
-- **Cold:** historical archives (`STATE-YYYY-MM.md`), never loaded by default
+## Continuity Structure
+- **Hot:** Active Decisions, In Progress, Blockers (auto-loaded at session start, ≤80 lines)
+- **Warm:** Deferred Ideas, Lessons Learned, TODOs (loaded on demand)
+- **Cold:** historical archives in `.ai/docs/archive/STATE-YYYY-MM.md` (never loaded by default)
 
 ## Active Decisions
-- **Automated quality enforcement:**  
-  `axis dedupe` detects duplicated content in `.ai/**/*.md`;  
-  `axis spdd verify` ensures Canvas safeguards have matching tests.
 
-- **Non-interactive initialization:**  
-  `axis init --preset <node|python|go|docs|minimal>` enables reproducible project bootstrapping without prompts.
-
-- **Formalized memory tiers:**  
-  New commands:
-  - `axis state hot`
-  - `axis state archive`
-
-- **Telemetry (`axis log`):**  
-  JSONL-based event tracking (`telemetry.jsonl`) for skills, hooks, and spec churn analysis.
-
-- **Automated hooks:**  
-  Hooks under `.ai/hooks/`:
-  - `session-start`
-  - `post-spec-edit`
-  - `stop`  
-  Convert written rules into enforced behavior.
-
-- **Skill routing matrix:**  
-  `INSTRUCTIONS.md` explicitly defines when to load or avoid each skill.
-
-- **Mandatory session-start ritual:**  
-  `STATE.md` must be read before any significant action.
-
-- **Always-on behavioral rules:**  
-  Includes:
-  - engineering discipline
-  - context economy
-  - confidence and research controls
-
-- **GitHub Copilot Review integration:**  
-  Implemented via symlinks to preserve SST (Single Source of Truth).
-
-- **Discovery Block 4:**  
-  Adds governance, workflow, PR, release, and PM tooling support.
-
-- **Harness-first automation:**  
-  Validation scripts enforce:
-  - file size limits
-  - synchronization
-  - symlink integrity
-  - live/CLI consistency
-
-- **Release-driven CLI publishing:**  
-  npm publishing occurs only through GitHub Releases (`cli-vX.Y.Z`).
-
-- **Core architecture:**  
-  Framework structured around:
-  - Spec
-  - Harness
-  - Memory
-
-- **REASONS Canvas:**  
-  Main SPDD artifact integrated with decomposition and review skills.
-
-- **`axis` CLI:**  
-  Commands:
-  - `init`
-  - `audit`
-  - `doctor`
-  - `link`
-  - `state`
-  - `spdd`
-
-- **Recursiveness is mandatory:**  
-  The repository itself must obey all framework rules.
+- **2026-05-26 — Core architecture renamed:** the three pillars are now **Spec + Harness + Continuity** (previously "Memory"). Reason: avoids vector-store/embedding expectations; aligns name with reality. See `FRAMEWORK.md` and PR #sprint1-F2.1.
+- **2026-05-26 — AXIS is one-shot:** the CLI scaffolds, the agent (Opus 4.7+) does discovery and content authoring, then AXIS exits. No daemon, no scheduled syncing. Re-applying a new AXIS version is a future `axis-rebootstrap` skill (Sprint 4 / F4C). See `README.md` "How AXIS Actually Works".
+- **2026-05-26 — Defensive `--preset`:** the non-interactive path is now greenfield-only; collisions abort with explicit options (`--backup` / `--force` / `--dry-run`). See PR #sprint1-F1.
+- **2026-05-26 — SPDD subcommands consolidated:** 5 print-only subcommands collapsed into `axis spdd guide [step]`; legacy names work as aliases. See PR #sprint1-F2.3.
+- **Sub-agent two-tier pattern (planned):** Phase 1 dispatches 5 generic Discoverers in parallel; Phase 4.5 transforms them into 3-4 project-bound Specialists with embedded knowledge. To be implemented in Sprint 2-3 (F8). See memory `axis_subagent_pattern.md`.
+- **Skill routing matrix:** `INSTRUCTIONS.md` defines when to load or avoid each skill. Always-on rules: engineering-discipline, context-economy, knowledge-verification, session-start.
+- **Quality gates enforced by harness:** `validate-axis.sh` checks file sizes + live⇄CLI sync + symlink integrity. `axis dedupe` + `axis spdd verify` run during PR review.
+- **Release-driven CLI publishing:** npm publishing only via GitHub Releases (`cli-vX.Y.Z`).
+- **Recursiveness is mandatory:** the repository itself must obey every framework rule.
 
 ## In Progress
-- No active blockers or critical infrastructure work.
+
+- **Sprint 2 — F3 + F4A + F8A/B** (meta-skill strengthening, `axis hooks install`, `axis doctor` expanded, 5 Discoverer subagents + Phase 1 parallel orchestration)
+
+## Blockers
+
+_(none)_
 
 ## Deferred Ideas
-- Advanced telemetry consumer
-- SPDD skill consolidation
-- Bilingual README synchronization
-- Post-bootstrap Phase 6
+
+- Advanced telemetry consumer (Sprint 4 / F5.3)
+- Bilingual README synchronization check
+- Monorepo/polyglot `.ai/packages/<name>/` (F7.1)
+- Multi-IDE hooks abstraction (F7.2)
 
 ## Lessons Learned
-- Rules without automation become aspirational.
-- Discovery changes require downstream propagation.
-- Manual template synchronization eventually fails.
-- Skills must not depend on undefined artifacts.
-- Framework claims must be auditable inside the repo itself.
+
+- **Squash-merge sibling PRs in dependency order.** Rename-first reduces conflicts later (READMEs auto-merged because the layer name change had already landed).
+- **Working-tree leakage between branches is common.** `git checkout -- .` to discard before switching saves debugging time.
+- **Templates intentionally diverge from live spec.** `sync-cli-templates.sh` mirrors only `.ai/skills/`, `.ai/rules/`, `.ai/hooks/` — top-level templates (`STATE.md`, `INSTRUCTIONS.md`) are parametrized stubs for new projects.
+- **Test-evaluation files inside the project being evaluated belong outside the repo.** `/projetos/IA/memorias/cortex/AXIS_EVALUATION.md` is consulted as source but never committed here.
 
 ## TODOs
-- Document REASONS in `FRAMEWORK.md`
-- Revisit skill consolidation
-- Expand `axis log analyze` for failure hooks
+
+- Run a fresh `axis init --preset python` smoke test on temp dir after Sprint 4 to confirm end-to-end
+- Document `axis-rebootstrap` skill in `FRAMEWORK.md` once Sprint 4 lands
+- Tag `cli-v2.0.0` after final validation; ensure release notes mention the breaking rename
