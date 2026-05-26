@@ -67,9 +67,9 @@ Skip SPDD if the work is a single-file fix, a typo, a config tweak, or a tightly
 
 | # | Skill | Produces (REASONS Canvas section) | Why this order |
 | - | ----- | --------------------------------- | -------------- |
-| 1 | [`story-decompose`](../../story-decompose/SKILL.md) | **R** — INVEST stories with G/W/T ACs + DoD | Cannot align on what is undefined |
-| 2 | [`alignment`](../../alignment/SKILL.md) | **O** scope lock + **N** Norms + **S₂** Safeguards | Cannot design without governance bounds |
-| 3 | [`abstraction-first`](../../abstraction-first/SKILL.md) | **E** Entities + **A** Approach + **S₁** System structure | Cannot generate code without object design |
+| 1 | [`story-decompose`](../story-decompose/SKILL.md) | **R** — INVEST stories with G/W/T ACs + DoD | Cannot align on what is undefined |
+| 2 | [`alignment`](../alignment/SKILL.md) | **O** scope lock + **N** Norms + **S₂** Safeguards | Cannot design without governance bounds |
+| 3 | [`abstraction-first`](../abstraction-first/SKILL.md) | **E** Entities + **A** Approach + **S₁** System structure | Cannot generate code without object design |
 
 The artifact produced is the **REASONS Canvas** ([references/CANVAS-REASONS.md](references/CANVAS-REASONS.md)) — single page per feature. If it doesn't fit, return to step 1 and split smaller.
 
@@ -168,7 +168,7 @@ The artifact produced is the **REASONS Canvas** ([references/CANVAS-REASONS.md](
 
 **When to apply:** triggered after code is generated from a REASONS Canvas, OR when a code review reveals drift between code and Canvas.
 
-**Loads:** [`iterative-review`](../../iterative-review/SKILL.md)
+**Loads:** [`iterative-review`](../iterative-review/SKILL.md)
 
 **Two tracks:**
 

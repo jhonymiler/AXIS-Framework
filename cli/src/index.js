@@ -10,6 +10,7 @@ import { spdd } from './commands/spdd.js';
 import { cleanup } from './commands/cleanup.js';
 import { logCmd } from './commands/log.js';
 import { dedupeCmd } from './commands/dedupe.js';
+import { hooks } from './commands/hooks.js';
 const VERSION = '0.1.0';
 
 const BANNER = `
@@ -39,6 +40,7 @@ ${pc.bold('Commands:')}
   ${pc.yellow('cleanup')}           Remove the axis-bootstrap meta-skill after AI-driven init completes
   ${pc.yellow('log')} <event>       Append/analyze telemetry (.ai/telemetry.jsonl) — try ${pc.cyan('axis log analyze')}
   ${pc.yellow('dedupe')}            Scan .ai/**/*.md for duplicated paragraphs ${pc.dim('(+ --strict for CI)')}
+  ${pc.yellow('hooks install')}     Auto-wire detected scripts/*.sh into .claude/settings.json
   ${pc.yellow('help')}              Show this help
   ${pc.yellow('version')}           Print version
 
@@ -108,6 +110,9 @@ async function main() {
       break;
     case 'dedupe':
       await dedupeCmd(rest);
+      break;
+    case 'hooks':
+      await hooks(rest);
       break;
     default:
       log.error(`Unknown command: ${pc.red(cmd)}`);
