@@ -61,26 +61,70 @@ axis cleanup     # removes the bootstrap skill; project keeps everything else
 
 ## Commands
 
-| Command                                                | What it does                                                   |
-| ------------------------------------------------------ | -------------------------------------------------------------- |
-| `axis init`                                            | Interactive bootstrap (auto-detects context, asks PT/EN)       |
-| `axis init --preset <node\|python\|go\|docs\|minimal>` | Non-interactive scaffold                                       |
-| `axis init --rebootstrap`                              | Upgrade existing `.ai/` — installs `axis-rebootstrap` skill    |
-| `axis doctor`                                          | Validate sizes, symlinks, cross-links, token counts            |
-| `axis doctor --strict`                                 | Same + duplicate-paragraph check; fails on any warning         |
-| `axis audit`                                           | Report which AXIS layers are missing                           |
-| `axis cleanup`                                         | Remove bootstrap meta-skill after AI-driven init               |
-| `axis link`                                            | Recreate IDE symlinks (idempotent)                             |
-| `axis state hot`                                       | Print hot tier of STATE.md (used by SessionStart hook)         |
-| `axis state archive <substr>`                          | Archive a stale Active Decision                                |
-| `axis spdd canvas <slug>`                              | Scaffold a REASONS Canvas                                      |
-| `axis spdd story\|align\|design\|review\|sync`         | Per-feature SPDD pipeline steps                                |
-| `axis hooks install`                                   | Auto-wire detected `scripts/*.sh` into `.claude/settings.json` |
-| `axis dedupe`                                          | Scan `.ai/**/*.md` for duplicated paragraphs                   |
-| `axis log <event> [--meta k=v]`                        | Append telemetry to `.ai/telemetry.jsonl` (gitignored)         |
-| `axis log analyze`                                     | Summarize telemetry counts                                     |
+Three commands cover the bootstrap lifecycle:
+
+```bash
+axis init        # bootstrap (once) — scaffold + installs the axis-bootstrap skill
+axis cleanup     # remove bootstrap skill after the AI agent finishes (once)
+axis doctor      # validate sizes, symlinks, cross-links, token counts
+```
+
+For per-feature development (after bootstrap), AXIS ships an optional SPDD pipeline:
+
+```bash
+axis spdd canvas <slug>              # scaffold a REASONS Canvas
+axis spdd story|align|design|review  # fill each section with your AI agent
+```
+
+Everything else is situational:
+
+| Command                                                | When to use                                            |
+| ------------------------------------------------------ | ------------------------------------------------------ |
+| `axis init --preset <node\|python\|go\|docs\|minimal>` | Non-interactive scaffold                               |
+| `axis init --rebootstrap`                              | Upgrade an existing `.ai/` to a new AXIS version       |
+| `axis doctor --strict`                                 | CI mode — also runs duplicate check, fails on warnings |
+| `axis audit`                                           | Diagnose which AXIS layers are missing                 |
+| `axis link`                                            | Recreate IDE symlinks if they break                    |
+| `axis hooks install`                                   | Wire `scripts/*.sh` into `.claude/settings.json`       |
+| `axis state hot / archive`                             | STATE.md management (mostly used by hooks)             |
+| `axis dedupe`                                          | Scan `.ai/**/*.md` for duplicated paragraphs           |
+| `axis log`                                             | Telemetry (opt-in, gitignored)                         |
 
 Full reference: [cli/README.md](cli/README.md)
+
+---
+
+## SPDD — what it is and how to use it
+
+SPDD (Structured Prompt-Driven Development, [Martin Fowler](https://martinfowler.com/articles/structured-prompt-driven)) is a pipeline for working on individual features with AI. The problem it solves: when you describe a feature and ask an AI to generate code, you end up in a "regenerate until it works" loop with no shared contract between you and the AI. SPDD fixes this by filling a one-page **Canvas REASONS** *before* code generation, so both you and the AI are aligned on what must be built.
+
+```bash
+# start a new feature
+axis spdd canvas payment-webhook     # creates .ai/canvases/payment-webhook.md
+
+# fill the canvas collaboratively with your AI agent (each step opens the canvas)
+axis spdd story    # AI fills R — INVEST story + Given/When/Then ACs + Definition of Done
+axis spdd align    # AI fills O, N, S₂ — operations, norms, safeguards
+axis spdd design   # AI fills E, A, S₁ — entities, approach, system structure
+
+# generate code in your AI agent as usual
+
+axis spdd review   # AI checks the diff against the canvas — did the code honor the contract?
+```
+
+The canvas has 7 dimensions (REASONS):
+
+| | Dimension | What it captures |
+| --- | --- | --- |
+| **R** | Requirements | INVEST story + Given/When/Then ACs + Definition of Done |
+| **E** | Entities | Domain objects, relationships, single responsibility |
+| **A** | Approach | High-level strategy to satisfy R |
+| **S₁** | System structure | Components, layer boundaries, file tree |
+| **O** | Operations | Concrete steps / endpoints / methods |
+| **N** | Norms | Engineering standards (naming, logging, security) |
+| **S₂** | Safeguards | Non-negotiable invariants (correctness, perf, security) |
+
+If the canvas doesn’t fit one page, the feature is too large — go back to `axis spdd story` and decompose it first.
 
 ---
 

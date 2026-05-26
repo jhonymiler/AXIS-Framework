@@ -61,26 +61,70 @@ axis cleanup     # remove a skill de bootstrap; o projeto mantém todo o resto
 
 ## Comandos
 
-| Comando                                                | O que faz                                                          |
-| ------------------------------------------------------ | ------------------------------------------------------------------ |
-| `axis init`                                            | Bootstrap interativo (detecta contexto, pergunta PT/EN)            |
-| `axis init --preset <node\|python\|go\|docs\|minimal>` | Scaffold não-interativo                                            |
-| `axis init --rebootstrap`                              | Atualiza `.ai/` existente — instala a skill `axis-rebootstrap`     |
-| `axis doctor`                                          | Valida tamanhos, symlinks, cross-links, contagem de tokens         |
-| `axis doctor --strict`                                 | Igual + checagem de parágrafos duplicados; falha em qualquer aviso |
-| `axis audit`                                           | Reporta quais camadas AXIS estão faltando                          |
-| `axis cleanup`                                         | Remove a meta-skill de bootstrap após o init AI-driven             |
-| `axis link`                                            | Recria symlinks de IDE (idempotente)                               |
-| `axis state hot`                                       | Exibe o tier quente do STATE.md (usado pelo hook SessionStart)     |
-| `axis state archive <substr>`                          | Arquiva uma Active Decision obsoleta                               |
-| `axis spdd canvas <slug>`                              | Cria um Canvas REASONS                                             |
-| `axis spdd story\|align\|design\|review\|sync`         | Passos do pipeline SPDD por feature                                |
-| `axis hooks install`                                   | Auto-conecta `scripts/*.sh` detectados ao `.claude/settings.json`  |
-| `axis dedupe`                                          | Escaneia `.ai/**/*.md` por parágrafos duplicados                   |
-| `axis log <event> [--meta k=v]`                        | Registra telemetria em `.ai/telemetry.jsonl` (gitignored)          |
-| `axis log analyze`                                     | Resume contagens de telemetria                                     |
+Três comandos cobrem o ciclo de bootstrap:
+
+```bash
+axis init        # bootstrap (uma vez) — scaffold + instala a skill axis-bootstrap
+axis cleanup     # remove a skill de bootstrap após o agente terminar (uma vez)
+axis doctor      # valida tamanhos, symlinks, cross-links, contagem de tokens
+```
+
+Para desenvolvimento por feature (após o bootstrap), o AXIS inclui um pipeline SPDD opcional:
+
+```bash
+axis spdd canvas <slug>              # cria um Canvas REASONS
+axis spdd story|align|design|review  # preenche cada seção com seu agente de IA
+```
+
+O resto é situacional:
+
+| Comando                                                | Quando usar                                                   |
+| ------------------------------------------------------ | ------------------------------------------------------------- |
+| `axis init --preset <node\|python\|go\|docs\|minimal>` | Scaffold não-interativo                                       |
+| `axis init --rebootstrap`                              | Atualizar um `.ai/` existente para nova versão do AXIS        |
+| `axis doctor --strict`                                 | Modo CI — também roda checagem de duplicatas, falha em avisos |
+| `axis audit`                                           | Diagnosticar quais camadas AXIS estão faltando                |
+| `axis link`                                            | Recriar symlinks de IDE se quebrarem                          |
+| `axis hooks install`                                   | Conectar `scripts/*.sh` ao `.claude/settings.json`            |
+| `axis state hot / archive`                             | Gestão do STATE.md (usado principalmente pelos hooks)         |
+| `axis dedupe`                                          | Escanear `.ai/**/*.md` por parágrafos duplicados              |
+| `axis log`                                             | Telemetria (opt-in, gitignored)                               |
 
 Referência completa: [cli/README.md](cli/README.md)
+
+---
+
+## SPDD — o que é e como usar
+
+SPDD (Structured Prompt-Driven Development, [Martin Fowler](https://martinfowler.com/articles/structured-prompt-driven)) é um pipeline para trabalhar em features individuais com IA. O problema que resolve: quando você descreve uma feature e pede ao agente para gerar código, você cai num loop de “regenerate até funcionar” sem contrato compartilhado. O SPDD corrige isso preenchendo um **Canvas REASONS** de uma página *antes* de gerar código, para que você e o agente estejam alinhados no que deve ser construído.
+
+```bash
+# iniciar uma nova feature
+axis spdd canvas payment-webhook     # cria .ai/canvases/payment-webhook.md
+
+# preencher o canvas colaborativamente com seu agente de IA (cada passo abre o canvas)
+axis spdd story    # agente preenche R — história INVEST + critérios Given/When/Then + DoD
+axis spdd align    # agente preenche O, N, S₂ — operações, normas, salvaguardas
+axis spdd design   # agente preenche E, A, S₁ — entidades, abordagem, estrutura de sistema
+
+# gerar código com seu agente normalmente
+
+axis spdd review   # agente verifica o diff contra o canvas — o código honrou o contrato?
+```
+
+O canvas tem 7 dimensões (REASONS):
+
+| | Dimensão | O que captura |
+| --- | --- | --- |
+| **R** | Requirements | História INVEST + ACs Given/When/Then + Definition of Done |
+| **E** | Entities | Objetos de domínio, relacionamentos, responsabilidade única |
+| **A** | Approach | Estratégia de alto nível para satisfazer R |
+| **S₁** | System structure | Componentes, camadas, árvore de arquivos |
+| **O** | Operations | Passos concretos / endpoints / métodos |
+| **N** | Norms | Padrões de engenharia (nomenclatura, logging, segurança) |
+| **S₂** | Safeguards | Invariantes não-negociáveis (correção, perf, segurança) |
+
+Se o canvas não couber em uma página, a feature é grande demais — volte ao `axis spdd story` e decomponha primeiro.
 
 ---
 
