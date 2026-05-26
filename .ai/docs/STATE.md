@@ -7,19 +7,21 @@
 
 ## Active Decisions
 
-- **2026-05-26 — Core architecture renamed:** the three pillars are now **Spec + Harness + Continuity** (previously "Memory"). Reason: avoids vector-store/embedding expectations; aligns name with reality. See `FRAMEWORK.md` and PR #sprint1-F2.1.
-- **2026-05-26 — AXIS is one-shot:** the CLI scaffolds, the agent (Opus 4.7+) does discovery and content authoring, then AXIS exits. No daemon, no scheduled syncing. Re-applying a new AXIS version is a future `axis-rebootstrap` skill (Sprint 4 / F4C). See `README.md` "How AXIS Actually Works".
-- **2026-05-26 — Defensive `--preset`:** the non-interactive path is now greenfield-only; collisions abort with explicit options (`--backup` / `--force` / `--dry-run`). See PR #sprint1-F1.
-- **2026-05-26 — SPDD subcommands consolidated:** 5 print-only subcommands collapsed into `axis spdd guide [step]`; legacy names work as aliases. See PR #sprint1-F2.3.
-- **Sub-agent two-tier pattern (planned):** Phase 1 dispatches 5 generic Discoverers in parallel; Phase 4.5 transforms them into 3-4 project-bound Specialists with embedded knowledge. To be implemented in Sprint 2-3 (F8). See memory `axis_subagent_pattern.md`.
+- **2026-05-26 — Core architecture renamed:** the three pillars are **Spec + Harness + Continuity** (previously "Memory"). Avoids vector-store/embedding expectations; aligns name with reality. See `FRAMEWORK.md`.
+- **2026-05-26 — AXIS is one-shot, skill-driven only:** the CLI scaffolds, the agent runs everything via Read/Write/Bash/git from installed skills. **No runtime `axis <command>` dependency** in bootstrapped projects. Applies to delta, specify, rebootstrap, config, challengers — all skills, no CLI surface. See `docs/comparison.md` "What we deliberately did not copy".
+- **2026-05-26 — Two-tier sub-agents:** Phase 1 dispatches 5 Discoverers in parallel; Phase 4.5 transforms them into 3-4 project-bound Specialists. Implemented in F8A/B.
+- **2026-05-26 — Phase 1.8 adversarial challenge (F13):** after Canvas (1.5) and before Spec Layer (2), 3 challengers (security / simplicity / scope) critique in parallel with CRÍTICO/ALERTA/APROVEI output. Recurring per feature post-bootstrap.
+- **2026-05-26 — Canvas is REASONSTC (F11):** 9 dimensions — added **C** (Contracts: typed interfaces with pre/post) and **T** (Test Scenarios: G/W/T with ≥1 happy + ≥1 failure + ≥1 edge case per story).
+- **2026-05-26 — Constitutional rules per stack (F10):** 4 files (node/python/go/generic) with 5 grep-verifiable gates each; PreToolUse hook surfaces them before every Write/Edit.
+- **2026-05-26 — `axis.config.json` is agent-read (F14):** workflow policy file at project root, consumed by the agent at session start. No `axis doctor` validation; defaults apply if file missing.
 - **Skill routing matrix:** `INSTRUCTIONS.md` defines when to load or avoid each skill. Always-on rules: engineering-discipline, context-economy, knowledge-verification, session-start.
-- **Quality gates enforced by harness:** `validate-axis.sh` checks file sizes + live⇄CLI sync + symlink integrity. `axis dedupe` + `axis spdd verify` run during PR review.
+- **Quality gates enforced by harness:** `validate-axis.sh` checks file sizes + live⇄CLI sync + symlink integrity + drift across all skill bundles (axis-bootstrap, axis-rebootstrap, axis-delta, axis-specify, challengers).
 - **Release-driven CLI publishing:** npm publishing only via GitHub Releases (`cli-vX.Y.Z`).
 - **Recursiveness is mandatory:** the repository itself must obey every framework rule.
 
 ## In Progress
 
-- **Sprint 2 — F3 + F4A + F8A/B** (meta-skill strengthening, `axis hooks install`, `axis doctor` expanded, 5 Discoverer subagents + Phase 1 parallel orchestration)
+_(nothing — ROADMAP closed 2026-05-26)_
 
 ## Blockers
 
@@ -34,13 +36,14 @@ _(none)_
 
 ## Lessons Learned
 
-- **Squash-merge sibling PRs in dependency order.** Rename-first reduces conflicts later (READMEs auto-merged because the layer name change had already landed).
+- **Squash-merge sibling PRs in dependency order.** Rename-first reduces conflicts.
 - **Working-tree leakage between branches is common.** `git checkout -- .` to discard before switching saves debugging time.
-- **Templates intentionally diverge from live spec.** `sync-cli-templates.sh` mirrors only `.ai/skills/`, `.ai/rules/`, `.ai/hooks/` — top-level templates (`STATE.md`, `INSTRUCTIONS.md`) are parametrized stubs for new projects.
-- **Test-evaluation files inside the project being evaluated belong outside the repo.** `/projetos/IA/memorias/cortex/AXIS_EVALUATION.md` is consulted as source but never committed here.
+- **Templates intentionally diverge from live spec.** `sync-cli-templates.sh` mirrors only `.ai/skills/`, `.ai/rules/`, `.ai/hooks/` — top-level templates (`STATE.md`, `INSTRUCTIONS.md`) are parametrized stubs.
+- **Comparative-analysis roadmaps must be checked against the "one-shot" rule before implementation.** The original F9/F12 examples used `axis spdd delta` / `axis specify` commands — would have introduced permanent runtime CLI dependency. Corrected in the ROADMAP before any code landed. See `docs/comparison.md` "What we deliberately did not copy".
+- **Branch-of-branch creates squash-merge conflicts.** When merging two stacked branches into main via squash, do the second's squash _after_ the first is committed; expect conflicts on files both branches added/modified, resolve in favour of the descendant branch.
 
 ## TODOs
 
-- Run a fresh `axis init --preset python` smoke test on temp dir after Sprint 4 to confirm end-to-end
-- Document `axis-rebootstrap` skill in `FRAMEWORK.md` once Sprint 4 lands
-- Tag `cli-v2.0.0` after final validation; ensure release notes mention the breaking rename
+- Bump CLI version (MINOR — F10/F11/F13/F14 are additive, no breaking changes; F9/F12 add new skills); draft GitHub Release notes mentioning REASONSTC + constitutional rules + adversarial + axis.config.json + public docs
+- Enable GitHub Pages from `/docs` (3-click UI step, documented in `docs/README.md`)
+- Backfill `.github/copilot-instructions.md` skill table with `axis-delta` and `axis-specify` (mentioned in F9 acceptance criteria; deferred)
