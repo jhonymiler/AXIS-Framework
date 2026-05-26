@@ -26,6 +26,42 @@ Detalhes completos em [FRAMEWORK.md](FRAMEWORK.md).
 
 ---
 
+## Como o AXIS Funciona de Fato
+
+> **AXIS é bootstrap one-shot, não daemon.** O CLI joga a estrutura em segundos; um agente de IA (preferencialmente Opus 4.7+) faz o trabalho real numa única sessão de 20-40 minutos; depois disso o projeto é autossuficiente.
+
+```text
+       ┌──────────────────┐
+       │   axis init      │  ← ~10 segundos
+       │  (scaffold CLI)  │     esqueleto .ai/, settings.json, hooks, symlinks
+       └────────┬─────────┘
+                │
+                ▼
+   ┌────────────────────────────┐
+   │  Agente IA roda a          │  ← 20-40 minutos
+   │  meta-skill axis-bootstrap │     Discovery → Spec → Harness
+   │  (Opus 4.7+ recomendado)   │     → Continuity → Validation
+   └────────────┬───────────────┘
+                │
+                ▼
+       ┌──────────────────┐
+       │  Projeto agora é │  ← AXIS sai de cena
+       │  autossuficiente │     Agente opera o kit bootstrappado para sempre
+       └──────────────────┘
+```
+
+| Camada | Quem faz | Saída |
+| ------ | -------- | ----- |
+| **Scaffold** | CLI (determinístico) | esqueleto `.ai/`, `settings.json`, hooks, symlinks |
+| **Conteúdo** | Seu agente (via skill `axis-bootstrap`) | Skills com regras de negócio extraídas, rules com convenções detectadas, INSTRUCTIONS com arquitetura específica do projeto |
+| **Manutenção** | Seu agente + hooks/rules bootstrappados | Sem novas chamadas ao AXIS; o agente lê o kit e opera o projeto |
+
+**Uma exceção:** se o AXIS lançar versão nova com mudanças estruturais, a skill `axis-rebootstrap` (planejada v2.x) faz backup do `.ai/`, aplica a nova estrutura e reintegra seu conteúdo. Disparada por você, não automática.
+
+**Por que isso importa:** sem um agente capaz seguindo a meta-skill, o CLI sozinho produz placeholders de template. O valor do AXIS está concentrado em (1) o discovery que o agente faz, (2) a organização framework-driven do que ele encontra, e (3) o kit bootstrappado que permite ao projeto se manter sozinho depois.
+
+---
+
 ## Quick Start — 5 Minutos
 
 ### Opção A — CLI (mais rápido)

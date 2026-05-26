@@ -26,6 +26,42 @@ Full details in [FRAMEWORK.md](FRAMEWORK.md).
 
 ---
 
+## How AXIS Actually Works
+
+> **AXIS is a one-shot bootstrap, not a daemon.** The CLI scaffolds the structure in seconds; an AI agent (preferably Opus 4.7+) does the real work in a single 20-40 minute session; after that, the project is self-sufficient.
+
+```text
+       ┌──────────────────┐
+       │   axis init      │  ← ~10 seconds
+       │  (CLI scaffold)  │     .ai/ skeleton, settings.json, hooks, symlinks
+       └────────┬─────────┘
+                │
+                ▼
+   ┌────────────────────────────┐
+   │   AI agent runs the        │  ← 20-40 minutes
+   │   axis-bootstrap meta-skill│     Discovery → Spec → Harness
+   │   (Opus 4.7+ recommended)  │     → Continuity → Validation
+   └────────────┬───────────────┘
+                │
+                ▼
+       ┌──────────────────┐
+       │  Project is now  │  ← AXIS exits the picture
+       │  self-sufficient │     Agent operates the bootstrapped kit forever
+       └──────────────────┘
+```
+
+| Layer | Done by | Output |
+| ----- | ------- | ------ |
+| **Scaffold** | CLI (deterministic) | `.ai/` skeleton, `settings.json`, hooks, symlinks |
+| **Content** | Your agent (via `axis-bootstrap` skill) | Skills with extracted business rules, rules with detected conventions, INSTRUCTIONS with project-specific architecture |
+| **Ongoing work** | Your agent + bootstrapped hooks/rules | No further AXIS calls needed; the agent reads the kit and operates the project |
+
+**One exception:** if AXIS releases a new version with structural changes, the `axis-rebootstrap` skill (planned v2.x) backs up your `.ai/`, applies the new structure, and re-integrates your content. Triggered by you, not automatic.
+
+**Why this matters:** without a capable agent following the meta-skill, the CLI alone produces template placeholders. The value of AXIS is concentrated in (1) the discovery the agent does, (2) the framework-driven organization of what it finds, and (3) the bootstrapped kit that lets the project maintain itself afterward.
+
+---
+
 ## Quick Start — 5 Minutes
 
 ### Option A — CLI (fastest)
