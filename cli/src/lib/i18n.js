@@ -68,6 +68,23 @@ const STRINGS = {
     cleanupNotFound: 'No axis-bootstrap skill found in .ai/skills/. Nothing to remove.',
     cleanupAborted: 'Aborted — no changes made.',
 
+    // preset safety (F1.1, F1.4, F2.4)
+    presetGreenfieldWarn: '`--preset` is for greenfield projects. For existing projects, use `axis init` (interactive).',
+    presetDryRun: 'Dry run — no files written',
+    presetDryRunCreate: 'Files that would be created',
+    presetDryRunOverwrite: 'Files that would be OVERWRITTEN',
+    presetCollision: 'Refusing to overwrite existing file(s)',
+    presetOptionsHeader: 'Options',
+    presetOptBackup: 'Save .axis-bak-<timestamp> copies before overwriting (recommended)',
+    presetOptForce: 'Overwrite without backup (destructive)',
+    presetOptDryRun: 'Show what would happen without writing',
+    presetUseInteractive: 'Or use interactive mode',
+    presetBackupDone: 'Backed up existing file(s)',
+    presetForceWarn: '--force: overwriting file(s) without backup',
+    presetWindowsSkip: 'Windows detected: skipping `bash setup-ide-links.sh`',
+    presetWindowsHint: 'Run from WSL, or use `mklink /D` in an elevated terminal to create symlinks manually',
+    presetDetected: 'Detected',
+
     // common
     abortedAlready: 'Aborted. Run `axis audit` to inspect existing structure instead.',
     overwrite: 'Overwrite?',
@@ -132,6 +149,23 @@ const STRINGS = {
     cleanupRemoved: 'Skill bootstrap removida. O projeto agora é autossuficiente.',
     cleanupNotFound: 'Nenhuma skill axis-bootstrap encontrada em .ai/skills/. Nada a remover.',
     cleanupAborted: 'Cancelado — nada foi alterado.',
+
+    // preset safety (F1.1, F1.4, F2.4)
+    presetGreenfieldWarn: '`--preset` é para projetos greenfield. Para projetos existentes use `axis init` (interativo).',
+    presetDryRun: 'Dry run — nenhum arquivo escrito',
+    presetDryRunCreate: 'Arquivos que seriam criados',
+    presetDryRunOverwrite: 'Arquivos que seriam SOBRESCRITOS',
+    presetCollision: 'Recusando sobrescrever arquivo(s) existente(s)',
+    presetOptionsHeader: 'Opções',
+    presetOptBackup: 'Salvar cópias .axis-bak-<timestamp> antes de sobrescrever (recomendado)',
+    presetOptForce: 'Sobrescrever sem backup (destrutivo)',
+    presetOptDryRun: 'Mostrar o que aconteceria sem escrever',
+    presetUseInteractive: 'Ou use o modo interativo',
+    presetBackupDone: 'Backup feito de arquivo(s) existente(s)',
+    presetForceWarn: '--force: sobrescrevendo arquivo(s) sem backup',
+    presetWindowsSkip: 'Windows detectado: pulando `bash setup-ide-links.sh`',
+    presetWindowsHint: 'Rode via WSL, ou use `mklink /D` num terminal elevado para criar symlinks manualmente',
+    presetDetected: 'Detectado',
 
     abortedAlready: 'Cancelado. Rode `axis audit` para inspecionar a estrutura existente.',
     overwrite: 'Sobrescrever?',

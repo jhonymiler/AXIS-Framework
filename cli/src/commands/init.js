@@ -63,7 +63,7 @@ export async function init(argv) {
     const locale = flags.lang === 'pt' ? 'pt' : 'en';
     const name = flags.name || path.basename(target);
     const purpose = flags.purpose || `${name} project bootstrapped by axis preset ${flags.preset}`;
-    return presetBootstrap(target, locale, { name, purpose, ...preset });
+    return presetBootstrap(target, locale, { name, purpose, ...preset }, flags);
   }
 
   // 1. Pick language (auto-detect, ask once)
@@ -316,12 +316,18 @@ async function quickBootstrap(target, locale) {
   fs.chmodSync(path.join(target, 'setup-ide-links.sh'), 0o755);
   s.message(T('quickInstallerReady'));
 
-  try {
-    execSync('bash setup-ide-links.sh', { cwd: target, stdio: 'pipe' });
-    s.stop(T('quickSymlinksInstalled'));
-  } catch {
+  if (process.platform === 'win32') {
     s.stop(T('quickDoneScaffolding'));
-    log.warn(T('quickRunLink'));
+    log.warn(`${pc.yellow('⚠')} ${T('presetWindowsSkip')}`);
+    log.warn(`  ${T('presetWindowsHint')}`);
+  } else {
+    try {
+      execSync('bash setup-ide-links.sh', { cwd: target, stdio: 'pipe' });
+      s.stop(T('quickSymlinksInstalled'));
+    } catch {
+      s.stop(T('quickDoneScaffolding'));
+      log.warn(T('quickRunLink'));
+    }
   }
 
   const created = [
@@ -348,11 +354,115 @@ async function quickBootstrap(target, locale) {
 }
 
 /**
+ * Compute every file presetBootstrap intends to write, given the resolved cfg.
+ * Used upfront to detect collisions with existing files before any disk write.
+ */
+function presetTargetFiles(target, cfg) {
+  const files = [
+    path.join(target, '.ai', 'INSTRUCTIONS.md'),
+    path.join(target, '.ai', 'CONVENTIONS.md'),
+    path.join(target, '.ai', 'docs', 'STATE.md'),
+    path.join(target, 'setup-ide-links.sh'),
+  ];
+  for (const skill of cfg.spdd) {
+    files.push(path.join(target, '.ai', 'skills', skill, 'SKILL.md'));
+  }
+  const rulesSrc = path.join(TEMPLATES, 'rules');
+  if (fs.existsSync(rulesSrc)) {
+    for (const f of fs.readdirSync(rulesSrc)) {
+      if (f.endsWith('.md')) files.push(path.join(target, '.ai', 'rules', f));
+    }
+  }
+  if (cfg.ides.includes('claude')) {
+    files.push(path.join(target, '.claude', 'settings.json'));
+  }
+  return files;
+}
+
+function backupTimestamp() {
+  return new Date().toISOString().replace(/[:.]/g, '-').replace('T', '_').split('Z')[0];
+}
+
+/**
  * Non-interactive preset path — same artifacts as quickBootstrap but no prompts.
  * Used by `axis init --preset <name>` for CI, scripted bootstraps, and reproducibility.
+ *
+ * Defensive defaults (F1.1):
+ *   - Aborts if existing files would be overwritten, unless --force or --backup is given
+ *   - --backup creates `<file>.axis-bak-<ISO-timestamp>` copies before writing
+ *   - --force overwrites with a loud warning (no backup)
+ *   - --dry-run prints the plan without writing anything
+ *
+ * Platform guard (F1.4):
+ *   - On win32, `bash setup-ide-links.sh` is skipped with manual-recovery hint
  */
-async function presetBootstrap(target, locale, cfg) {
+async function presetBootstrap(target, locale, cfg, flags) {
+  const T = (k) => t(locale, k);
   const { name, purpose, stack, ides, spdd } = cfg;
+
+  // F2.4 — banner-level warning so the destructive nature of --preset is visible
+  log.warn(`${pc.yellow('⚠')}  ${T('presetGreenfieldWarn')}`);
+
+  // F1.2 — show detection result before any write
+  const detection = detectProject(target);
+  log.info(`${T('presetDetected')}: ${pc.cyan(detection.state)}` +
+    (detection.stackHints.length ? pc.dim(` (${detection.stackHints.join(', ')})`) : ''));
+
+  // F1.1 — compute collisions upfront
+  const targetFiles = presetTargetFiles(target, cfg);
+  const collisions = targetFiles.filter((p) => fs.existsSync(p));
+
+  // --dry-run: list the plan and exit
+  if (flags['dry-run']) {
+    const fresh = targetFiles.filter((p) => !collisions.includes(p));
+    note(
+      [
+        pc.bold(T('presetDryRunCreate') + `: ${fresh.length}`),
+        ...fresh.map((p) => pc.green('  + ') + path.relative(target, p)),
+        ...(collisions.length
+          ? ['', pc.bold(pc.yellow(T('presetDryRunOverwrite') + `: ${collisions.length}`)),
+             ...collisions.map((p) => pc.yellow('  ! ') + path.relative(target, p))]
+          : []),
+      ].join('\n'),
+      T('presetDryRun')
+    );
+    if (collisions.length && !flags.force && !flags.backup) {
+      log.warn(`${pc.yellow('⚠')}  ${T('presetCollision')}: use --backup or --force to proceed.`);
+    }
+    return;
+  }
+
+  // Collisions without explicit consent → abort with actionable guidance
+  if (collisions.length > 0 && !flags.force && !flags.backup) {
+    log.error(`${pc.red('✗')} ${T('presetCollision')} (${collisions.length}):`);
+    for (const p of collisions) {
+      console.error('  ' + pc.dim(path.relative(target, p)));
+    }
+    console.error('');
+    console.error(pc.bold(T('presetOptionsHeader') + ':'));
+    console.error(`  ${pc.cyan('--backup')}   ${T('presetOptBackup')}`);
+    console.error(`  ${pc.cyan('--force')}    ${T('presetOptForce')}`);
+    console.error(`  ${pc.cyan('--dry-run')}  ${T('presetOptDryRun')}`);
+    console.error('');
+    console.error(pc.dim(T('presetUseInteractive') + ': ') + pc.bold('axis init') + pc.dim(' (' + (locale === 'pt' ? 'sem' : 'without') + ' --preset)'));
+    process.exit(1);
+  }
+
+  // Backups before any write
+  if (flags.backup && collisions.length > 0) {
+    const ts = backupTimestamp();
+    const lines = [];
+    for (const p of collisions) {
+      const bak = `${p}.axis-bak-${ts}`;
+      fs.copyFileSync(p, bak);
+      lines.push(`  ${pc.dim('→')} ${path.relative(target, bak)}`);
+    }
+    log.success(`${T('presetBackupDone')} (${collisions.length}):`);
+    console.log(lines.join('\n'));
+  } else if (flags.force && collisions.length > 0) {
+    log.warn(`${pc.yellow('⚠')}  ${T('presetForceWarn')} (${collisions.length})`);
+  }
+
   const s = spinner();
   s.start(`Scaffolding preset → ${pc.cyan(target)}`);
 
@@ -392,12 +502,18 @@ async function presetBootstrap(target, locale, cfg) {
   write(path.join(target, 'setup-ide-links.sh'), read(path.join(TEMPLATES, 'setup-ide-links.sh')));
   fs.chmodSync(path.join(target, 'setup-ide-links.sh'), 0o755);
 
-  try {
-    execSync('bash setup-ide-links.sh', { cwd: target, stdio: 'pipe' });
-    s.stop(pc.green('✓ Preset applied (symlinks installed)'));
-  } catch {
+  if (process.platform === 'win32') {
     s.stop(pc.green('✓ Preset applied'));
-    log.warn('Run `bash setup-ide-links.sh` manually to wire IDE symlinks.');
+    log.warn(`${pc.yellow('⚠')}  ${T('presetWindowsSkip')}`);
+    log.warn(`  ${T('presetWindowsHint')}`);
+  } else {
+    try {
+      execSync('bash setup-ide-links.sh', { cwd: target, stdio: 'pipe' });
+      s.stop(pc.green('✓ Preset applied (symlinks installed)'));
+    } catch {
+      s.stop(pc.green('✓ Preset applied'));
+      log.warn('Run `bash setup-ide-links.sh` manually to wire IDE symlinks.');
+    }
   }
 
   const created = [
