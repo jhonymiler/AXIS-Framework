@@ -69,6 +69,37 @@ Use the template in [TEMPLATES.md → settings.json](TEMPLATES.md#settingsjson).
 
 ---
 
+## Step 1.5 — Audit existing `scripts/` for orphans (do this before adding new hooks)
+
+If the project already has files in `scripts/` (e.g., from a previous bootstrap or hand-written automation), **map each one to a hook before adding any new hooks**. Acceptance criterion: **0 orphan scripts** at the end of Phase 3.
+
+```bash
+ls scripts/ 2>/dev/null
+```
+
+For each script found, classify by filename pattern:
+
+| Filename pattern | Default target hook |
+| ---------------- | ------------------- |
+| `format-*.sh`, `lint-*.sh` | `PostToolUse` matcher `Edit\|Write` |
+| `validate-*.sh`, `guard-*.sh` | `PreToolUse` matcher `Bash` (or `.*` for guard) |
+| `run-tests-*.sh`, `test-on-stop*.sh` | `Stop` |
+| `session-*.sh` | `SessionStart` |
+| `post-spec-edit*.sh` | `PostToolUse` matcher `Edit(.ai/**)` |
+
+Present the mapping to the user before writing `settings.json`:
+
+```markdown
+## Detected scripts in scripts/
+- format-file.sh         → will wire as PostToolUse (Edit|Write)
+- validate-bash.sh       → will wire as PreToolUse (Bash)
+- legacy-deploy.sh       → NO MATCHING HOOK — keep as standalone? (asking user)
+```
+
+Unwired scripts left in `scripts/` are fine as standalone tools; just **mark them explicitly** so the agent doesn't assume they auto-run.
+
+---
+
 ## Step 2 — Hooks
 
 Hooks execute shell commands in response to agent events. **Three are indispensable** when applicable:

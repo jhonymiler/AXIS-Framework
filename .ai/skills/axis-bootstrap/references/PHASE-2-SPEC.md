@@ -8,10 +8,24 @@
 
 ---
 
+## Migration sub-protocol (apply if `.ai/` already exists with non-trivial content)
+
+**Detect before generating.** If the target project has a pre-existing `.ai/INSTRUCTIONS.md` >50 lines, or skills in `.ai/skills/`, or a STATE.md with real content (not just placeholder comments), **do not regenerate from scratch**. Run this sub-protocol first:
+
+1. **Archive the existing tree.** `cp -r .ai .ai/.archive/pre-axis-$(date -Iseconds)` so nothing is lost.
+2. **Extract domain content.** Read each existing file and identify what is **project-specific** (business rules, domain glossary, custom workflows) vs what is **AXIS scaffold** (the standard sections). Domain content goes into a working buffer.
+3. **Regenerate scaffold per Phase 2 normally** — empty placeholders for the parametrized sections.
+4. **Merge domain content back** into the appropriate sections of the new scaffold (e.g., extracted business rules go into the new `INSTRUCTIONS.md` Architecture table and into `.ai/skills/<domain>/SKILL.md`).
+5. **Diff and present to user.** Show side-by-side: "These domain sections survived from the previous version. These scaffold sections were regenerated. These are net-new placeholders to fill."
+
+This sub-protocol is what `axis-rebootstrap` (a future skill) will codify. For now, the orchestrator does it manually — but **always preserves the backup**.
+
+---
+
 ## Generation Order (do not reverse)
 
 ```text
-1. Create folder structure
+1. Create folder structure (skip if migration: backup first)
 2. Generate INSTRUCTIONS.md
 3. Generate skill skeletons (one per identified domain)
 4. Generate initial rules

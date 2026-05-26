@@ -51,11 +51,17 @@ Ask the user which mode applies if detection is ambiguous.
 
 ---
 
-## Phase 1.5 — SPDD Pipeline *(optional, recommended for complex projects)*
+## Phase 1.5 — SPDD Pipeline *(optional, gated by decision tree)*
 
-**When to apply:** project with non-trivial business logic, multiple domain entities, or existing codebase to understand before speccing.
+**Decision tree** — apply SPDD if **two or more** of the following are true:
 
-**Trigger:** user says "analyze before speccing", project has >2 interacting entities, or complexity is evaluated as Large/Complex by Pattern #4.
+1. **Greenfield feature?** The work has no existing implementation to anchor against — Canvas is the only way to lock intent before coding.
+2. **>1 file or >1 module touched?** Multi-file changes benefit from a single-page artifact that holds the cross-cutting design.
+3. **User explicitly asked for a Canvas?** "Make me a REASONS Canvas / SPDD / story breakdown" is an explicit request — always honor.
+
+Skip SPDD if the work is a single-file fix, a typo, a config tweak, or a tightly scoped refactor with passing tests as the gate.
+
+**Why two-of-three (not all three):** strict "all three" excludes useful cases (e.g., greenfield single-file utility that the user wants documented). Strict "any one" inflates every typo into a Canvas exercise.
 
 **Pipeline (each step has its own exit gate):**
 

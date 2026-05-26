@@ -1,6 +1,7 @@
 ---
 name: axis-bootstrap
-description: Bootstrap any project — software or non-technical — with a complete Spec + Harness + Continuity structure for AI-augmented work. Harness-first: permissions, hooks, and symlinks are configured before prompt optimization. Use when starting a new project from scratch, when adopting AI-augmented workflows in an existing project, when migrating from a monolithic CLAUDE.md to a structured framework, or when auditing a project for missing AI infrastructure. Also handles quick-start path (5 minutes). Trigger terms: bootstrap, initialize project, AI setup, .ai structure, CLAUDE.md, AGENTS.md, multi-IDE, skills, harness, spec-driven, progressive disclosure, axis, axis-bootstrap, failure attribution, ACE, continuity playbook.
+version: 1.0.0
+description: Bootstrap any project — software or non-technical — with a complete Spec + Harness + Continuity structure for AI-augmented work. Harness-first: permissions, hooks, and symlinks are configured before prompt optimization. Use when starting a new project from scratch, when adopting AI-augmented workflows in an existing project, when migrating from a monolithic CLAUDE.md to a structured framework, or when auditing a project for missing AI infrastructure. Also handles quick-start path (5 minutes). Trigger terms: bootstrap, initialize project, AI setup, .ai structure, CLAUDE.md, AGENTS.md, multi-IDE, skills, harness, spec-driven, progressive disclosure, axis, axis-bootstrap, failure attribution, ACE, continuity playbook, discoverer sub-agents.
 ---
 
 # AXIS Bootstrap
