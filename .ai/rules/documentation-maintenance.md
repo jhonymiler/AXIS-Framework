@@ -9,15 +9,15 @@ trigger: always
 
 ## Triggers — when to propose a doc update
 
-| Event in this session                                | Doc to update                              | How                                                |
-| ---------------------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
-| New phase, gate, or principle in `axis-bootstrap`    | The corresponding `references/*.md` AND `PLANNER.md` AND `PROMPT-TEMPLATE.md` | Edit all three; run `sync-cli-templates.sh` |
-| New template format (rule, skill, settings)          | `references/TEMPLATES.md`                  | Add anchored section; link from the phase that uses it |
-| New satellite skill added or removed                 | `.ai/INSTRUCTIONS.md` skill table + `FRAMEWORK.md` if conceptually relevant | Edit table; check `cli/templates/skills/` parity |
-| Discovery question added/removed                     | `PHASE-1-DISCOVERY.md` + propagate to `PHASE-2-SPEC.md` output | The question is only valid if its answer becomes an artifact |
-| Validation gate added/changed                        | `PHASE-5-VALIDATION.md` AND `scripts/validate-axis.sh` if automatable | Prefer automated check over manual checklist |
-| Decision made / lesson learned in session            | `.ai/docs/STATE.md`                        | Curate — move from "In Progress" or "Blockers"; add to "Active Decisions" or "Lessons Learned" |
-| Recursiveness violation discovered                   | Issue with `recursiveness` label + STATE TODO | Do not patch silently — log the violation, then fix |
+| Event in this session                             | Doc to update                                                                 | How                                                                                            |
+| ------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| New phase, gate, or principle in `axis-bootstrap` | The corresponding `references/*.md` AND `PLANNER.md` AND `PROMPT-TEMPLATE.md` | Edit all three; run `sync-cli-templates.sh`                                                    |
+| New template format (rule, skill, settings)       | `references/TEMPLATES.md`                                                     | Add anchored section; link from the phase that uses it                                         |
+| New satellite skill added or removed              | `.ai/INSTRUCTIONS.md` skill table + `FRAMEWORK.md` if conceptually relevant   | Edit table; check `cli/templates/skills/` parity                                               |
+| Discovery question added/removed                  | `PHASE-1-DISCOVERY.md` + propagate to `PHASE-2-SPEC.md` output                | The question is only valid if its answer becomes an artifact                                   |
+| Validation gate added/changed                     | `PHASE-5-VALIDATION.md` AND `scripts/validate-axis.sh` if automatable         | Prefer automated check over manual checklist                                                   |
+| Decision made / lesson learned in session         | `.ai/docs/STATE.md`                                                           | Curate — move from "In Progress" or "Blockers"; add to "Active Decisions" or "Lessons Learned" |
+| Recursiveness violation discovered                | Issue with `recursiveness` label + STATE TODO                                 | Do not patch silently — log the violation, then fix                                            |
 
 ## Curation Rules for STATE.md
 

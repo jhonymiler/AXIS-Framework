@@ -6,13 +6,13 @@ Compute the set of changes between the installed CLI version's templates and the
 
 ## Classification Rules
 
-| Class | Condition | Action in Phase 3 |
-|-------|-----------|-------------------|
-| `IDENTICAL` | template == project file | Skip |
-| `FRAMEWORK-CHANGED` | template ≠ project file AND file is in framework-owned list | Safe to overwrite |
-| `DOMAIN-MODIFIED` | template ≠ project file AND file is in domain list | Phase 4 re-integration |
-| `NEW` | template exists, project file does not | Copy without user conflict |
-| `CUSTOM-ONLY` | project file exists, no template counterpart | Never touch |
+| Class               | Condition                                                   | Action in Phase 3          |
+| ------------------- | ----------------------------------------------------------- | -------------------------- |
+| `IDENTICAL`         | template == project file                                    | Skip                       |
+| `FRAMEWORK-CHANGED` | template ≠ project file AND file is in framework-owned list | Safe to overwrite          |
+| `DOMAIN-MODIFIED`   | template ≠ project file AND file is in domain list          | Phase 4 re-integration     |
+| `NEW`               | template exists, project file does not                      | Copy without user conflict |
+| `CUSTOM-ONLY`       | project file exists, no template counterpart                | Never touch                |
 
 ## Framework-owned file list (for diff comparison)
 

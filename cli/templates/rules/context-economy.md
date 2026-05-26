@@ -13,13 +13,13 @@ Re-reading is cheap once; re-reading every turn is expensive forever. Under-read
 
 ## Tool Budget — by Default
 
-| Action type | Default budget | Escalate when |
-| ----------- | --------------: | ------------- |
-| Trivial answer (syntax, single fact) | 0 reads | Never escalate; if you need to read, the question wasn't trivial |
-| Locate a symbol or pattern | 1 grep + ≤2 reads | First grep returned nothing useful |
-| Understand a module's behavior | 1 grep + 1 large read (whole file) | File is split across many small files |
-| Refactor or add feature | grep + read affected files + read 1 sibling for style | Ambiguity remains after that |
-| Cross-cutting change (>4 files) | Delegate exploration to a subagent | Subagent unavailable → manual grep tree |
+| Action type                          |                                        Default budget | Escalate when                                                    |
+| ------------------------------------ | ----------------------------------------------------: | ---------------------------------------------------------------- |
+| Trivial answer (syntax, single fact) |                                               0 reads | Never escalate; if you need to read, the question wasn't trivial |
+| Locate a symbol or pattern           |                                     1 grep + ≤2 reads | First grep returned nothing useful                               |
+| Understand a module's behavior       |                    1 grep + 1 large read (whole file) | File is split across many small files                            |
+| Refactor or add feature              | grep + read affected files + read 1 sibling for style | Ambiguity remains after that                                     |
+| Cross-cutting change (>4 files)      |                    Delegate exploration to a subagent | Subagent unavailable → manual grep tree                          |
 
 **Stop signals — do not exceed budget without one:**
 - The next read will answer a question you cannot already answer.
@@ -30,10 +30,10 @@ Re-reading is cheap once; re-reading every turn is expensive forever. Under-read
 
 Every claim about the codebase carries one of three confidence levels. **State it explicitly when relevant** — especially before destructive or hard-to-reverse actions.
 
-| Level | Phrasing | Source |
-| ----- | -------- | ------ |
-| **Verified** | "I read X at line N" / "I ran Y and got Z" | This turn's tool output |
-| **Probable** | "Based on the convention in this repo, …" | Pattern from ≥2 verified samples |
+| Level         | Phrasing                                         | Source                           |
+| ------------- | ------------------------------------------------ | -------------------------------- |
+| **Verified**  | "I read X at line N" / "I ran Y and got Z"       | This turn's tool output          |
+| **Probable**  | "Based on the convention in this repo, …"        | Pattern from ≥2 verified samples |
 | **Uncertain** | "I'd need to check …" / "I'm not sure whether …" | Memory, inference, or assumption |
 
 Never present *Uncertain* as *Verified*. This is the most common form of agent fabrication (see [knowledge-verification.md](knowledge-verification.md) → Anti-pattern).
