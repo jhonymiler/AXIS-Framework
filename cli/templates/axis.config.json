@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "_doc": "AXIS workflow config — read by the agent (not by the CLI) before each optional phase. Schema and semantics: .ai/skills/axis-bootstrap/references/CONFIG-SCHEMA.md. Edit by hand or via PR. Defaults below mirror the current behaviour, so removing this file does not change anything.",
+  "phases": {
+    "spdd": "required",
+    "adversarial": "required",
+    "delta": "required-for-brownfield",
+    "specify": "required-for-greenfield",
+    "rebootstrap": "manual"
+  },
+  "challengers": {
+    "security": true,
+    "simplicity": true,
+    "scope": true
+  },
+  "canvas": {
+    "dimensions": ["R", "E", "A", "S1", "C", "O", "T", "N", "S2"],
+    "require_all": true,
+    "min_test_scenarios": {
+      "happy_path": 1,
+      "failure": 1,
+      "edge_case": 1
+    }
+  },
+  "constitutional": {
+    "enforce_pre_tool_use": true,
+    "block_on_violation": false
+  }
+}

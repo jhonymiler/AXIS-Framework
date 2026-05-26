@@ -36,7 +36,7 @@ echo "[3/4] Live skill ⇄ CLI template sync"
 sync_fail=0
 for f in PHASE-1-DISCOVERY.md PHASE-2-SPEC.md PHASE-3-HARNESS.md PHASE-4-CONTINUITY.md \
          PHASE-5-VALIDATION.md TEMPLATES.md QUICKSTART.md PATTERNS.md \
-         UNIVERSAL-MAP.md CANVAS-REASONS.md; do
+         UNIVERSAL-MAP.md CANVAS-REASONS.md CONFIG-SCHEMA.md; do
   if ! diff -q .ai/skills/axis-bootstrap/references/$f \
                 cli/templates/bootstrap-skill/references/$f > /dev/null 2>&1; then
     fail "references/$f drift"
@@ -79,6 +79,14 @@ for s in business-rules-keeper flow-architect architecture-guardian conventions-
   if ! diff -q .ai/skills/axis-bootstrap/agents/specialists/$s.md \
                 cli/templates/bootstrap-skill/agents/specialists/$s.md > /dev/null 2>&1; then
     fail "agents/specialists/$s.md drift between live and CLI templates"
+    sync_fail=1
+  fi
+done
+# Challengers (F13 — adversarial reviewers dispatched in Phase 1.8)
+for c in security-challenger simplicity-challenger scope-challenger; do
+  if ! diff -q .ai/skills/axis-bootstrap/agents/challengers/$c.md \
+                cli/templates/bootstrap-skill/agents/challengers/$c.md > /dev/null 2>&1; then
+    fail "agents/challengers/$c.md drift between live and CLI templates"
     sync_fail=1
   fi
 done

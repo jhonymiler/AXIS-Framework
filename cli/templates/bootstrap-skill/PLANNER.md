@@ -23,6 +23,13 @@ When the skill is invoked, the agent checks:
 
 Ask the user which mode applies if detection is ambiguous.
 
+**Read `axis.config.json` once at session start** (F14 — created during bootstrap;
+schema in [references/CONFIG-SCHEMA.md](references/CONFIG-SCHEMA.md)). Every
+phase below consults this config before deciding to run, skip, or ask. If the
+file is missing, defaults apply (everything required, all challengers on). The
+agent surfaces every skip decision (`"Phase 1.8 skipped per axis.config.json"`)
+so the user can correct in the same turn.
+
 ---
 
 ## Phase 1 — Discovery
@@ -75,9 +82,48 @@ The artifact produced is the **REASONS Canvas** ([references/CANVAS-REASONS.md](
 
 **Exit gate:**
 
-> Present the filled Canvas (all 7 dimensions: R/E/A/S₁/O/N/S₂). Ask: *"Does this capture the feature? Any AC, entity, norm, or invariant I missed?"* Advance to Phase 2 only after confirmation.
+> Present the filled Canvas (all 9 dimensions: R/E/A/S₁/C/O/T/N/S₂ — the REASONSTC layout). Ask: *"Does this capture the feature? Any AC, entity, contract, test scenario, norm, or invariant I missed?"* Advance to Phase 1.8 only after confirmation.
 
 **Note on `iterative-review`:** runs **after** code is generated (post-Phase 5). See Phase 6.
+
+---
+
+## Phase 1.8 — Adversarial Challenge *(F13 — after Canvas, before Spec Layer)*
+
+**Purpose:** Critique the filled Canvas before any code is generated, so that
+specification gaps are surfaced when they are still cheap to fix. Closes the
+debate gap vs BMAD's party-mode by giving three independent reviewers an
+explicit "find what's wrong" mandate.
+
+**Step 0 (mandatory before any dispatch):** install the 3 challenger sub-agents
+from `agents/challengers/` into `.claude/agents/` (mirrors how Phase 1 handles
+discoverers).
+
+**Pipeline:**
+
+1. **Dispatch all three challengers in parallel**, each with the full Canvas
+   as input:
+   - `security-challenger` — injection, auth/authz, secrets, abuse controls,
+     contract-level invariants, attack scenarios in T
+   - `simplicity-challenger` — YAGNI, premature interfaces, component
+     proliferation in S₁, unneeded indirection in C
+   - `scope-challenger` — implicit features, MVP creep, weak DoD,
+     "later" without a Deferred-Ideas home
+2. **Consolidate critiques** into a single review note grouped by section
+   (R/E/A/S₁/C/O/T/N/S₂). Deduplicate when two challengers raise the same
+   point.
+3. **Triage** every item:
+   - **CRÍTICO** → must be resolved by amending the Canvas, or explicitly
+     accepted and documented (link to an Issue or STATE.md decision).
+   - **ALERTA** → resolve, or record as accepted risk in S₂.
+   - **APROVEI** → no action.
+
+**Exit gate:**
+
+> Present the consolidated critique and the Canvas amendments. Ask: *"Canvas is final?"* — advance to Phase 2 only after explicit user confirmation. If the Canvas changed materially, the Phase 1.5 exit gate is re-asked on the new version (the user reconfirms the dimensions).
+
+**Skip rule:** Phase 1.8 may be skipped only when the feature is so trivial
+that Phase 1.5 (SPDD) itself was skipped. Otherwise the gate stands.
 
 ---
 
@@ -232,7 +278,7 @@ The artifact produced is the **REASONS Canvas** ([references/CANVAS-REASONS.md](
 
 > Diff confined to Canvas Structure section? All ACs verified with concrete values? STATE.md updated with new patterns/decisions?
 
-**This phase is recurring** — every feature post-bootstrap re-enters Phase 1.5 → 6 cycle. Bootstrap (Phases 1-5) runs once; SPDD pipeline runs per feature.
+**This phase is recurring** — every feature post-bootstrap re-enters Phase 1.5 → 1.8 → 6 cycle. Bootstrap (Phases 1-5) runs once; SPDD pipeline + adversarial challenge run per feature.
 
 ---
 

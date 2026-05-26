@@ -458,32 +458,28 @@ Exit gate:
 
 ---
 
-### F4C — axis-rebootstrap skill (Deferred → Sprint 4)
+### F4C — axis-rebootstrap skill ✅ (already complete + skill-driven by decision)
 
-**Contexto:** Já existe `axis init --rebootstrap` que instala o skill. O skill em si
-(`axis-rebootstrap`) existe em `.ai/skills/axis-rebootstrap/` mas precisa ser completado.
+**Status (2026-05-26):** Done. The skill is fully populated and `.axis-version`
+is stamped at bootstrap. The only remaining roadmap item — adding
+`axis rebootstrap` as a *runtime CLI command* — is **cancelled by decision**:
+the "AXIS is one-shot, no runtime CLI dependency" rule applies here too.
 
-**Gap preenchido:** Permite que projetos já bootstrapped atualizem para nova versão do AXIS
-sem perder conteúdo de domínio (rules, skills, STATE, CONVENTIONS).
+**How rebootstrap works today (skill-driven):**
 
-**Como implementar:**
+1. User runs `axis init --rebootstrap` *once* on an existing bootstrapped project
+   — this is scaffolding (one-shot install), not a runtime command. It copies
+   the `axis-rebootstrap` skill into `.ai/skills/axis-rebootstrap/`.
+2. The agent loads the installed skill and runs the 5-phase pipeline
+   (BACKUP → DIFF → APPLY → CONSOLIDATE → VALIDATE) via Read/Write/Bash/git.
+3. After the pipeline, the project has the new AXIS version applied; domain
+   content (rules, skills, STATE, CONVENTIONS) is preserved.
 
-1. Completar `.ai/skills/axis-rebootstrap/references/` com os 5 planos de fase:
-   - `PHASE-1-BACKUP.md` ✓ (já existe)
-   - `PHASE-2-DIFF.md` ✓ (já existe)
-   - `PHASE-3-APPLY.md` ✓ (já existe)
-   - `PHASE-4-CONSOLIDATE.md` ✓ (já existe)
-   - `PHASE-5-VALIDATE.md` ✓ (já existe)
-
-2. Adicionar `.axis-version` ao projeto bootstrapped durante `axis init`
-   (arquivo com `2.0.0` na raiz do `.ai/`) para o rebootstrap saber de qual versão migrar
-
-3. Adicionar `axis rebootstrap` como comando no CLI (atualmente só existe como `--rebootstrap` flag)
-
-**Critério de aceite:**
-- [ ] `axis rebootstrap` funciona como comando standalone
-- [ ] `.axis-version` é criado durante `axis init`
-- [ ] PHASE-3-APPLY.md descreve merge strategy (domain content preservado, harness substituído)
+**Acceptance criteria (all met):**
+- [x] `.ai/skills/axis-rebootstrap/references/PHASE-{1..5}-*.md` exist
+- [x] `.axis-version` is written by both `quickBootstrap` and `presetBootstrap`
+- [x] Skill-driven: zero `axis rebootstrap` runtime command in the bootstrapped
+      project (cancelled by 2026-05-26 architectural decision)
 
 ---
 

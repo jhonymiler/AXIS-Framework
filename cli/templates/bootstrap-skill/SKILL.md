@@ -20,7 +20,8 @@ Executable spec for bootstrapping projects with complete AI infrastructure. Orch
 | Phase | Focus | Exit Gate |
 | ----- | ----- | --------- |
 | **1 — Discovery** | Interview + 5 parallel discoverers | Project profile confirmed by user |
-| **1.5 — SPDD Pipeline** *(optional)* | `story-decompose` → `alignment` → `abstraction-first` produce REASONS Canvas | All 7 dimensions (R/E/A/S₁/O/N/S₂) filled and confirmed |
+| **1.5 — SPDD Pipeline** *(optional)* | `story-decompose` → `alignment` → `abstraction-first` produce REASONSTC Canvas | All 9 dimensions (R/E/A/S₁/C/O/T/N/S₂) filled and confirmed |
+| **1.8 — Adversarial Challenge** | 3 parallel challengers (security, simplicity, scope) critique the Canvas | CRÍTICOs resolved or explicitly accepted; user confirms Canvas final |
 | **2 — Spec Layer** | Generate INSTRUCTIONS, skills, rules, docs | `.ai/` structure populated and validated |
 | **3 — Harness Layer** | Configure settings, hooks, failure attribution, symlinks | Permissions and automation in effect |
 | **3.5 — Self-Maintenance Kit** | Install documentation-guardian + 3 rules + 2 hooks + 2 scripts | `bash scripts/audit-docs.sh` — 3 cold-start trials pass |
@@ -42,7 +43,7 @@ Detailed orchestration in [PLANNER.md](PLANNER.md). Final output contract in [PR
 ## References
 
 - [PLANNER.md](PLANNER.md) · [PROMPT-TEMPLATE.md](PROMPT-TEMPLATE.md) · [QUICKSTART.md](references/QUICKSTART.md)
-- [PHASE-1-DISCOVERY.md](references/PHASE-1-DISCOVERY.md) · [agents/discoverers/](agents/discoverers/)
+- [PHASE-1-DISCOVERY.md](references/PHASE-1-DISCOVERY.md) · [agents/discoverers/](agents/discoverers/) · [agents/challengers/](agents/challengers/)
 - [PHASE-2-SPEC.md](references/PHASE-2-SPEC.md) · [PHASE-3-HARNESS.md](references/PHASE-3-HARNESS.md)
 - [PHASE-3-5-SELF-MAINTENANCE.md](references/PHASE-3-5-SELF-MAINTENANCE.md) — self-maintenance kit
 - [PHASE-4-CONTINUITY.md](references/PHASE-4-CONTINUITY.md) · [PHASE-4-5-SPECIALIST.md](references/PHASE-4-5-SPECIALIST.md) · [agents/specialists/](agents/specialists/)

@@ -369,6 +369,12 @@ async function quickBootstrap(target, locale) {
     copyDir(specifySrc, path.join(target, '.ai', 'skills', 'axis-specify'));
   }
 
+  // F14 — axis.config.json (workflow policy read by the agent, not by CLI)
+  const configSrc = path.join(TEMPLATES, 'axis.config.json');
+  if (fs.existsSync(configSrc)) {
+    fs.copyFileSync(configSrc, path.join(target, 'axis.config.json'));
+  }
+
   // Default rule: session-start only (always-on baseline).
   // Other rules (engineering-discipline, context-economy, knowledge-verification) are opt-in:
   //   axis rules add <name>   (coming soon) or copy manually from the AXIS templates.
@@ -448,7 +454,8 @@ async function quickBootstrap(target, locale) {
     '.ai/INSTRUCTIONS.md',
     '.ai/CONVENTIONS.md',
     '.ai/docs/STATE.md',
-    `.ai/skills/ (${spddSkills.length} SPDD)`,
+    `.ai/skills/ (${spddSkills.length} SPDD + axis-delta + axis-specify + documentation-guardian)`,
+    'axis.config.json',
     'setup-ide-links.sh',
     ...(ides.includes('claude') ? ['.claude/settings.json'] : []),
     'AGENTS.md → .ai/INSTRUCTIONS.md',
@@ -537,6 +544,10 @@ function presetTargetFiles(target, cfg) {
   }
   if (cfg.ides.includes('claude')) {
     files.push(path.join(target, '.claude', 'settings.json'));
+  }
+  // F14 — axis.config.json (always landed; sits at project root)
+  if (fs.existsSync(path.join(TEMPLATES, 'axis.config.json'))) {
+    files.push(path.join(target, 'axis.config.json'));
   }
   return files;
 }
@@ -667,6 +678,12 @@ async function presetBootstrap(target, locale, cfg, flags) {
     copyDir(specifySrcP, path.join(target, '.ai', 'skills', 'axis-specify'));
   }
 
+  // F14 — axis.config.json (workflow policy read by the agent, not by CLI)
+  const configSrcP = path.join(TEMPLATES, 'axis.config.json');
+  if (fs.existsSync(configSrcP)) {
+    fs.copyFileSync(configSrcP, path.join(target, 'axis.config.json'));
+  }
+
   const rulesSrc = path.join(TEMPLATES, 'rules');
   const defaultRules = ['session-start.md'];
   if (fs.existsSync(rulesSrc)) {
@@ -740,9 +757,10 @@ async function presetBootstrap(target, locale, cfg, flags) {
     '.ai/INSTRUCTIONS.md',
     '.ai/CONVENTIONS.md',
     '.ai/docs/STATE.md',
-    `.ai/skills/ (${spdd.length} SPDD + documentation-guardian)`,
-    `.ai/rules/ (${fs.existsSync(rulesSrc) ? fs.readdirSync(rulesSrc).filter(f => f.endsWith('.md')).length : 0} always-on)`,
-    'scripts/ (hooks + self-maint kit)',
+    `.ai/skills/ (${spdd.length} SPDD + axis-delta + axis-specify + documentation-guardian)`,
+    `.ai/rules/ (${fs.existsSync(rulesSrc) ? fs.readdirSync(rulesSrc).filter(f => f.endsWith('.md') && !f.startsWith('constitutional-')).length : 0} always-on${cfg.constitutional ? ' + constitutional' : ''})`,
+    'scripts/ (hooks + self-maint kit + constitutional-check)',
+    'axis.config.json',
     'setup-ide-links.sh',
     ...(ides.includes('claude') ? ['.claude/settings.json (hooks wired)'] : []),
     'AGENTS.md → .ai/INSTRUCTIONS.md',
