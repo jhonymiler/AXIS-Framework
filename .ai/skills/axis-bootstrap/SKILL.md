@@ -1,11 +1,11 @@
 ---
 name: axis-bootstrap
-description: Bootstrap any project — software or non-technical — with a complete Spec + Harness + Memory structure for AI-augmented work. Harness-first: permissions, hooks, and symlinks are configured before prompt optimization. Use when starting a new project from scratch, when adopting AI-augmented workflows in an existing project, when migrating from a monolithic CLAUDE.md to a structured framework, or when auditing a project for missing AI infrastructure. Also handles quick-start path (5 minutes). Trigger terms: bootstrap, initialize project, AI setup, .ai structure, CLAUDE.md, AGENTS.md, multi-IDE, skills, harness, spec-driven, progressive disclosure, axis, axis-bootstrap, failure attribution, ACE, memory playbook.
+description: Bootstrap any project — software or non-technical — with a complete Spec + Harness + Continuity structure for AI-augmented work. Harness-first: permissions, hooks, and symlinks are configured before prompt optimization. Use when starting a new project from scratch, when adopting AI-augmented workflows in an existing project, when migrating from a monolithic CLAUDE.md to a structured framework, or when auditing a project for missing AI infrastructure. Also handles quick-start path (5 minutes). Trigger terms: bootstrap, initialize project, AI setup, .ai structure, CLAUDE.md, AGENTS.md, multi-IDE, skills, harness, spec-driven, progressive disclosure, axis, axis-bootstrap, failure attribution, ACE, continuity playbook.
 ---
 
 # AXIS Bootstrap
 
-Executable spec for bootstrapping projects with complete AI infrastructure. Orchestrates the creation of three layers (Spec, Harness, Memory) in sequential phases with explicit gates. **Harness is the priority — not the prompt.**
+Executable spec for bootstrapping projects with complete AI infrastructure. Orchestrates the creation of three layers (Spec, Harness, Continuity) in sequential phases with explicit gates. **Harness is the priority — not the prompt.**
 
 ## When to Use
 
@@ -22,7 +22,7 @@ Executable spec for bootstrapping projects with complete AI infrastructure. Orch
 | **1.5 — SPDD Pipeline** *(optional)* | `story-decompose` → `alignment` → `abstraction-first` produce REASONS Canvas | All 7 dimensions (R/E/A/S₁/O/N/S₂) filled and confirmed |
 | **2 — Spec Layer** | Generate INSTRUCTIONS, skills, rules, docs | `.ai/` structure populated and validated |
 | **3 — Harness Layer** | Configure settings, hooks, failure attribution, symlinks | Permissions and automation in effect |
-| **4 — Memory Layer** | Create STATE (playbook), CONVENTIONS | Curated memory ready for first session |
+| **4 — Continuity Layer** | Create STATE (playbook), CONVENTIONS | Curated continuity playbook ready for first session |
 | **5 — Validation** | Quality gates, k-trial smoke test, handoff | Bootstrap delivered |
 | **6 — Iterative Review** *(per feature, post-bootstrap)* | `iterative-review` keeps Canvas ⇄ code in sync | Diff scoped, ACs green, STATE updated |
 
@@ -44,7 +44,7 @@ Detailed orchestration in [PLANNER.md](PLANNER.md). Final output contract in [PR
 - [references/PHASE-1-DISCOVERY.md](references/PHASE-1-DISCOVERY.md) — interview and decision tree
 - [references/PHASE-2-SPEC.md](references/PHASE-2-SPEC.md) — Spec Layer generation
 - [references/PHASE-3-HARNESS.md](references/PHASE-3-HARNESS.md) — Harness Layer configuration + failure attribution
-- [references/PHASE-4-MEMORY.md](references/PHASE-4-MEMORY.md) — Memory Layer initialization + ACE principles
+- [references/PHASE-4-CONTINUITY.md](references/PHASE-4-CONTINUITY.md) — Continuity Layer initialization + ACE principles
 - [references/PHASE-5-VALIDATION.md](references/PHASE-5-VALIDATION.md) — quality gates and handoff
 - [references/TEMPLATES.md](references/TEMPLATES.md) — all copy-paste templates
 - [references/PATTERNS.md](references/PATTERNS.md) — technical patterns (PD, KVC, ACE, k-trial)

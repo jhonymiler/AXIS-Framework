@@ -1,6 +1,6 @@
 # AXIS Framework
 
-> **Harness-first. Spec-driven. Memory-persistent.**
+> **Harness-first. Spec-driven. Continuity-aware.**
 
 An executable framework that bootstraps any project — technical or not — with the infrastructure needed to collaborate **reliably and scalably** with AI agents.
 
@@ -11,14 +11,14 @@ An executable framework that bootstraps any project — technical or not — wit
 ## The Core Model
 
 ```text
-AI-Augmented Project = Spec Layer + Harness Layer + Memory Layer
+AI-Augmented Project = Spec Layer + Harness Layer + Continuity Layer
 ```
 
 | Layer       | Answers                        | Artifacts                                  | Why it matters                      |
 | ----------- | ------------------------------ | ------------------------------------------ | ------------------------------------ |
 | **Spec**    | WHAT the project is and needs  | INSTRUCTIONS.md, skills, rules, docs       | Minimal context, no noise            |
 | **Harness** | HOW the agent behaves          | settings.json, hooks, sub-agents, symlinks | **Real reliability — not the model** |
-| **Memory**  | WHAT persists between sessions | STATE.md, CONVENTIONS.md                   | Antifragility over time              |
+| **Continuity** | WHAT persists between sessions | STATE.md, CONVENTIONS.md                | Antifragility over time              |
 
 > **Key insight:** LangChain moved an agent from outside the top 30 to top 5 in Terminal Bench 2.0 by changing only the harness — **same model**. The highest-leverage layer is not the prompt — it's the harness.
 
@@ -36,7 +36,7 @@ npx @axis-bootstrap/cli init
 
 # or install globally
 npm i -g @axis-bootstrap/cli
-axis init        # interactive bootstrap (Spec + Harness + Memory)
+axis init        # interactive bootstrap (Spec + Harness + Continuity)
 axis doctor      # validate limits, symlinks, recursiveness
 ```
 
@@ -106,7 +106,7 @@ In ~30 minutes of interaction:
 | **BMAD-METHOD**         | Agile multi-agent           | Software-focused; heavy for smaller projects                          |
 | **LangChain/LangGraph** | Agent runtime               | Runtime, not project infra; framework lock-in                         |
 | **CrewAI**              | Role-based orchestration    | No cross-IDE context management                                       |
-| **AXIS**                | **Harness + Spec + Memory** | Stack-agnostic, multi-IDE, 3 integrated layers                        |
+| **AXIS**                | **Harness + Spec + Continuity** | Stack-agnostic, multi-IDE, 3 integrated layers                    |
 
 AXIS solves what others ignore: **context divergence across IDEs, session fragility, and the absence of versioned permissions**.
 
@@ -150,7 +150,7 @@ AXIS/
                 ├── PHASE-1-DISCOVERY.md
                 ├── PHASE-2-SPEC.md
                 ├── PHASE-3-HARNESS.md           ← includes failure attribution
-                ├── PHASE-4-MEMORY.md            ← includes ACE principles
+                ├── PHASE-4-CONTINUITY.md        ← includes ACE principles
                 ├── PHASE-5-VALIDATION.md
                 ├── TEMPLATES.md
                 ├── PATTERNS.md                  ← PD, KVC, ACE, k-trial
@@ -167,7 +167,7 @@ The framework is **self-hosting** — its own structure follows the pattern it t
 2. **Single Source of Truth** — content lives in `.ai/`; symlinks handle multi-IDE distribution
 3. **Progressive Disclosure** — load only what is needed (~1,500 tokens base)
 4. **Gates between phases** — no artifact generated without user confirmation
-5. **Memory as playbook** — STATE.md is not a log; it is curated context that self-improves (ACE principle)
+5. **Continuity as playbook** — STATE.md is not a log; it is curated context that self-improves (ACE principle)
 6. **Stack-agnostic** — works for software, content, research, legal, any domain
 
 ---

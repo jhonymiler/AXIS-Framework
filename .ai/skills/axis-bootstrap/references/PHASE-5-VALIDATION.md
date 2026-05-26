@@ -78,7 +78,7 @@ done
 
 ---
 
-## Quality Gates — Memory
+## Quality Gates — Continuity
 
 ```text
 [ ] STATE.md has all 6 sections (Active Decisions, In Progress, Blockers,
@@ -137,7 +137,7 @@ Final message follows template in [PROMPT-TEMPLATE.md](../PROMPT-TEMPLATE.md#han
 - N skills initialized: <list>
 - N rules: <list>
 - N stubs in docs/
-- Memory layer with STATE, CONVENTIONS
+- Continuity layer with STATE, CONVENTIONS
 - N symlinks distributing to <IDEs>
 - N hooks in settings.json
 

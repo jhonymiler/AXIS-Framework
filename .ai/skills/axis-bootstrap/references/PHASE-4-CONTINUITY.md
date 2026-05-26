@@ -1,4 +1,6 @@
-# Phase 4 — Memory Layer Initialization
+# Phase 4 — Continuity Layer Initialization
+
+> **Note on naming:** this layer was previously called *Memory Layer*. The rename clarifies it is **continuity-via-curated-markdown**, not technical/semantic memory (no vector store, no embeddings, no ranking). See [FRAMEWORK.md → Continuity Layer in Detail](../../../../FRAMEWORK.md#continuity-layer-in-detail).
 
 **Goal:** ensure the project has continuity between sessions — decisions, state, and conventions persist even when the dev changes, the IDE changes, or time passes.
 
@@ -25,7 +27,7 @@
 
 ---
 
-## Why the Memory Layer Exists
+## Why the Continuity Layer Exists
 
 Without it, long-running projects regress with each session:
 
@@ -34,7 +36,7 @@ Without it, long-running projects regress with each session:
 - "What lesson did we learn from that bug?" — repeated
 - Spec Kit issue #75: "great specs but every new chat starts from zero"
 
-The Memory Layer is what makes the system **antifragile over time**.
+The Continuity Layer is what makes the system **antifragile over time**. Note that "continuity" here means cross-session state preservation via curated markdown — not technical memory (vector stores, embeddings, ranking). Those belong to a different problem space (Cortex, Mem0, Letta).
 
 ---
 
@@ -116,7 +118,7 @@ Create `.ai/CONVENTIONS.md`. Use template from [TEMPLATES.md → CONVENTIONS.md]
 Present to user:
 
 ```markdown
-## Memory Layer Initialized
+## Continuity Layer Initialized
 
 ### Files created
 - .ai/docs/STATE.md (with 6 structured sections)

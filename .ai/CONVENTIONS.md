@@ -43,7 +43,7 @@ AXIS/                                            ← root (humans read README/FR
     ├── INSTRUCTIONS.md                          ← AI: entry point
     ├── CONVENTIONS.md                           ← this file
     ├── docs/
-    │   └── STATE.md                             ← memory layer (curated playbook)
+    │   └── STATE.md                             ← continuity layer (curated playbook)
     └── skills/
         ├── axis-bootstrap/                      ← the executable bootstrap spec
         │   ├── SKILL.md                         ← index ≤ 60 lines
@@ -53,7 +53,7 @@ AXIS/                                            ← root (humans read README/FR
         │       ├── PHASE-1-DISCOVERY.md
         │       ├── PHASE-2-SPEC.md
         │       ├── PHASE-3-HARNESS.md
-        │       ├── PHASE-4-MEMORY.md
+        │       ├── PHASE-4-CONTINUITY.md
         │       ├── PHASE-5-VALIDATION.md
         │       ├── TEMPLATES.md
         │       ├── PATTERNS.md

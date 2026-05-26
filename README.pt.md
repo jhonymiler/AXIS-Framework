@@ -1,6 +1,6 @@
 # AXIS Framework
 
-> **Harness-first. Spec-driven. Memory-persistent.**
+> **Harness-first. Spec-driven. Continuity-aware.**
 
 Um framework executável que bootstrapa qualquer projeto — técnico ou não — com a infraestrutura necessária para colaborar de forma **confiável e escalável** com agentes de IA.
 
@@ -11,14 +11,14 @@ Um framework executável que bootstrapa qualquer projeto — técnico ou não �
 ## O Modelo Central
 
 ```text
-Projeto Aumentado por IA = Spec Layer + Harness Layer + Memory Layer
+Projeto Aumentado por IA = Spec Layer + Harness Layer + Continuity Layer
 ```
 
 | Camada      | Responde                     | Artefatos                                  | Por que importa                        |
 | ----------- | ---------------------------- | ------------------------------------------ | -------------------------------------- |
 | **Spec**    | O QUÊ o projeto é e precisa  | INSTRUCTIONS.md, skills, rules, docs       | Contexto mínimo, sem ruído             |
 | **Harness** | COMO o agente se comporta    | settings.json, hooks, sub-agents, symlinks | **Confiabilidade real — não o modelo** |
-| **Memory**  | O QUE persiste entre sessões | STATE.md, CONVENTIONS.md                   | Antifragilidade ao tempo               |
+| **Continuity** | O QUE persiste entre sessões | STATE.md, CONVENTIONS.md                | Antifragilidade ao tempo               |
 
 > **Insight-chave:** LangChain moveu um agente do fora-do-top-30 para top-5 no Terminal Bench 2.0 mudando apenas o harness — **mesmo modelo**. A camada de maior alavancagem não é o prompt, é o harness.
 
@@ -36,7 +36,7 @@ npx @axis-bootstrap/cli init
 
 # ou instale globalmente
 npm i -g @axis-bootstrap/cli
-axis init        # bootstrap interativo (Spec + Harness + Memory)
+axis init        # bootstrap interativo (Spec + Harness + Continuity)
 axis doctor      # valida limites, symlinks, contrato de recursividade
 ```
 
@@ -105,7 +105,7 @@ Em ~30 minutos de interação:
 | **BMAD-METHOD**         | Agile multi-agent           | Focado em software; pesado para projetos menores                     |
 | **LangChain/LangGraph** | Runtime de agentes          | Runtime, não infra de projeto; lock-in de framework                  |
 | **CrewAI**              | Orquestração role-based     | Sem gestão de contexto entre IDEs                                    |
-| **AXIS**                | **Harness + Spec + Memory** | Stack-agnóstico, multi-IDE, 3 camadas integradas                     |
+| **AXIS**                | **Harness + Spec + Continuity** | Stack-agnóstico, multi-IDE, 3 camadas integradas                 |
 
 AXIS resolve o que os outros ignoram: **a divergência de contexto entre IDEs, a fragilidade entre sessões e a ausência de permissões versionadas**.
 
@@ -150,7 +150,7 @@ AXIS/
 └── .ai/                                         ← o framework executável (fonte única)
     ├── INSTRUCTIONS.md                          ← entry point para IA
     ├── CONVENTIONS.md                           ← como o framework se mantém
-    ├── docs/STATE.md                            ← memory layer
+    ├── docs/STATE.md                            ← continuity layer
     └── skills/
         ├── axis-bootstrap/                      ← a spec executável
         │   ├── SKILL.md, PLANNER.md, PROMPT-TEMPLATE.md
@@ -175,7 +175,7 @@ O framework é **self-hosting** — sua própria estrutura segue o padrão que e
 2. **Single Source of Truth** — conteúdo vive em `.ai/`; symlinks resolvem distribuição multi-IDE
 3. **Progressive Disclosure** — carregue apenas o necessário (~1.500 tokens base)
 4. **Gates entre fases** — nenhum artefato gerado sem confirmação do usuário
-5. **Memória como playbook** — STATE.md não é log; é contexto curado que se auto-melhora (princípio ACE)
+5. **Continuidade como playbook** — STATE.md não é log; é contexto curado que se auto-melhora (princípio ACE)
 6. **Stack-agnóstico** — funciona para software, conteúdo, pesquisa, legal, qualquer domínio
 
 ---

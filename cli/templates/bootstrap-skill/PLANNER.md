@@ -118,9 +118,9 @@ The artifact produced is the **REASONS Canvas** ([references/CANVAS-REASONS.md](
 
 ---
 
-## Phase 4 — Memory Layer
+## Phase 4 — Continuity Layer
 
-**Loads:** [references/PHASE-4-MEMORY.md](references/PHASE-4-MEMORY.md)
+**Loads:** [references/PHASE-4-CONTINUITY.md](references/PHASE-4-CONTINUITY.md)
 
 **Input:** Phases 2 and 3 confirmed
 

@@ -24,7 +24,7 @@ target-project/
 │       ├── architecture.md                        (if software)
 │       ├── database-schema.md                     (if software)
 │       ├── glossary.md                            (if specialized domain)
-│       └── STATE.md                               (memory layer — curated playbook)
+│       └── STATE.md                               (continuity layer — curated playbook)
 │
 ├── CLAUDE.md           → .ai/INSTRUCTIONS.md
 ├── AGENTS.md           → .ai/INSTRUCTIONS.md
@@ -112,7 +112,7 @@ description: <2-4 lines mentioning domain terms that act as triggers>
 - N skills initialized: <list>
 - N rules: <list>
 - N stubs in docs/
-- Memory layer with STATE, CONVENTIONS
+- Continuity layer with STATE, CONVENTIONS
 - N symlinks distributing to <IDEs>
 - N hooks in settings.json
 

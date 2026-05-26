@@ -72,7 +72,7 @@ export async function doctor(argv) {
     const lines = countLines(stateP);
     checks.push(check(`STATE.md ≤ 80 lines (${lines})`, lines <= 80, lines > 80 ? 'curate — remove resolved entries' : null));
   } else {
-    checks.push(check('STATE.md exists', false, 'memory layer missing'));
+    checks.push(check('STATE.md exists', false, 'continuity layer missing'));
   }
 
   // CONVENTIONS.md

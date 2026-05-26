@@ -34,7 +34,7 @@ done
 
 echo "[3/4] Live skill ⇄ CLI template sync"
 sync_fail=0
-for f in PHASE-1-DISCOVERY.md PHASE-2-SPEC.md PHASE-3-HARNESS.md PHASE-4-MEMORY.md \
+for f in PHASE-1-DISCOVERY.md PHASE-2-SPEC.md PHASE-3-HARNESS.md PHASE-4-CONTINUITY.md \
          PHASE-5-VALIDATION.md TEMPLATES.md QUICKSTART.md PATTERNS.md \
          UNIVERSAL-MAP.md CANVAS-REASONS.md; do
   if ! diff -q .ai/skills/axis-bootstrap/references/$f \

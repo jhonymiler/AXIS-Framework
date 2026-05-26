@@ -26,7 +26,7 @@ The literature converged on spec-first (GitHub Spec Kit, Kiro, Tessl). But empir
 - **ReliabilityBench (Jan 2026)** shows that pass@1 overestimates reliability by 20-40%; simpler architectures outperform complex ones under stress ([arxiv 2601.06112](https://arxiv.org/abs/2601.06112))
 - Operators report that highly autonomous swarms are fragile, expensive, and impossible to debug in production — the dominant pattern is a single agent with deterministic tool access ([MindStudio](https://www.mindstudio.ai/blog/ai-agent-failure-pattern-recognition))
 
-> **AXIS repositioning:** The Spec describes what the agent knows. The Harness defines how it acts — regardless of what it "decides" in the moment. The Memory makes the system antifragile over time.
+> **AXIS repositioning:** The Spec describes what the agent knows. The Harness defines how it acts — regardless of what it "decides" in the moment. The Continuity layer makes the system antifragile over time.
 
 ---
 
@@ -48,7 +48,7 @@ The literature converged on spec-first (GitHub Spec Kit, Kiro, Tessl). But empir
 │  • symlinks         — multi-IDE distribution            │
 └─────────────────────────────────────────────────────────┘
 ┌─────────────────────────────────────────────────────────┐
-│  MEMORY LAYER ─ The continuity (WHAT persists)          │
+│  CONTINUITY LAYER ─ Session-spanning state (WHAT persists)│
 │  • STATE.md         — state, blockers, lessons          │
 │  • CONVENTIONS.md   — how to maintain the structure     │
 └─────────────────────────────────────────────────────────┘
@@ -56,7 +56,7 @@ The literature converged on spec-first (GitHub Spec Kit, Kiro, Tessl). But empir
 
 ### Why three layers and not two
 
-The **Spec / Harness** separation already exists in the literature (Anthropic, Red Hat, GitHub Spec Kit). The addition of the **Memory Layer** comes from practical observation reinforced by the paper **ACE — Agentic Context Engineering** ([arxiv 2510.04618](https://arxiv.org/abs/2510.04618)): without it, long-running projects regress with each session. Memory is not a log — it is an **evolutionary playbook** that accumulates, refines, and curates strategies, preventing collapse with structured incremental updates.
+The **Spec / Harness** separation already exists in the literature (Anthropic, Red Hat, GitHub Spec Kit). The addition of the **Continuity Layer** comes from practical observation reinforced by the paper **ACE — Agentic Context Engineering** ([arxiv 2510.04618](https://arxiv.org/abs/2510.04618)): without it, long-running projects regress with each session. The continuity playbook is not a log — it is an **evolutionary playbook** that accumulates, refines, and curates strategies, preventing collapse with structured incremental updates. "Continuity" here means cross-session state preservation via curated markdown — not technical memory (vector stores, embeddings, ranking).
 
 ### How the layers interact
 
@@ -67,7 +67,7 @@ The **Spec / Harness** separation already exists in the literature (Anthropic, R
   [Spec] ────► AI loads minimal context (~1,500 tokens)
        │
        ▼
-  [Memory] ──► AI reads STATE.md to know where it left off
+  [Continuity] ► AI reads STATE.md to know where it left off
        │
        ▼
   Work ──► [Harness] applies hooks, permissions, sub-agents
@@ -178,9 +178,9 @@ This pattern is embedded in AXIS: `PLANNER.md` orchestrates phases, each `PHASE-
 
 ---
 
-## Memory Layer in Detail
+## Continuity Layer in Detail
 
-### ACE Principle — Memory as Playbook
+### ACE Principle — Continuity as Playbook
 
 The paper **ACE (Agentic Context Engineering)** ([arxiv 2510.04618](https://arxiv.org/abs/2510.04618)) demonstrated +10.6% on agent benchmarks and +8.6% in finance with an approach that treats context as **evolutionary playbooks** — not as history logs.
 
@@ -190,7 +190,7 @@ The paper **ACE (Agentic Context Engineering)** ([arxiv 2510.04618](https://arxi
 - Each session **refines** the STATE — removes what became obsolete, elevates what proved useful
 - Long specs generate noise; testable and short specs generate reliability
 
-### Two types of memory, two artifacts
+### Two types of continuity, two artifacts
 
 | Type | Artifact | Update |
 | ---- | -------- | ------ |
@@ -212,11 +212,11 @@ At the end of each session with relevant changes, the agent:
 | --------- | --------------- | ---------- | ----------- |
 | **Spec Kit (GitHub)** | ~3k | Spec-first for coding | No harness; no memory; context forgotten between sessions (issue #75: "creates illusion of work") |
 | **BMAD-METHOD** | ~8k | Agile AI-driven development | Software-focused; doesn't solve multi-IDE divergence |
-| **SuperClaude** | ~2k | Specialized personas for Claude | Claude-specific; no structured memory layer |
+| **SuperClaude** | ~2k | Specialized personas for Claude | Claude-specific; no structured continuity layer |
 | **LangGraph** | ~45k | Graph-based agent runtime | Runtime, not project infra; framework lock-in; high complexity |
 | **CrewAI** | ~28k | Multi-agent role-based | No cross-IDE context management; SQLite3 limits scale |
 | **DSPy** | ~22k | Programmatically (not prompting) LLMs | Focused on prompt optimization; not project infra |
-| **AXIS** | — | **Harness + Spec + Memory** | Multi-IDE, stack-agnostic, 3 integrated layers |
+| **AXIS** | — | **Harness + Spec + Continuity** | Multi-IDE, stack-agnostic, 3 integrated layers |
 
 **AXIS's unique position:** it is the only structure that simultaneously solves (1) multi-IDE divergence via symlinks, (2) non-deterministic behavior via versioned harness, and (3) session regression via memory as playbook.
 
@@ -228,7 +228,7 @@ At the end of each session with relevant changes, the agent:
 
 - Spec: Does `INSTRUCTIONS.md` have 100-180 lines? Do skills have strong descriptions?
 - Harness: Do hooks execute? Do permissions make sense? Do symlinks resolve?
-- Memory: Does `STATE.md` have the required sections? Was it curated?
+- Continuity: Does `STATE.md` have the required sections? Was it curated?
 
 ### 2. The framework is recursive
 
@@ -236,7 +236,7 @@ This repository folder follows **exactly** the pattern it teaches. You can audit
 
 ### 3. Universal by design
 
-The Spec layer is purely about knowledge. The Memory layer is purely about continuity. Only the Harness has optional parts (lint hooks don't make sense in a non-technical project). See [.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md](.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md).
+The Spec layer is purely about knowledge. The Continuity layer is purely about session-spanning state. Only the Harness has optional parts (lint hooks don't make sense in a non-technical project). See [.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md](.ai/skills/axis-bootstrap/references/UNIVERSAL-MAP.md).
 
 ### 4. Testable spec, not verbose
 
@@ -253,7 +253,7 @@ Spec Kit revealed ([issue #75](https://github.com/github/spec-kit/issues/75)) th
 | Onboarding time | varies by dev | <10 min with `INSTRUCTIONS.md` |
 | Behavior across machines | inconsistent | identical (`settings.json` in git) |
 | Accidental destructive actions | real risk | blocked by hook |
-| Session continuity | manual and fragile | automatic via curated `STATE.md` |
+| Session continuity | manual and fragile | automatic via curated `STATE.md` (Continuity Layer) |
 | Failure localization | opaque pass/fail | attributed by layer (planning/exec/response) |
 
 ---
@@ -300,6 +300,6 @@ Pipelines may not resolve symlinks. **Mitigation:** full clone or `core.symlinks
 
 ## Conclusion
 
-Documentation for AI is not a luxury — it is infrastructure. But traditional infrastructure (a monolithic file) regresses under scale. **Spec + Harness + Memory** is the minimal decomposition that survives time, team size, and IDE variety.
+Documentation for AI is not a luxury — it is infrastructure. But traditional infrastructure (a monolithic file) regresses under scale. **Spec + Harness + Continuity** is the minimal decomposition that survives time, team size, and IDE variety.
 
-The difference between knowing this and having implemented it is `axis-bootstrap` — an executable spec that delivers the complete system in one session, with harness as priority and memory as playbook.
+The difference between knowing this and having implemented it is `axis-bootstrap` — an executable spec that delivers the complete system in one session, with harness as priority and continuity as playbook.

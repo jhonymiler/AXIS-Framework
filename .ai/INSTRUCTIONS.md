@@ -8,7 +8,7 @@ This repository contains an **executable spec** that bootstraps any project (tec
 
 - **Spec Layer** — INSTRUCTIONS, skills, rules, docs
 - **Harness Layer** — settings.json, hooks, sub-agents, symlinks
-- **Memory Layer** — STATE.md, CONVENTIONS.md
+- **Continuity Layer** — STATE.md, CONVENTIONS.md
 
 Full conceptual model in [FRAMEWORK.md](FRAMEWORK.md).
 
@@ -55,7 +55,7 @@ cd cli && npm install && node src/index.js --help
 1. Load the `axis-bootstrap` skill
 2. Skip Phase 1 (discovery) if a readable `INSTRUCTIONS.md` already exists
 3. Apply only `PHASE-5-VALIDATION.md` to identify gaps
-4. Report what is missing per layer (Spec / Harness / Memory)
+4. Report what is missing per layer (Spec / Harness / Continuity)
 
 ### Scenario 3 — User asks to understand the framework
 
@@ -70,7 +70,7 @@ cd cli && npm install && node src/index.js --help
 | Spec — live skills | Source of truth for bootstrap orchestration, templates, patterns | [.ai/skills/](.ai/skills/) |
 | Spec — instructions | Project entry point for AI agents | [.ai/INSTRUCTIONS.md](.ai/INSTRUCTIONS.md) |
 | Spec — rules | Cross-cutting rules auto-loaded by IDEs (workflow, KVC, doc maintenance) | [.ai/rules/](.ai/rules/) |
-| Memory | Curated playbook (ACE), session-spanning context | [.ai/docs/STATE.md](.ai/docs/STATE.md) |
+| Continuity | Curated playbook (ACE), session-spanning context | [.ai/docs/STATE.md](.ai/docs/STATE.md) |
 | Harness — permissions | Versioned tool allow/deny/ask lists | [.claude/settings.json](.claude/settings.json) |
 | Harness — symlinks | Multi-IDE single-source-of-truth | [setup-ide-links.sh](setup-ide-links.sh) |
 | Harness — validators | Quality gates (sizes, sync, symlinks) | [scripts/validate-axis.sh](scripts/validate-axis.sh) |
@@ -129,7 +129,7 @@ Load **one** skill per request based on the trigger phrases below. If multiple m
 
 ## Links
 
-- [FRAMEWORK.md](FRAMEWORK.md) — conceptual model (Spec / Harness / Memory layers)
+- [FRAMEWORK.md](FRAMEWORK.md) — conceptual model (Spec / Harness / Continuity layers)
 - [README.md](README.md) — user-facing quick start (English)
 - [README.pt.md](README.pt.md) — user-facing quick start (Portuguese)
 - [.ai/CONVENTIONS.md](.ai/CONVENTIONS.md) — maintenance conventions and symlink map
