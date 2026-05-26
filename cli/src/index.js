@@ -22,7 +22,7 @@ ${pc.cyan(' ███████║ ╚███╔╝ ██║█████
 ${pc.cyan(' ██╔══██║ ██╔██╗ ██║╚════██║')}
 ${pc.cyan(' ██║  ██║██╔╝ ██╗██║███████║')}
 ${pc.cyan(' ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚══════╝')}
-${pc.dim('  Harness · Spec · Memory · v' + VERSION)}
+${pc.dim('  Harness · Spec · Continuity · v' + VERSION)}
 `;
 
 const HELP = `

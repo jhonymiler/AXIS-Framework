@@ -1,203 +1,177 @@
 # AXIS Framework
 
-> **Harness-first. Spec-driven. Continuity-aware.**
+> CLI + AI-agent skills that scaffold the `.ai/` infrastructure a project needs to work reliably with AI tools.
 
-An executable framework that bootstraps any project — technical or not — with the infrastructure needed to collaborate **reliably and scalably** with AI agents.
+AXIS is a **one-shot bootstrap**. The CLI creates the skeleton; an AI agent (Claude Code, Cursor, Copilot, etc.) fills it with project-specific content; after that, the project maintains itself without AXIS.
 
-> **This is not an article to read. It is a spec to execute.** The framework uses the very pattern it teaches: it delivers itself as a skill that the AI loads and runs in phases with explicit gates.
+Three layers installed:
+
+| Layer          | What it is                     | Main files                       |
+| -------------- | ------------------------------ | -------------------------------- |
+| **Spec**       | What the project is and needs  | `INSTRUCTIONS.md`, skills, rules |
+| **Harness**    | How the agent behaves          | `settings.json`, hooks, symlinks |
+| **Continuity** | What persists between sessions | `STATE.md`, `CONVENTIONS.md`     |
 
 ---
 
-## The Core Model
+## How it works
 
 ```text
-AI-Augmented Project = Spec Layer + Harness Layer + Continuity Layer
+axis init        ← ~10 seconds
+                   creates .ai/ skeleton, settings.json, hooks, symlinks
+       ↓
+AI agent runs axis-bootstrap skill   ← 20-40 minutes
+                   reads your project, runs 5 phases with gates,
+                   fills in contextual skills/rules/INSTRUCTIONS
+       ↓
+axis cleanup     ← removes bootstrap meta-skill
+                   project is self-sufficient from here
 ```
 
-| Layer       | Answers                        | Artifacts                                  | Why it matters                      |
-| ----------- | ------------------------------ | ------------------------------------------ | ------------------------------------ |
-| **Spec**    | WHAT the project is and needs  | INSTRUCTIONS.md, skills, rules, docs       | Minimal context, no noise            |
-| **Harness** | HOW the agent behaves          | settings.json, hooks, sub-agents, symlinks | **Real reliability — not the model** |
-| **Continuity** | WHAT persists between sessions | STATE.md, CONVENTIONS.md                | Antifragility over time              |
-
-> **Key insight:** LangChain moved an agent from outside the top 30 to top 5 in Terminal Bench 2.0 by changing only the harness — **same model**. The highest-leverage layer is not the prompt — it's the harness.
-
-Full details in [FRAMEWORK.md](FRAMEWORK.md).
+Without an AI agent following the meta-skill, `axis init` produces only template placeholders. The agent does the real work.
 
 ---
 
-## How AXIS Actually Works
-
-> **AXIS is a one-shot bootstrap, not a daemon.** The CLI scaffolds the structure in seconds; an AI agent (preferably Opus 4.7+) does the real work in a single 20-40 minute session; after that, the project is self-sufficient.
-
-```text
-       ┌──────────────────┐
-       │   axis init      │  ← ~10 seconds
-       │  (CLI scaffold)  │     .ai/ skeleton, settings.json, hooks, symlinks
-       └────────┬─────────┘
-                │
-                ▼
-   ┌────────────────────────────┐
-   │   AI agent runs the        │  ← 20-40 minutes
-   │   axis-bootstrap meta-skill│     Discovery → Spec → Harness
-   │   (Opus 4.7+ recommended)  │     → Continuity → Validation
-   └────────────┬───────────────┘
-                │
-                ▼
-       ┌──────────────────┐
-       │  Project is now  │  ← AXIS exits the picture
-       │  self-sufficient │     Agent operates the bootstrapped kit forever
-       └──────────────────┘
-```
-
-| Layer | Done by | Output |
-| ----- | ------- | ------ |
-| **Scaffold** | CLI (deterministic) | `.ai/` skeleton, `settings.json`, hooks, symlinks |
-| **Content** | Your agent (via `axis-bootstrap` skill) | Skills with extracted business rules, rules with detected conventions, INSTRUCTIONS with project-specific architecture |
-| **Ongoing work** | Your agent + bootstrapped hooks/rules | No further AXIS calls needed; the agent reads the kit and operates the project |
-
-**One exception:** if AXIS releases a new version with structural changes, the `axis-rebootstrap` skill (planned v2.x) backs up your `.ai/`, applies the new structure, and re-integrates your content. Triggered by you, not automatic.
-
-**Why this matters:** without a capable agent following the meta-skill, the CLI alone produces template placeholders. The value of AXIS is concentrated in (1) the discovery the agent does, (2) the framework-driven organization of what it finds, and (3) the bootstrapped kit that lets the project maintain itself afterward.
-
----
-
-## Quick Start — 5 Minutes
-
-### Option A — CLI (fastest)
+## Quick Start
 
 ```bash
-# one-shot, no install — auto-detects new vs existing project, asks PT/EN
+# one-shot, no install
 npx @axis-bootstrap/cli init
 
 # or install globally
 npm i -g @axis-bootstrap/cli
-axis init        # interactive bootstrap (Spec + Harness + Continuity)
-axis doctor      # validate limits, symlinks, recursiveness
+axis init
 ```
 
-Then per feature:
+`axis init` auto-detects your context and asks in PT or EN based on `$LANG`:
+
+| Detected                                | Mode                                                                        |
+| --------------------------------------- | --------------------------------------------------------------------------- |
+| Empty directory                         | Quick scaffold — fills templates interactively (no AI agent needed)         |
+| Existing project (`package.json`, etc.) | AI-driven — installs `axis-bootstrap` skill; you ask your AI tool to run it |
+| Already has `.ai/`                      | Asks before overwriting                                                     |
+
+After AI-driven init completes:
 
 ```bash
-axis spdd canvas pricing-quote   # scaffold REASONS Canvas
-axis spdd story                  # → AI fills R section
-axis spdd align                  # → AI fills O + N + S₂
-axis spdd design                 # → AI fills E + A + S₁
-# … generate code in your AI tool …
-axis spdd review                 # verify diff against Canvas
-axis spdd verify pricing-quote   # CI-grade check: each S₂ safeguard has a test
+axis cleanup     # removes the bootstrap skill; project keeps everything else
 ```
-
-**Other commands:**
-
-```bash
-axis init --preset node          # non-interactive scaffold (node|python|go|docs|minimal)
-axis state hot                   # hot-tier of STATE.md (used by SessionStart hook)
-axis state archive <substr>      # move a stale Active Decision to .ai/docs/archive/
-axis dedupe                      # audit .ai/**/*.md for duplicated paragraphs (SST guard)
-axis log <event> --meta k=v      # append JSONL telemetry (.ai/telemetry.jsonl, gitignored)
-axis log analyze                 # summarize telemetry: byEvent, byEvent:name, spec-edit churn
-```
-
-Full CLI reference in [cli/README.md](cli/README.md).
-
-### Option B — From any AI agent (no CLI install)
-
-In Claude Code, Cursor, Windsurf, or Copilot:
-
-```text
-Use the axis-bootstrap skill to initialize this project.
-```
-
-The agent guides you through 5 phases with explicit gates. You confirm before each phase advances.
-
-### Option B — Manual install
-
-```bash
-# 1. Copy the .ai/ structure into your project
-cp -r /path/to/AXIS/.ai/ your-project/.ai/
-
-# 2. Run symlink setup
-cd your-project && bash setup-ide-links.sh
-```
-
-### What the bootstrap delivers
-
-In ~30 minutes of interaction:
-
-- Contextual `INSTRUCTIONS.md` (100-180 lines, not monolithic)
-- Domain skills with Progressive Disclosure
-- Versioned `settings.json` with auditable permissions
-- Hooks for formatting, destructive blocking, and automatic tests
-- Multi-IDE symlinks (Claude Code, Cursor, Windsurf, Copilot, etc.)
-- `STATE.md` for continuity between sessions
 
 ---
 
-## Why AXIS and Not Another Framework
+## Commands
 
-| Framework               | Angle                       | Limitation                                                            |
-| ----------------------- | --------------------------- | --------------------------------------------------------------------- |
-| **Spec Kit (GitHub)**   | Spec-first                  | No harness, no persistent memory; context lost between sessions       |
-| **BMAD-METHOD**         | Agile multi-agent           | Software-focused; heavy for smaller projects                          |
-| **LangChain/LangGraph** | Agent runtime               | Runtime, not project infra; framework lock-in                         |
-| **CrewAI**              | Role-based orchestration    | No cross-IDE context management                                       |
-| **AXIS**                | **Harness + Spec + Continuity** | Stack-agnostic, multi-IDE, 3 integrated layers                    |
+| Command                                                | What it does                                                   |
+| ------------------------------------------------------ | -------------------------------------------------------------- |
+| `axis init`                                            | Interactive bootstrap (auto-detects context, asks PT/EN)       |
+| `axis init --preset <node\|python\|go\|docs\|minimal>` | Non-interactive scaffold                                       |
+| `axis init --rebootstrap`                              | Upgrade existing `.ai/` — installs `axis-rebootstrap` skill    |
+| `axis doctor`                                          | Validate sizes, symlinks, cross-links, token counts            |
+| `axis doctor --strict`                                 | Same + duplicate-paragraph check; fails on any warning         |
+| `axis audit`                                           | Report which AXIS layers are missing                           |
+| `axis cleanup`                                         | Remove bootstrap meta-skill after AI-driven init               |
+| `axis link`                                            | Recreate IDE symlinks (idempotent)                             |
+| `axis state hot`                                       | Print hot tier of STATE.md (used by SessionStart hook)         |
+| `axis state archive <substr>`                          | Archive a stale Active Decision                                |
+| `axis spdd canvas <slug>`                              | Scaffold a REASONS Canvas                                      |
+| `axis spdd story\|align\|design\|review\|sync`         | Per-feature SPDD pipeline steps                                |
+| `axis hooks install`                                   | Auto-wire detected `scripts/*.sh` into `.claude/settings.json` |
+| `axis dedupe`                                          | Scan `.ai/**/*.md` for duplicated paragraphs                   |
+| `axis log <event> [--meta k=v]`                        | Append telemetry to `.ai/telemetry.jsonl` (gitignored)         |
+| `axis log analyze`                                     | Summarize telemetry counts                                     |
 
-AXIS solves what others ignore: **context divergence across IDEs, session fragility, and the absence of versioned permissions**.
+Full reference: [cli/README.md](cli/README.md)
 
 ---
 
-## When to Use AXIS
+## What the bootstrap installs
 
-- Starting a new project (technical or non-technical)
-- Adopting an AI workflow in an existing project
+- `INSTRUCTIONS.md` — project-specific AI entry point (100-180 lines)
+- `settings.json` — versioned tool permissions + hooks wired to `.ai/hooks/`
+- Skills — `documentation-guardian` (self-maintenance) + 4 SPDD skills (opt-in)
+- Rules — `session-start.md` by default; 6 more available opt-in
+- Hooks — `session-start.sh`, `post-spec-edit.sh`, `stop.sh`, `post-code-change.sh`
+- Discoverer sub-agents — 5 read-only agents run in parallel during Phase 1 (architecture, business rules, flows, stack, conventions)
+- Specialist agents — 4 project-bound agents generated from discoverer output (arch guardian, business-rules keeper, flow architect, conventions keeper)
+- Multi-IDE symlinks — `CLAUDE.md`, `AGENTS.md`, `.github/copilot-instructions.md` all resolve to `.ai/INSTRUCTIONS.md`
+- `STATE.md` — curated session continuity (not a log)
+
+---
+
+## Upgrading an existing project
+
+If AXIS releases structural changes and you want to apply them to a project already bootstrapped:
+
+```bash
+cd your-project
+axis init --rebootstrap
+```
+
+This installs the `axis-rebootstrap` skill. Your AI agent runs it: it backs up `.ai/`, applies the new structure, and re-integrates your domain content (skills, rules, STATE). The agent shows you a diff before overwriting anything.
+
+---
+
+## When to use AXIS
+
+- Working on a project with multiple sessions where you need continuity
+- Adopting AI workflows in an existing codebase
 - Migrating from a monolithic `CLAUDE.md` to a modular structure
-- Auditing a project for AI infrastructure gaps
-- Standardizing multiple team projects
+- Standardizing AI infrastructure across multiple team projects
 
-## When NOT to Use
+## When NOT to use AXIS
 
-- A throwaway script you'll finish in 1 hour
-- A solo weekend project with no continuity expected
-- When the overhead of the structure exceeds the gain
-
-See [FRAMEWORK.md](FRAMEWORK.md#trade-offs) for the full trade-off analysis.
+- A throwaway script you'll finish in one session
+- A project with no expected continuity
+- When the structure overhead exceeds the benefit (solo project, < 1 week duration)
 
 ---
 
-## Repository Structure
+## Repository structure
 
 ```text
-AXIS/
-├── README.md                                    ← you are here (English)
-├── README.pt.md                                 ← Portuguese readme
-├── FRAMEWORK.md                                 ← conceptual model (humans)
-└── .ai/                                         ← the executable framework (single source)
-    ├── INSTRUCTIONS.md                          ← AI entry point
-    ├── CONVENTIONS.md                           ← how the framework maintains itself
+axis/
+├── README.md, README.pt.md
+├── FRAMEWORK.md                  ← conceptual model
+├── setup-ide-links.sh
+├── cli/                          ← @axis-bootstrap/cli  (Node.js ≥18)
+│   ├── package.json              ← bin: axis, version: 2.0.0
+│   ├── src/commands/             ← init, doctor, audit, spdd, hooks, …
+│   └── templates/                ← files installed by `axis init`
+│       ├── bootstrap-skill/      ← axis-bootstrap skill bundle
+│       │   └── agents/{discoverers,specialists}/
+│       ├── rebootstrap-skill/    ← axis-rebootstrap skill bundle
+│       ├── skills/               ← 4 SPDD skills + documentation-guardian
+│       ├── rules/                ← 7 rules (session-start is default)
+│       └── hooks/
+├── scripts/
+│   ├── validate-axis.sh          ← 4 quality gates
+│   └── sync-cli-templates.sh     ← propagate .ai/skills/ → cli/templates/
+└── .ai/                          ← this repo's own framework (source of truth)
+    ├── INSTRUCTIONS.md
+    ├── rules/, hooks/
     └── skills/
-        └── axis-bootstrap/                      ← the executable spec
-            ├── SKILL.md                         ← skill index
-            ├── PLANNER.md                       ← phases + gates
-            ├── PROMPT-TEMPLATE.md               ← output contract
-            └── references/                      ← on-demand details
-                ├── QUICKSTART.md                ← 5-minute path
-                ├── PHASE-1-DISCOVERY.md
-                ├── PHASE-2-SPEC.md
-                ├── PHASE-3-HARNESS.md           ← includes failure attribution
-                ├── PHASE-4-CONTINUITY.md        ← includes ACE principles
-                ├── PHASE-5-VALIDATION.md
-                ├── TEMPLATES.md
-                ├── PATTERNS.md                  ← PD, KVC, ACE, k-trial
-                └── UNIVERSAL-MAP.md
+        ├── axis-bootstrap/       ← bootstrap meta-skill (phases + references)
+        ├── axis-rebootstrap/     ← upgrade meta-skill
+        ├── abstraction-first/, alignment/
+        ├── iterative-review/, story-decompose/
+        ├── copilot-review/       ← AXIS-repo specific
+        └── documentation-guardian/  (in cli/templates only — not used by AXIS itself)
 ```
 
-The framework is **self-hosting** — its own structure follows the pattern it teaches.
+The repo is **self-hosting** — its own `.ai/` follows the same pattern it installs in other projects.
 
 ---
 
-## Operational Principles
+## Working on AXIS itself
+
+```bash
+bash scripts/validate-axis.sh         # 4 quality gates (sizes, sync, symlinks)
+bash scripts/sync-cli-templates.sh    # sync .ai/skills/ → cli/templates/ after editing
+node cli/src/index.js doctor .        # recursiveness check
+node cli/src/index.js init /tmp/smoke # smoke test
+```
+
+Conventions, branch strategy, commit format: [.ai/INSTRUCTIONS.md](.ai/INSTRUCTIONS.md)
 
 1. **Harness-first** — reliability comes from the environment, not the model
 2. **Single Source of Truth** — content lives in `.ai/`; symlinks handle multi-IDE distribution
