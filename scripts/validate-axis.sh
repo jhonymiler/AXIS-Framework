@@ -82,7 +82,14 @@ for s in business-rules-keeper flow-architect architecture-guardian conventions-
     sync_fail=1
   fi
 done
-[ $sync_fail -eq 0 ] && pass "all skill + rule + hook + discoverer + specialist files in sync — run scripts/sync-cli-templates.sh to fix drift"
+for f in SKILL.md PLANNER.md; do
+  if ! diff -q .ai/skills/axis-rebootstrap/$f \
+                cli/templates/rebootstrap-skill/$f > /dev/null 2>&1; then
+    fail "axis-rebootstrap/$f drift between live and CLI templates"
+    sync_fail=1
+  fi
+done
+[ $sync_fail -eq 0 ] && pass "all skill + rule + hook + discoverer + specialist + rebootstrap files in sync — run scripts/sync-cli-templates.sh to fix drift"
 
 echo "[4/4] Root symlinks resolve"
 for f in CLAUDE.md AGENTS.md; do

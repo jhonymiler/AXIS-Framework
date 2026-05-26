@@ -1,5 +1,6 @@
 ---
 name: iterative-review
+type: process
 description: Review skill — turns AI code output into a controlled engineering loop
   instead of a one-shot draft. Use after AI generates code, when a code review reveals
   issues beyond style, or when the team is stuck in "regenerate until it works" loops.

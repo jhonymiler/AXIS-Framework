@@ -1,5 +1,6 @@
 ---
 name: story-decompose
+type: process
 description: Decomposes large requirements into independent, deliverable user stories
   following the INVEST principle (1-5 days of work each). Use when a feature is too
   large to spec in one pass, when requirements come as a blob of business text, or

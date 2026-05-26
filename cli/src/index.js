@@ -11,7 +11,9 @@ import { cleanup } from './commands/cleanup.js';
 import { logCmd } from './commands/log.js';
 import { dedupeCmd } from './commands/dedupe.js';
 import { hooks } from './commands/hooks.js';
-const VERSION = '0.1.0';
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const VERSION = _require('../package.json').version;
 
 const BANNER = `
 ${pc.cyan('  █████╗ ██╗  ██╗██╗███████╗')}
@@ -75,7 +77,13 @@ async function main() {
     return;
   }
 
-  console.log(BANNER);
+  // ASCII banner only for `axis init` (first-run experience).
+  // All other commands get a compact single-line header.
+  if (cmd === 'init') {
+    console.log(BANNER);
+  } else {
+    console.log(pc.cyan(`axis ${cmd}`) + pc.dim(' — AXIS Framework v' + VERSION));
+  }
 
   const rest = args.slice(1);
   switch (cmd) {

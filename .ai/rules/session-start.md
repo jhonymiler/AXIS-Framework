@@ -1,5 +1,6 @@
 ---
 applyTo: "**"
+trigger: always
 ---
 
 # Session Start Protocol

@@ -53,6 +53,11 @@ export async function init(argv) {
   const { positional, flags } = parseFlags(argv);
   const target = path.resolve(positional[0] || process.cwd());
 
+  // --rebootstrap: install axis-rebootstrap skill into an existing bootstrapped project
+  if (flags.rebootstrap) {
+    return rebootstrapInstall(target);
+  }
+
   // Non-interactive preset path — short-circuit prompts.
   if (flags.preset) {
     const preset = PRESETS[flags.preset];
@@ -170,6 +175,7 @@ async function aiBootstrap(target, locale) {
       pc.cyan('  ' + T('aiTriggerText')),
       '',
       pc.bold(T('aiCleanup')),
+      pc.dim('  $ axis cleanup'),
     ].join('\n'),
     T('aiNextSteps')
   );
@@ -223,6 +229,47 @@ Tell the user to run \`axis cleanup\` — it removes the axis-bootstrap skill (i
 }
 
 /**
+ * --rebootstrap: installs axis-rebootstrap skill into an existing bootstrapped project.
+ * The skill itself orchestrates the 5-phase upgrade; the CLI just drops the files.
+ */
+async function rebootstrapInstall(target) {
+  const instructionsPath = path.join(target, '.ai', 'INSTRUCTIONS.md');
+  if (!fs.existsSync(instructionsPath)) {
+    log.error(`${pc.red('✗')} No .ai/INSTRUCTIONS.md found at ${target}`);
+    log.error('  This target does not appear to be an AXIS-bootstrapped project.');
+    log.error('  Run `axis init` first to bootstrap, then `axis init --rebootstrap` to upgrade.');
+    process.exit(1);
+  }
+
+  const rebootstrapSrc = path.join(TEMPLATES, 'rebootstrap-skill');
+  if (!fs.existsSync(rebootstrapSrc)) {
+    log.error(`${pc.red('✗')} rebootstrap-skill template not found. CLI may be outdated.`);
+    process.exit(1);
+  }
+
+  const s = spinner();
+  s.start('Installing axis-rebootstrap skill…');
+
+  ensureDir(path.join(target, '.ai', 'skills', 'axis-rebootstrap'));
+  copyDir(rebootstrapSrc, path.join(target, '.ai', 'skills', 'axis-rebootstrap'));
+
+  s.stop(pc.green('✓ axis-rebootstrap skill installed'));
+
+  note(
+    [
+      pc.bold('Skill installed at .ai/skills/axis-rebootstrap/'),
+      '',
+      pc.bold('To start the upgrade, open your AI agent and say:'),
+      '',
+      pc.cyan('  "Load the skill at .ai/skills/axis-rebootstrap/SKILL.md and begin the re-bootstrap."'),
+      '',
+      pc.dim('The skill will guide you through 5 phases: backup → diff → apply → consolidate → validate.'),
+    ].join('\n'),
+    'AXIS Re-bootstrap ready'
+  );
+}
+
+/**
  * Quick path: interactive scaffold without AI.
  * Good for new projects where the user already knows the stack.
  */
@@ -271,7 +318,7 @@ async function quickBootstrap(target, locale) {
 
   ensureDir(path.join(target, '.ai', 'skills'));
   ensureDir(path.join(target, '.ai', 'rules'));
-  ensureDir(path.join(target, '.ai', 'docs', 'canvases', 'done'));
+  ensureDir(path.join(target, '.ai', 'docs'));
 
   const replace = (content) =>
     content
@@ -300,13 +347,15 @@ async function quickBootstrap(target, locale) {
     copyDir(guardianSrc, path.join(target, '.ai', 'skills', 'documentation-guardian'));
   }
 
-  // Universal always-on rules (behavioral baseline for every project)
+  // Default rule: session-start only (always-on baseline).
+  // Other rules (engineering-discipline, context-economy, knowledge-verification) are opt-in:
+  //   axis rules add <name>   (coming soon) or copy manually from the AXIS templates.
   const rulesSrc = path.join(TEMPLATES, 'rules');
+  const defaultRules = ['session-start.md'];
   if (fs.existsSync(rulesSrc)) {
-    for (const f of fs.readdirSync(rulesSrc)) {
-      if (f.endsWith('.md')) {
-        fs.copyFileSync(path.join(rulesSrc, f), path.join(target, '.ai', 'rules', f));
-      }
+    for (const f of defaultRules) {
+      const src = path.join(rulesSrc, f);
+      if (fs.existsSync(src)) fs.copyFileSync(src, path.join(target, '.ai', 'rules', f));
     }
   }
 
@@ -344,6 +393,13 @@ async function quickBootstrap(target, locale) {
   // setup-ide-links.sh
   write(path.join(target, 'setup-ide-links.sh'), read(path.join(TEMPLATES, 'setup-ide-links.sh')));
   fs.chmodSync(path.join(target, 'setup-ide-links.sh'), 0o755);
+
+  // Stamp .axis-version for future rebootstrap operations
+  const { createRequire } = await import('node:module');
+  const require = createRequire(import.meta.url);
+  const cliVersion = require(path.join(TEMPLATES, '..', 'package.json')).version;
+  write(path.join(target, '.ai', '.axis-version'), cliVersion + '\n');
+
   s.message(T('quickInstallerReady'));
 
   if (process.platform === 'win32') {
@@ -517,7 +573,7 @@ async function presetBootstrap(target, locale, cfg, flags) {
 
   ensureDir(path.join(target, '.ai', 'skills'));
   ensureDir(path.join(target, '.ai', 'rules'));
-  ensureDir(path.join(target, '.ai', 'docs', 'canvases', 'done'));
+  ensureDir(path.join(target, '.ai', 'docs'));
 
   const replace = (content) =>
     content
@@ -543,9 +599,12 @@ async function presetBootstrap(target, locale, cfg, flags) {
   }
 
   const rulesSrc = path.join(TEMPLATES, 'rules');
+  const defaultRules = ['session-start.md'];
   if (fs.existsSync(rulesSrc)) {
-    for (const f of fs.readdirSync(rulesSrc)) {
-      if (f.endsWith('.md')) fs.copyFileSync(path.join(rulesSrc, f), path.join(target, '.ai', 'rules', f));
+    // Default: session-start only. Others are opt-in via `axis rules add <name>`.
+    for (const f of defaultRules) {
+      const src = path.join(rulesSrc, f);
+      if (fs.existsSync(src)) fs.copyFileSync(src, path.join(target, '.ai', 'rules', f));
     }
   }
 
@@ -580,6 +639,12 @@ async function presetBootstrap(target, locale, cfg, flags) {
 
   write(path.join(target, 'setup-ide-links.sh'), read(path.join(TEMPLATES, 'setup-ide-links.sh')));
   fs.chmodSync(path.join(target, 'setup-ide-links.sh'), 0o755);
+
+  // Stamp .axis-version for future rebootstrap operations
+  const { createRequire: createReq } = await import('node:module');
+  const req = createReq(import.meta.url);
+  const cliVer = req(path.join(TEMPLATES, '..', 'package.json')).version;
+  write(path.join(target, '.ai', '.axis-version'), cliVer + '\n');
 
   if (process.platform === 'win32') {
     s.stop(pc.green('✓ Preset applied'));

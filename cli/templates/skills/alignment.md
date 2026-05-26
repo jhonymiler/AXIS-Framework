@@ -1,5 +1,6 @@
 ---
 name: alignment
+type: process
 description: Intent-locking skill — makes "what we will do / what we won't do" explicit
   and gets agreement on standards and constraints before implementation starts. Use
   before writing the O section of a REASONS Canvas, before pairing with AI on a

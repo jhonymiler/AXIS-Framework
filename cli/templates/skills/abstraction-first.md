@@ -1,5 +1,6 @@
 ---
 name: abstraction-first
+type: process
 description: Design skill — forces clarity on objects, responsibilities, and boundaries
   before any code is generated. Use before writing a REASONS Canvas, before starting
   a feature with >2 interacting components, or when AI output shows structural drift

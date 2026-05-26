@@ -4,6 +4,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { findTarget, exists, countLines, read } from '../lib/paths.js';
 import { ok, fail, warn } from '../lib/ui.js';
+import { scanDupes } from './dedupe.js';
 
 // ── Helpers for expanded doctor checks (F4A.2) ──────────────────────────────
 
@@ -246,6 +247,22 @@ export async function doctor(argv) {
       warn: true,
       detail: coh.orphans.join(', ') + ' — manual scripts are fine; run `axis hooks install` if any should auto-run',
     });
+  }
+
+  // ── --strict: also run dedupe scan ─────────────────────────────────────
+  const strict = argv.includes('--strict');
+  if (strict) {
+    const aiDir = path.join(target, '.ai');
+    if (exists(aiDir)) {
+      const { files: scanned, dups } = scanDupes(aiDir);
+      if (dups.length === 0) {
+        checks.push(check(`dedupe: no paragraph duplication in ${scanned} files`, true));
+      } else {
+        const detail = dups.slice(0, 3).map((d) => `"${d.sample.slice(0, 60)}…" [${d.files.size}×]`).join('; ') +
+          (dups.length > 3 ? ` (+${dups.length - 3} more — run \`axis dedupe\`)` : ' — run `axis dedupe`');
+        checks.push(check(`dedupe: ${dups.length} duplicated paragraph(s) in ${scanned} files`, false, detail));
+      }
+    }
   }
 
   // Print

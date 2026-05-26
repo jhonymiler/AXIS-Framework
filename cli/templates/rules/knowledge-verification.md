@@ -1,5 +1,6 @@
 ---
 applyTo: "**"
+trigger: always
 ---
 
 # Knowledge Verification Chain

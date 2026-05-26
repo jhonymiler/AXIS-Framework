@@ -51,4 +51,9 @@ rsync -a --delete \
   .ai/skills/axis-bootstrap/agents/specialists/ \
   cli/templates/bootstrap-skill/agents/specialists/
 
-echo "Synced .ai/skills/ + .ai/rules/ + .ai/hooks/ + specialists → cli/templates/"
+# 6) Re-bootstrap skill (sibling to axis-bootstrap — distributable to projects).
+rsync -a --delete \
+  .ai/skills/axis-rebootstrap/ \
+  cli/templates/rebootstrap-skill/
+
+echo "Synced .ai/skills/ + .ai/rules/ + .ai/hooks/ + specialists + rebootstrap-skill → cli/templates/"

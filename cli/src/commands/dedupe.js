@@ -44,6 +44,24 @@ function normalize(p) {
   return p.replace(/\s+/g, ' ').toLowerCase();
 }
 
+// Exported for use by `axis doctor --strict` without console side-effects.
+export function scanDupes(aiDir) {
+  const files = listMarkdown(aiDir);
+  const map = new Map();
+  for (const f of files) {
+    const rel = path.relative(path.dirname(aiDir), f);
+    for (const p of paragraphs(fs.readFileSync(f, 'utf8'))) {
+      const h = crypto.createHash('sha1').update(normalize(p)).digest('hex').slice(0, 12);
+      if (!map.has(h)) map.set(h, { sample: p.slice(0, 100).replace(/\n/g, ' '), len: p.length, files: new Set() });
+      map.get(h).files.add(rel);
+    }
+  }
+  const dups = [...map.values()]
+    .filter((e) => e.files.size > 1)
+    .sort((a, b) => b.files.size - a.files.size || b.len - a.len);
+  return { files: files.length, dups };
+}
+
 export async function dedupeCmd(argv = []) {
   const root = path.join(process.cwd(), '.ai');
   if (!fs.existsSync(root)) {
@@ -51,23 +69,9 @@ export async function dedupeCmd(argv = []) {
     process.exit(1);
   }
 
-  const files = listMarkdown(root);
-  const map = new Map();
+  const { files, dups } = scanDupes(root);
 
-  for (const f of files) {
-    const rel = path.relative(process.cwd(), f);
-    for (const p of paragraphs(fs.readFileSync(f, 'utf8'))) {
-      const h = crypto.createHash('sha1').update(normalize(p)).digest('hex').slice(0, 12);
-      if (!map.has(h)) map.set(h, { sample: p.slice(0, 100).replace(/\n/g, ' '), len: p.length, files: new Set() });
-      map.get(h).files.add(rel);
-    }
-  }
-
-  const dups = [...map.values()]
-    .filter((e) => e.files.size > 1)
-    .sort((a, b) => b.files.size - a.files.size || b.len - a.len);
-
-  console.log(pc.bold(`AXIS dedupe — scanned ${files.length} markdown file(s) under .ai/`));
+  console.log(pc.bold(`AXIS dedupe — scanned ${files} markdown file(s) under .ai/`));
   console.log(pc.dim(`(threshold: paragraphs ≥ ${MIN_CHARS} chars, symlinks skipped)`));
   console.log();
 

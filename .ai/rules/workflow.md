@@ -1,5 +1,6 @@
 ---
 applyTo: "**"
+trigger: always
 ---
 
 # Workflow & Governance — AXIS Framework
