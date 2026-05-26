@@ -1,7 +1,6 @@
 import { intro, outro, text, log, note, confirm } from '@clack/prompts';
 import pc from 'picocolors';
 import path from 'node:path';
-import { spawn } from 'node:child_process';
 import { findTarget, exists, read, write, TEMPLATES, ensureDir } from '../lib/paths.js';
 
 const STEPS = {
@@ -32,6 +31,8 @@ const STEPS = {
   },
 };
 
+const STEP_ORDER = ['story', 'align', 'design', 'review', 'sync'];
+
 export async function spdd(argv) {
   const sub = argv[0];
   const rest = argv.slice(1);
@@ -51,29 +52,91 @@ export async function spdd(argv) {
     return;
   }
 
-  if (!STEPS[sub]) {
-    log.error(`Unknown SPDD step: ${pc.red(sub)}`);
-    printSpddHelp();
-    process.exit(1);
+  if (sub === 'guide') {
+    printGuide(rest[0]);
+    return;
   }
 
-  await invokeSkill(sub, rest);
+  // Backwards-compatible aliases: `axis spdd story` still works, delegates to guide
+  if (STEPS[sub]) {
+    printGuide(sub, { alias: true });
+    return;
+  }
+
+  log.error(`Unknown SPDD command: ${pc.red(sub)}`);
+  printSpddHelp();
+  process.exit(1);
 }
 
 function printSpddHelp() {
   console.log();
   console.log(pc.bold('SPDD pipeline') + pc.dim(' — produces a REASONS Canvas, then code'));
   console.log();
-  console.log(`  ${pc.cyan('axis spdd story')}     ${pc.dim('→ R')}        Decompose into INVEST stories`);
-  console.log(`  ${pc.cyan('axis spdd align')}     ${pc.dim('→ O+N+S₂')}   Lock scope, norms, safeguards`);
-  console.log(`  ${pc.cyan('axis spdd design')}    ${pc.dim('→ E+A+S₁')}   Entities, approach, structure`);
-  console.log(`  ${pc.cyan('axis spdd canvas')}    ${pc.dim('<slug>')}     Scaffold a new Canvas file`);
-  console.log(`  ${pc.cyan('axis spdd verify')}    ${pc.dim('<slug>')}     Check that S₂ safeguards have matching tests`);
-  console.log(`  ${pc.cyan('axis spdd review')}    ${pc.dim('Track A/B')}  Iterative review after code gen`);
-  console.log(`  ${pc.cyan('axis spdd sync')}      ${pc.dim('Track B')}    Sync Canvas after refactor`);
+  console.log(pc.bold('  Executable commands'));
+  console.log(`    ${pc.cyan('axis spdd canvas')}    ${pc.dim('<slug>')}        Scaffold a new Canvas file`);
+  console.log(`    ${pc.cyan('axis spdd verify')}    ${pc.dim('<slug>')}        Check that S₂ safeguards have matching tests`);
   console.log();
-  console.log(pc.dim('Each step prints the trigger phrase to paste into your AI tool (Claude Code, Cursor, etc.).'));
+  console.log(pc.bold('  Guidance for the agent') + pc.dim(' — prints trigger phrases to paste into your AI tool'));
+  console.log(`    ${pc.cyan('axis spdd guide')}                    Show all 5 steps`);
+  console.log(`    ${pc.cyan('axis spdd guide')}    ${pc.dim('<step>')}         Show one: ${STEP_ORDER.map((s) => pc.cyan(s)).join(' | ')}`);
   console.log();
+  console.log(pc.dim('  Legacy aliases still work: `axis spdd story`, `axis spdd align`, etc. → delegate to `guide`.'));
+  console.log();
+}
+
+/**
+ * Print SPDD guidance — either all 5 steps in pipeline order, or one specific step.
+ * Replaces the previous 5 separate subcommands (story, align, design, review, sync)
+ * which each printed a single trigger phrase. Consolidation per Sprint 1 / F2.3.
+ */
+function printGuide(step, opts = {}) {
+  const target = findTarget();
+
+  if (step && !STEPS[step]) {
+    log.error(`Unknown step: ${pc.red(step)}. Available: ${STEP_ORDER.join(', ')}`);
+    process.exit(1);
+  }
+
+  if (opts.alias) {
+    log.warn(pc.dim(`(legacy alias: \`axis spdd ${step}\` → \`axis spdd guide ${step}\`)`));
+  }
+
+  const stepsToShow = step ? [step] : STEP_ORDER;
+  intro(pc.bgBlue(pc.white(step ? ` axis spdd guide · ${step} ` : ' axis spdd guide ')));
+
+  if (!step) {
+    note(
+      [
+        pc.bold('Pipeline order:') + ' story → align → design → (generate code) → review → sync',
+        '',
+        pc.dim('Each step below prints a trigger phrase you paste into your AI tool.'),
+        pc.dim('Your agent loads the named skill and updates the active Canvas.'),
+      ].join('\n'),
+      'SPDD overview'
+    );
+  }
+
+  for (const s of stepsToShow) {
+    const meta = STEPS[s];
+    const skillPath = path.join(target, '.ai', 'skills', meta.skill, 'SKILL.md');
+    const hasSkill = exists(skillPath);
+    const trigger = `Load the ${meta.skill} skill and apply it. Update the active Canvas at .ai/docs/canvases/<slug>.md.`;
+
+    note(
+      [
+        `${pc.bold('Step:')}      ${pc.cyan(s)}`,
+        `${pc.bold('Skill:')}     ${pc.cyan(meta.skill)} ${hasSkill ? pc.green('(installed)') : pc.yellow('(not installed)')}`,
+        `${pc.bold('Fills:')}     ${meta.fills}`,
+        `${pc.bold('Purpose:')}   ${pc.dim(meta.desc)}`,
+        '',
+        pc.bold('Trigger to paste:'),
+        pc.cyan('  ' + trigger),
+      ].join('\n'),
+      `${stepsToShow.length > 1 ? STEP_ORDER.indexOf(s) + 1 + '. ' : ''}${s}`
+    );
+  }
+
+  outro(pc.green('done'));
 }
 
 async function scaffoldCanvas(rest) {
@@ -106,41 +169,16 @@ async function scaffoldCanvas(rest) {
       `${pc.green('✓')} Scaffolded ${pc.cyan(path.relative(target, dest))}`,
       '',
       `${pc.bold('Next steps (in order):')}`,
-      `  1. ${pc.cyan('axis spdd story')}   — fill R`,
-      `  2. ${pc.cyan('axis spdd align')}   — fill O + N + S₂`,
-      `  3. ${pc.cyan('axis spdd design')}  — fill E + A + S₁`,
+      `  1. ${pc.cyan('axis spdd guide story')}   — fill R`,
+      `  2. ${pc.cyan('axis spdd guide align')}   — fill O + N + S₂`,
+      `  3. ${pc.cyan('axis spdd guide design')}  — fill E + A + S₁`,
       `  4. Generate code (your AI tool, using O as prompt)`,
-      `  5. ${pc.cyan('axis spdd review')}  — verify diff against Canvas`,
+      `  5. ${pc.cyan('axis spdd guide review')}  — verify diff against Canvas`,
+      '',
+      pc.dim('Tip: `axis spdd guide` (no step) shows all 5 at once.'),
     ].join('\n'),
     'Canvas created'
   );
-  outro(pc.green('done'));
-}
-
-async function invokeSkill(step, rest) {
-  const meta = STEPS[step];
-  intro(pc.bgBlue(pc.white(` axis spdd ${step} `)));
-
-  const target = findTarget();
-  const skillPath = path.join(target, '.ai', 'skills', meta.skill, 'SKILL.md');
-  const hasSkill = exists(skillPath);
-
-  note(
-    [
-      `${pc.bold('Skill:')}     ${pc.cyan(meta.skill)} ${hasSkill ? pc.green('(installed)') : pc.yellow('(not installed in this project)')}`,
-      `${pc.bold('Fills:')}     ${meta.fills}`,
-      `${pc.bold('Purpose:')}   ${pc.dim(meta.desc)}`,
-    ].join('\n'),
-    `SPDD step: ${step}`
-  );
-
-  if (!hasSkill) {
-    log.warn(`Skill ${meta.skill} not present in .ai/skills/. Add it from the AXIS framework repo or copy SKILL.md.`);
-  }
-
-  const trigger = `Load the ${meta.skill} skill and apply it. Update the active Canvas at .ai/docs/canvases/<slug>.md.`;
-
-  note(pc.cyan(trigger), 'Paste this into your AI tool');
   outro(pc.green('done'));
 }
 
