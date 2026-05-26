@@ -56,7 +56,19 @@ for s in abstraction-first alignment iterative-review story-decompose; do
     sync_fail=1
   fi
 done
-[ $sync_fail -eq 0 ] && pass "all skill files in sync — run scripts/sync-cli-templates.sh to fix drift"
+for r in engineering-discipline context-economy knowledge-verification session-start; do
+  if ! diff -q .ai/rules/$r.md cli/templates/rules/$r.md > /dev/null 2>&1; then
+    fail "$r rule drift between .ai/rules and cli/templates/rules"
+    sync_fail=1
+  fi
+done
+for h in _lib session-start post-spec-edit stop; do
+  if ! diff -q .ai/hooks/$h.sh cli/templates/hooks/$h.sh > /dev/null 2>&1; then
+    fail "$h hook drift between .ai/hooks and cli/templates/hooks"
+    sync_fail=1
+  fi
+done
+[ $sync_fail -eq 0 ] && pass "all skill + rule + hook files in sync — run scripts/sync-cli-templates.sh to fix drift"
 
 echo "[4/4] Root symlinks resolve"
 for f in CLAUDE.md AGENTS.md; do
@@ -68,6 +80,13 @@ for f in CLAUDE.md AGENTS.md; do
     pass "$f → $(readlink "$f" 2>/dev/null || echo "(regular file)")"
   fi
 done
+if [ -d .ai/hooks ]; then
+  if [ -L .claude/hooks ] && [ -e .claude/hooks ]; then
+    pass ".claude/hooks → $(readlink .claude/hooks)"
+  else
+    fail ".claude/hooks should be a symlink to ../.ai/hooks (run setup-ide-links.sh)"
+  fi
+fi
 
 echo
 if [ $fail -eq 0 ]; then

@@ -1,45 +1,99 @@
-# STATE — AXIS Framework Playbook
+# STATE — AXIS Framework Playbook (Summary)
 
-> Curated memory of the AXIS framework itself. This repo is **self-applicable**: the framework follows the pattern it teaches. Read at session start. Update at session end. Curate (do not just append).
+## Memory Structure
+- **Hot:** active decisions, progress, and blockers (auto-loaded at session start, ≤80 lines)
+- **Warm:** deferred ideas, lessons learned, and TODOs (loaded on demand)
+- **Cold:** historical archives (`STATE-YYYY-MM.md`), never loaded by default
 
 ## Active Decisions
+- **Automated quality enforcement:**  
+  `axis dedupe` detects duplicated content in `.ai/**/*.md`;  
+  `axis spdd verify` ensures Canvas safeguards have matching tests.
 
-- **[2026-05-17] GitHub Copilot Code Review wired into AXIS via symlinks** — Copilot reads `.github/copilot-instructions.md` (symlink → `.ai/INSTRUCTIONS.md`, with a Code Review section in the first 4000 chars) and `.github/instructions/` (symlink → `.ai/instructions/`, holding `*.instructions.md` path-targeted rules with `applyTo:` frontmatter). New repo-only skill [`copilot-review`](../skills/copilot-review/SKILL.md) documents the integration. **Why:** Copilot Code Review's contract (≤4000 chars, `.instructions.md` suffix, glob frontmatter) and AXIS's SST principle (everything in `.ai/`) reconciled via symlinks instead of duplicating files. Skill is AXIS-specific, not in `cli/templates/`.
-- **[2026-05-17] Discovery Block 4 (Collaboration & Governance)** added — PM tool, commits, branches, PRs, releases. Generates `.ai/rules/workflow.md` in target projects. Propagates through PHASE-2-SPEC, TEMPLATES, PROMPT-TEMPLATE, PHASE-5-VALIDATION, QUICKSTART (live + CLI templates).
-- **[2026-05-17] Harness automation in this repo** — `scripts/sync-cli-templates.sh` enforces live ⇄ CLI parity; `scripts/validate-axis.sh` enforces 4 gates (sizes, sync, symlinks); `.github/workflows/validate.yml` runs them on PR/push. Removes dependency on manual discipline.
-- **[2026-05-17] CLI publish is release-driven, not merge-driven** — [`publish-cli.yml`](../../.github/workflows/publish-cli.yml) fires on GitHub Release with tag `cli-vX.Y.Z`. Target registry: npmjs.com (public). NPM_TOKEN scoped to `PRD` GitHub environment. Tag must match `cli/package.json#version` or publish fails. Provenance attestation enabled. Operator flow documented in [rules/workflow.md → Releases & Versioning](../rules/workflow.md).
-- **Harness-first positioning** — settings.json/hooks precede prompt optimization. Differentiator vs Spec Kit / Kiro / Tessl.
-- **Three-layer model** — Spec / Harness / Memory. Memory layer (ACE-inspired) is the addition vs literature.
-- **REASONS Canvas** is the SPDD artifact (R/E/A/S₁/O/N/S₂ — aligned with [Fowler 2025](https://martinfowler.com/articles/structured-prompt-driven)) bound by `story-decompose → alignment → abstraction-first → iterative-review`. Defined in `.ai/skills/axis-bootstrap/references/CANVAS-REASONS.md`.
-- **`axis` CLI** (Node + Clack + picocolors) lives in `cli/`. It scaffolds artifacts and orchestrates the SPDD workflow; the actual filling of Canvas sections is done by the AI tool (Claude/Cursor/etc.). Commands: `init`, `audit`, `doctor`, `link`, `state`, `spdd <step>`.
-- **Recursiveness is a contract** — if `.ai/` here breaks any rule the framework teaches, it is a bug.
+- **Non-interactive initialization:**  
+  `axis init --preset <node|python|go|docs|minimal>` enables reproducible project bootstrapping without prompts.
+
+- **Formalized memory tiers:**  
+  New commands:
+  - `axis state hot`
+  - `axis state archive`
+
+- **Telemetry (`axis log`):**  
+  JSONL-based event tracking (`telemetry.jsonl`) for skills, hooks, and spec churn analysis.
+
+- **Automated hooks:**  
+  Hooks under `.ai/hooks/`:
+  - `session-start`
+  - `post-spec-edit`
+  - `stop`  
+  Convert written rules into enforced behavior.
+
+- **Skill routing matrix:**  
+  `INSTRUCTIONS.md` explicitly defines when to load or avoid each skill.
+
+- **Mandatory session-start ritual:**  
+  `STATE.md` must be read before any significant action.
+
+- **Always-on behavioral rules:**  
+  Includes:
+  - engineering discipline
+  - context economy
+  - confidence and research controls
+
+- **GitHub Copilot Review integration:**  
+  Implemented via symlinks to preserve SST (Single Source of Truth).
+
+- **Discovery Block 4:**  
+  Adds governance, workflow, PR, release, and PM tooling support.
+
+- **Harness-first automation:**  
+  Validation scripts enforce:
+  - file size limits
+  - synchronization
+  - symlink integrity
+  - live/CLI consistency
+
+- **Release-driven CLI publishing:**  
+  npm publishing occurs only through GitHub Releases (`cli-vX.Y.Z`).
+
+- **Core architecture:**  
+  Framework structured around:
+  - Spec
+  - Harness
+  - Memory
+
+- **REASONS Canvas:**  
+  Main SPDD artifact integrated with decomposition and review skills.
+
+- **`axis` CLI:**  
+  Commands:
+  - `init`
+  - `audit`
+  - `doctor`
+  - `link`
+  - `state`
+  - `spdd`
+
+- **Recursiveness is mandatory:**  
+  The repository itself must obey all framework rules.
 
 ## In Progress
-
-- (none — recursive infrastructure complete, automated gates in place)
-
-## Blockers
-
-- (none)
+- No active blockers or critical infrastructure work.
 
 ## Deferred Ideas
-
-- Failure-attribution telemetry **consumer** — JSONL hook is documented in PHASE-3-HARNESS; needs a CLI command (`axis log analyze`) before instrumenting it in this repo
-- Skill consolidation review — 4 satellite SPDD skills (story-decompose, alignment, abstraction-first, iterative-review) may merge into a single `spdd` skill with phases. Defer until first external user feedback
-- Bilingual README sync — automate or document drift policy between `README.md` and `README.pt.md`
-- Optional Phase 6 in PLANNER.md for post-bootstrap iterative review hook
+- Advanced telemetry consumer
+- SPDD skill consolidation
+- Bilingual README synchronization
+- Post-bootstrap Phase 6
 
 ## Lessons Learned
-
-- **Recursiveness violations compound silently** — INSTRUCTIONS.md sat at 62 lines (target 100-180) for months; `.ai/rules/` was empty despite the framework recommending 3-7. Both invisible until an audit. **Rule:** every gate the framework prescribes must be enforced *in this repo* by `scripts/validate-axis.sh` and CI — otherwise it's aspirational, not normative.
-- **Discovery-question additions need downstream propagation** — adding a Phase-1 question without updating Phase-2 (artifact), TEMPLATES (template), and Phase-5 (validation) creates dead questions. **Rule:** Block 4 added 6 questions and 5 downstream edits in the same change; replicate this pattern.
-- **Live skill ⇄ CLI template sync is a permanent risk** — they were byte-identical by discipline only. **Rule:** `scripts/sync-cli-templates.sh` + CI diff check is the durable fix; never rely on remembering both edits.
-- Skills imported from external sources (story-decompose, alignment, abstraction-first, iterative-review) referenced REASONS Canvas without the Canvas existing in the repo — **rule:** never import a skill that depends on an undefined artifact; either define the artifact or rewrite the skill to be self-contained.
-- PATTERNS.md numbering drifted (5/6/10 duplicated) when sections were appended without checking the existing index — **rule:** PATTERNS additions must reuse the index table as a checklist.
-- The repo proclaiming Harness-first while having no `settings.json` or hooks broke its own recursiveness contract for months — **rule:** any framework claim must be auditable inside this repo.
+- Rules without automation become aspirational.
+- Discovery changes require downstream propagation.
+- Manual template synchronization eventually fails.
+- Skills must not depend on undefined artifacts.
+- Framework claims must be auditable inside the repo itself.
 
 ## TODOs
-
-- [ ] Document Canvas REASONS letters in FRAMEWORK.md once template is stable
-- [ ] Decide on skill consolidation (4 SPDD skills → 1) after first external user feedback
-- [ ] Add `axis log analyze` command before wiring failure-attribution hooks in this repo
+- Document REASONS in `FRAMEWORK.md`
+- Revisit skill consolidation
+- Expand `axis log analyze` for failure hooks

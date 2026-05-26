@@ -41,8 +41,10 @@ tests/
 - Errors: throw `DomainError` for business rule violations
 - Tests: AAA, no shared mutable fixtures
 
-## S₂ — Safeguards (invariants)
-- <Invariant 1>
-- <Invariant 2>
-- No PII in logs
-- DROP/TRUNCATE never executed without explicit confirmation
+## S₂ — Safeguards (invariants — **each one becomes a failing test first**)
+
+> Format: `- [ ] test: <invariant>` — keyword(s) after `test:` must be grep-able in your test suite. Run `axis spdd verify {{SLUG}}` to check coverage. The box stays unchecked until at least one test asserts the invariant.
+
+- [ ] test: <Invariant 1 — e.g., "rejects negative quantity">
+- [ ] test: <Invariant 2 — e.g., "no PII in logs">
+- [ ] test: DROP/TRUNCATE never executed without explicit confirmation

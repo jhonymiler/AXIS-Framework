@@ -57,6 +57,18 @@ axis spdd align                  # → IA preenche O + N + S₂
 axis spdd design                 # → IA preenche E + A + S₁
 # … gerar código no seu agente …
 axis spdd review                 # IA verifica diff contra o Canvas
+axis spdd verify pricing-quote   # checagem de CI: cada salvaguarda S₂ tem teste
+```
+
+**Outros comandos:**
+
+```bash
+axis init --preset node          # scaffold não-interativo (node|python|go|docs|minimal)
+axis state hot                   # tier quente do STATE.md (usado pelo hook SessionStart)
+axis state archive <substr>      # arquiva Active Decision antiga em .ai/docs/archive/
+axis dedupe                      # auditoria de duplicação em .ai/**/*.md (guarda do SST)
+axis log <evento> --meta k=v     # registra telemetria JSONL (.ai/telemetry.jsonl, gitignored)
+axis log analyze                 # resumo: byEvent, byEvent:name, churn de spec top-10
 ```
 
 Referência completa do CLI em [cli/README.md](cli/README.md).

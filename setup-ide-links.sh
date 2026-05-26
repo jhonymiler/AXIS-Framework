@@ -31,6 +31,7 @@ mkdir -p .claude
 ln -sf  ../.ai/INSTRUCTIONS.md .claude/CLAUDE.md
 ln -sfn ../.ai/skills          .claude/skills
 [ -d .ai/rules ] && ln -sfn ../.ai/rules .claude/rules || true
+[ -d .ai/hooks ] && ln -sfn ../.ai/hooks .claude/hooks || true
 
 echo "→ Cursor (.cursor/)"
 mkdir -p .cursor

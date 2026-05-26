@@ -31,5 +31,20 @@
       "Write(README.md)",
       "Write(README.pt.md)"
     ]
+  },
+  "_hooks_comment": "Hooks operationalize .ai/rules/ — they are informational, never blocking. Disable by removing the entry.",
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": "bash .claude/hooks/session-start.sh" }] }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [{ "type": "command", "command": "bash .claude/hooks/post-spec-edit.sh" }]
+      }
+    ],
+    "Stop": [
+      { "hooks": [{ "type": "command", "command": "bash .claude/hooks/stop.sh" }] }
+    ]
   }
 }
