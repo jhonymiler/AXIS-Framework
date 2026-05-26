@@ -8,7 +8,8 @@ import { audit } from './commands/audit.js';
 import { state } from './commands/state.js';
 import { spdd } from './commands/spdd.js';
 import { cleanup } from './commands/cleanup.js';
-
+import { logCmd } from './commands/log.js';
+import { dedupeCmd } from './commands/dedupe.js';
 const VERSION = '0.1.0';
 
 const BANNER = `
@@ -29,12 +30,15 @@ ${pc.bold('Usage:')}
 
 ${pc.bold('Commands:')}
   ${pc.yellow('init')}              Bootstrap (auto-detects new vs existing project, asks PT/EN)
+                    ${pc.dim('non-interactive:')} ${pc.cyan('axis init --preset <node|python|go|docs|minimal>')}
   ${pc.yellow('audit')}             Audit existing project for AXIS gaps
   ${pc.yellow('doctor')}            Validate limits, symlinks, and recursiveness contract
   ${pc.yellow('link')}              Run setup-ide-links.sh (idempotent symlink installer)
-  ${pc.yellow('state')}             Open .ai/docs/STATE.md in $EDITOR
+  ${pc.yellow('state')}             Open STATE.md ${pc.dim('(also:')} ${pc.cyan('state hot')}${pc.dim(',')} ${pc.cyan('state archive <substr>')}${pc.dim(')')}
   ${pc.yellow('spdd')} <step>       Run SPDD pipeline step (story | align | design | canvas | review | sync)
   ${pc.yellow('cleanup')}           Remove the axis-bootstrap meta-skill after AI-driven init completes
+  ${pc.yellow('log')} <event>       Append/analyze telemetry (.ai/telemetry.jsonl) — try ${pc.cyan('axis log analyze')}
+  ${pc.yellow('dedupe')}            Scan .ai/**/*.md for duplicated paragraphs ${pc.dim('(+ --strict for CI)')}
   ${pc.yellow('help')}              Show this help
   ${pc.yellow('version')}           Print version
 
@@ -98,6 +102,12 @@ async function main() {
       break;
     case 'cleanup':
       await cleanup(rest);
+      break;
+    case 'log':
+      await logCmd(rest);
+      break;
+    case 'dedupe':
+      await dedupeCmd(rest);
       break;
     default:
       log.error(`Unknown command: ${pc.red(cmd)}`);

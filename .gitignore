@@ -20,3 +20,6 @@ cli/dist/
 .env
 .env.*
 !.env.example
+
+# AXIS telemetry (local-only)
+.ai/telemetry.jsonl

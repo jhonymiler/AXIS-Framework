@@ -51,11 +51,18 @@ This removes `.ai/skills/axis-bootstrap/` (it has done its job). Your project ke
 | Command | Locale | What it does |
 | ------- | ------ | ------------ |
 | `axis init` | PT/EN | Interactive bootstrap (auto-detects new vs existing) |
+| `axis init --preset <name>` | EN | Non-interactive scaffold — presets: `node`, `python`, `go`, `docs`, `minimal`. Flags: `--name`, `--purpose`, `--lang pt\|en` |
 | `axis audit` | EN | Reports what AXIS layers are missing |
 | `axis doctor` | EN | Validates limits (INSTRUCTIONS 100-180, SKILL ≤60), symlinks, settings |
 | `axis link` | EN | Runs `setup-ide-links.sh` (idempotent) |
 | `axis state` | EN | Opens `.ai/docs/STATE.md` in `$EDITOR` |
+| `axis state hot` | EN | Prints only the hot tier (Active Decisions + In Progress + Blockers) — used by the SessionStart hook |
+| `axis state archive <substr>` | EN | Moves matching Active Decision line(s) to `.ai/docs/archive/STATE-YYYY-MM.md` |
 | `axis spdd <step>` | EN | Per-feature SPDD pipeline step |
+| `axis spdd verify <slug>` | EN | Checks that each S₂ safeguard in a Canvas has at least one matching test (exits 2 if missing — CI-friendly) |
+| `axis log <event> [--meta k=v]` | EN | Append a telemetry event to `.ai/telemetry.jsonl` (gitignored) |
+| `axis log analyze` | EN | Summarize telemetry: counts by event, by event:name, spec-edit churn top-10 |
+| `axis dedupe` | EN | Scan `.ai/**/*.md` for duplicated paragraphs (≥ 120 chars). `--strict` exits 2 for CI |
 | `axis cleanup` | PT/EN | Removes axis-bootstrap meta-skill after AI-driven init |
 
 ## SPDD pipeline (per feature)
@@ -69,7 +76,32 @@ axis spdd align                  # → AI fills O + N + S₂
 axis spdd design                 # → AI fills E + A + S₁
 # … generate code in your AI tool …
 axis spdd review                 # AI verifies diff against Canvas
+axis spdd verify pricing-quote   # static check: every S₂ safeguard has a matching test
 ```
+
+## Memory tiers (`STATE.md`)
+
+STATE.md is layered to keep token cost flat as the project grows:
+
+| Tier | Sections | Loaded |
+| ---- | -------- | ------ |
+| **Hot** | Active Decisions, In Progress, Blockers | Auto at session start (hook + rule). Target ≤ 80 lines. |
+| **Warm** | Deferred Ideas, Lessons Learned, TODOs | On demand. |
+| **Cold** | `.ai/docs/archive/STATE-YYYY-MM.md` | Only when asked. Append-only. |
+
+`axis state hot` prints just the hot tier. `axis state archive <substr>` moves a stale Active Decision line to the cold archive.
+
+## Telemetry (optional, local-only)
+
+`axis log` appends JSONL events to `.ai/telemetry.jsonl` (gitignored). Hooks already emit `hook:fired` and `spec:edit`. Agents can self-report skill loads and rule citations:
+
+```bash
+axis log "skill:loaded" --meta name=axis-bootstrap
+axis log "rule:cited"   --meta name=context-economy
+axis log analyze   # counts by event, by event:name, spec-edit churn top-10
+```
+
+Use the analyze output to cull dead skills, identify spec churn hotspots, or audit which rules actually influence behavior.
 
 ## Removing AXIS entirely
 

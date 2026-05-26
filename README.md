@@ -49,6 +49,18 @@ axis spdd align                  # → AI fills O + N + S₂
 axis spdd design                 # → AI fills E + A + S₁
 # … generate code in your AI tool …
 axis spdd review                 # verify diff against Canvas
+axis spdd verify pricing-quote   # CI-grade check: each S₂ safeguard has a test
+```
+
+**Other commands:**
+
+```bash
+axis init --preset node          # non-interactive scaffold (node|python|go|docs|minimal)
+axis state hot                   # hot-tier of STATE.md (used by SessionStart hook)
+axis state archive <substr>      # move a stale Active Decision to .ai/docs/archive/
+axis dedupe                      # audit .ai/**/*.md for duplicated paragraphs (SST guard)
+axis log <event> --meta k=v      # append JSONL telemetry (.ai/telemetry.jsonl, gitignored)
+axis log analyze                 # summarize telemetry: byEvent, byEvent:name, spec-edit churn
 ```
 
 Full CLI reference in [cli/README.md](cli/README.md).

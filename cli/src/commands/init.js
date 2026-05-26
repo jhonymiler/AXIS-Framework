@@ -22,8 +22,49 @@ const SPDD_SKILLS = [
   { value: 'iterative-review', label: 'iterative-review', hint: 'Track A/B' },
 ];
 
+// Non-interactive presets — use with `axis init --preset <name>`.
+// Each preset captures the answers that the quick path would otherwise ask interactively.
+const PRESETS = {
+  node:    { stack: 'Node.js + TypeScript',  ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'] },
+  python:  { stack: 'Python',                ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'] },
+  go:      { stack: 'Go',                    ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'] },
+  docs:    { stack: '(non-software / docs)', ides: ['claude', 'agents'], spdd: ['alignment', 'iterative-review'] },
+  minimal: { stack: '',                      ides: ['claude'],           spdd: [] },
+};
+
+function parseFlags(argv) {
+  const flags = {};
+  const positional = [];
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a.startsWith('--')) {
+      const key = a.slice(2);
+      const next = argv[i + 1];
+      if (next !== undefined && !next.startsWith('--')) { flags[key] = next; i++; }
+      else flags[key] = true;
+    } else {
+      positional.push(a);
+    }
+  }
+  return { positional, flags };
+}
+
 export async function init(argv) {
-  const target = path.resolve(argv[0] || process.cwd());
+  const { positional, flags } = parseFlags(argv);
+  const target = path.resolve(positional[0] || process.cwd());
+
+  // Non-interactive preset path — short-circuit prompts.
+  if (flags.preset) {
+    const preset = PRESETS[flags.preset];
+    if (!preset) {
+      log.error(`Unknown preset: ${pc.red(flags.preset)}. Available: ${Object.keys(PRESETS).join(', ')}`);
+      process.exit(1);
+    }
+    const locale = flags.lang === 'pt' ? 'pt' : 'en';
+    const name = flags.name || path.basename(target);
+    const purpose = flags.purpose || `${name} project bootstrapped by axis preset ${flags.preset}`;
+    return presetBootstrap(target, locale, { name, purpose, ...preset });
+  }
 
   // 1. Pick language (auto-detect, ask once)
   const detected = detectLocale();
@@ -253,6 +294,16 @@ async function quickBootstrap(target, locale) {
     }
   }
 
+  // Universal always-on rules (behavioral baseline for every project)
+  const rulesSrc = path.join(TEMPLATES, 'rules');
+  if (fs.existsSync(rulesSrc)) {
+    for (const f of fs.readdirSync(rulesSrc)) {
+      if (f.endsWith('.md')) {
+        fs.copyFileSync(path.join(rulesSrc, f), path.join(target, '.ai', 'rules', f));
+      }
+    }
+  }
+
   // Harness
   if (ides.includes('claude')) {
     ensureDir(path.join(target, '.claude'));
@@ -294,4 +345,71 @@ async function quickBootstrap(target, locale) {
     ].join('\n'),
     locale === 'pt' ? 'Próximos passos' : 'Next steps'
   );
+}
+
+/**
+ * Non-interactive preset path — same artifacts as quickBootstrap but no prompts.
+ * Used by `axis init --preset <name>` for CI, scripted bootstraps, and reproducibility.
+ */
+async function presetBootstrap(target, locale, cfg) {
+  const { name, purpose, stack, ides, spdd } = cfg;
+  const s = spinner();
+  s.start(`Scaffolding preset → ${pc.cyan(target)}`);
+
+  ensureDir(path.join(target, '.ai', 'skills'));
+  ensureDir(path.join(target, '.ai', 'rules'));
+  ensureDir(path.join(target, '.ai', 'docs', 'canvases', 'done'));
+
+  const replace = (content) =>
+    content
+      .replace(/{{PROJECT_NAME}}/g, name)
+      .replace(/{{PROJECT_PURPOSE}}/g, purpose)
+      .replace(/{{STACK}}/g, stack || (locale === 'pt' ? '(não-software)' : '(non-software)'));
+
+  write(path.join(target, '.ai', 'INSTRUCTIONS.md'), replace(read(path.join(TEMPLATES, 'INSTRUCTIONS.md'))));
+  write(path.join(target, '.ai', 'CONVENTIONS.md'), replace(read(path.join(TEMPLATES, 'CONVENTIONS.md'))));
+  write(path.join(target, '.ai', 'docs', 'STATE.md'), replace(read(path.join(TEMPLATES, 'STATE.md'))));
+
+  for (const skill of spdd) {
+    const skillDir = path.join(target, '.ai', 'skills', skill);
+    ensureDir(skillDir);
+    const src = path.join(TEMPLATES, 'skills', `${skill}.md`);
+    if (exists(src)) fs.copyFileSync(src, path.join(skillDir, 'SKILL.md'));
+  }
+
+  const rulesSrc = path.join(TEMPLATES, 'rules');
+  if (fs.existsSync(rulesSrc)) {
+    for (const f of fs.readdirSync(rulesSrc)) {
+      if (f.endsWith('.md')) fs.copyFileSync(path.join(rulesSrc, f), path.join(target, '.ai', 'rules', f));
+    }
+  }
+
+  if (ides.includes('claude')) {
+    ensureDir(path.join(target, '.claude'));
+    write(path.join(target, '.claude', 'settings.json'), read(path.join(TEMPLATES, 'settings.json')));
+  }
+
+  write(path.join(target, 'setup-ide-links.sh'), read(path.join(TEMPLATES, 'setup-ide-links.sh')));
+  fs.chmodSync(path.join(target, 'setup-ide-links.sh'), 0o755);
+
+  try {
+    execSync('bash setup-ide-links.sh', { cwd: target, stdio: 'pipe' });
+    s.stop(pc.green('✓ Preset applied (symlinks installed)'));
+  } catch {
+    s.stop(pc.green('✓ Preset applied'));
+    log.warn('Run `bash setup-ide-links.sh` manually to wire IDE symlinks.');
+  }
+
+  const created = [
+    '.ai/INSTRUCTIONS.md',
+    '.ai/CONVENTIONS.md',
+    '.ai/docs/STATE.md',
+    `.ai/skills/ (${spdd.length} SPDD)`,
+    `.ai/rules/ (${fs.existsSync(rulesSrc) ? fs.readdirSync(rulesSrc).filter(f => f.endsWith('.md')).length : 0} always-on)`,
+    'setup-ide-links.sh',
+    ...(ides.includes('claude') ? ['.claude/settings.json'] : []),
+    'AGENTS.md → .ai/INSTRUCTIONS.md',
+    'CLAUDE.md → .ai/INSTRUCTIONS.md',
+  ];
+  note(created.map((c) => pc.green('+ ') + c).join('\n'), `Preset bootstrap complete — ${pc.bold(name)}`);
 }

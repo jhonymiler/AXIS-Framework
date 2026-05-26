@@ -92,9 +92,13 @@ Details: [FRAMEWORK.md](FRAMEWORK.md).
 
 Summary (full standards in [.ai/rules/](.ai/rules/)):
 
-- **Commits & PRs:** Conventional Commits, squash merge, CI green required — see [rules/workflow.md](.ai/rules/workflow.md).
+- **Engineering discipline (always-on):** think before coding, minimum viable change, surgical edits, verifiable completion — see [rules/engineering-discipline.md](.ai/rules/engineering-discipline.md).
+- **Context economy (always-on):** tool budget, confidence ladder, stop signals — see [rules/context-economy.md](.ai/rules/context-economy.md).
+- **Session start (always-on):** read `STATE.md` Active Decisions + In Progress + Blockers before first substantive action — see [rules/session-start.md](.ai/rules/session-start.md).
 - **Verification before claims:** follow the Knowledge Verification Chain — see [rules/knowledge-verification.md](.ai/rules/knowledge-verification.md).
+- **Commits & PRs:** Conventional Commits, squash merge, CI green required — see [rules/workflow.md](.ai/rules/workflow.md).
 - **Doc maintenance:** the agent is a documentation guardian — see [rules/documentation-maintenance.md](.ai/rules/documentation-maintenance.md).
+- **Telemetry (optional):** emit `axis log <event> --meta name=<...>` for `skill:loaded`, `rule:cited`, `confidence:uncertain` to feed `axis log analyze`. Local-only (.gitignored). Hooks already log `hook:fired` and `spec:edit`.
 - **File sizes:** `INSTRUCTIONS.md` 100-180 lines, `SKILL.md` ≤ 60 lines — enforced by `scripts/validate-axis.sh`.
 
 ## Workflow & Tools
@@ -110,14 +114,18 @@ Summary (full standards in [.ai/rules/workflow.md](.ai/rules/workflow.md)):
 
 ## Available Skills
 
-| Skill                                                        | When to use                                                                                               |
-| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
-| [`axis-bootstrap`](.ai/skills/axis-bootstrap/SKILL.md)       | Bootstrap new project, migrate from monolithic CLAUDE.md, or audit existing project for AI infrastructure |
-| [`story-decompose`](.ai/skills/story-decompose/SKILL.md)     | Decompose large requirements into INVEST stories with Given/When/Then ACs                                 |
-| [`abstraction-first`](.ai/skills/abstraction-first/SKILL.md) | Design objects, responsibilities, and layer boundaries before generating code                             |
-| [`alignment`](.ai/skills/alignment/SKILL.md)                 | Lock intent, scope boundaries, and DoD before implementation starts                                       |
-| [`iterative-review`](.ai/skills/iterative-review/SKILL.md)   | Review AI-generated code and iterate via logic-correction or refactoring track                            |
-| [`copilot-review`](.ai/skills/copilot-review/SKILL.md)       | GitHub Copilot Code Review protocol for this repo (AXIS-specific, not propagated to bootstrapped projects) |
+Load **one** skill per request based on the trigger phrases below. If multiple match, pick the most specific. If none match, work without a skill — do not load by default.
+
+| Skill | Load when user request mentions / implies | Do NOT load for |
+| ----- | ----------------------------------------- | --------------- |
+| [`axis-bootstrap`](.ai/skills/axis-bootstrap/SKILL.md) | "bootstrap", "init project", "set up AI", "migrate CLAUDE.md", "audit AI infrastructure", missing `.ai/` structure | Editing an existing skill, single doc tweak |
+| [`story-decompose`](.ai/skills/story-decompose/SKILL.md) | "break down requirement", "user stories", "INVEST", a blob of business text > 1 paragraph that needs slicing | Single well-defined feature, bugfix |
+| [`abstraction-first`](.ai/skills/abstraction-first/SKILL.md) | "design", "architecture", "entities/responsibilities", feature touching > 2 components, before writing Canvas E + A + S₁ | Single-file change, pure refactor |
+| [`alignment`](.ai/skills/alignment/SKILL.md) | "what's in/out of scope", "DoD", "acceptance", before writing Canvas O + N + S₂, ambiguous goal | Trivial request with obvious scope |
+| [`iterative-review`](.ai/skills/iterative-review/SKILL.md) | "review", "regenerate", "fix this code", drift detected post-implementation, "track A/B" | Greenfield generation |
+| [`copilot-review`](.ai/skills/copilot-review/SKILL.md) | PRs against AXIS-Framework, Copilot Code Review config questions, `.github/instructions/` work | Generic code review in any other repo |
+
+**Routing anti-patterns:** loading `axis-bootstrap` to edit one existing file; loading `story-decompose` for a single bug; loading multiple skills "in case". Each load costs tokens — pick one or none.
 
 ## Links
 
