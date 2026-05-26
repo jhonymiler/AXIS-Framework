@@ -56,4 +56,14 @@ rsync -a --delete \
   .ai/skills/axis-rebootstrap/ \
   cli/templates/rebootstrap-skill/
 
-echo "Synced .ai/skills/ + .ai/rules/ + .ai/hooks/ + specialists + rebootstrap-skill → cli/templates/"
+# 7) Delta skill (F9 — brownfield change specification; skill-driven, no CLI).
+rsync -a --delete \
+  .ai/skills/axis-delta/ \
+  cli/templates/delta-skill/
+
+# 8) Specify skill (F12 — greenfield feature scaffolding; skill-driven, no CLI).
+rsync -a --delete \
+  .ai/skills/axis-specify/ \
+  cli/templates/specify-skill/
+
+echo "Synced .ai/skills/ + .ai/rules/ + .ai/hooks/ + specialists + rebootstrap-skill + delta-skill + specify-skill → cli/templates/"

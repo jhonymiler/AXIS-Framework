@@ -25,12 +25,22 @@ const SPDD_SKILLS = [
 // Non-interactive presets — use with `axis init --preset <name>`.
 // Each preset captures the answers that the quick path would otherwise ask interactively.
 const PRESETS = {
-  node: { stack: 'Node.js + TypeScript', ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'] },
-  python: { stack: 'Python', ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'] },
-  go: { stack: 'Go', ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'] },
-  docs: { stack: '(non-software / docs)', ides: ['claude', 'agents'], spdd: ['alignment', 'iterative-review'] },
-  minimal: { stack: '', ides: ['claude'], spdd: [] },
+  node: { stack: 'Node.js + TypeScript', ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'], constitutional: 'node' },
+  python: { stack: 'Python', ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'], constitutional: 'python' },
+  go: { stack: 'Go', ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'], constitutional: 'go' },
+  docs: { stack: '(non-software / docs)', ides: ['claude', 'agents'], spdd: ['alignment', 'iterative-review'], constitutional: 'generic' },
+  minimal: { stack: '', ides: ['claude'], spdd: [], constitutional: null },
 };
+
+// Heuristic: pick a constitutional file from a free-form stack string (used by
+// the interactive quickBootstrap path). Returns 'node' | 'python' | 'go' | 'generic'.
+function constitutionalForStack(stack) {
+  const s = (stack || '').toLowerCase();
+  if (/\b(node|typescript|javascript|\bts\b|\bjs\b|nest|next)\b/.test(s)) return 'node';
+  if (/\b(python|django|flask|fastapi)\b/.test(s)) return 'python';
+  if (/\b(go|golang)\b/.test(s)) return 'go';
+  return 'generic';
+}
 
 function parseFlags(argv) {
   const flags = {};
@@ -347,6 +357,18 @@ async function quickBootstrap(target, locale) {
     copyDir(guardianSrc, path.join(target, '.ai', 'skills', 'documentation-guardian'));
   }
 
+  // F9 — axis-delta skill (always installed; activates on brownfield triggers)
+  const deltaSrc = path.join(TEMPLATES, 'delta-skill');
+  if (fs.existsSync(deltaSrc)) {
+    copyDir(deltaSrc, path.join(target, '.ai', 'skills', 'axis-delta'));
+  }
+
+  // F12 — axis-specify skill (always installed; activates on greenfield triggers)
+  const specifySrc = path.join(TEMPLATES, 'specify-skill');
+  if (fs.existsSync(specifySrc)) {
+    copyDir(specifySrc, path.join(target, '.ai', 'skills', 'axis-specify'));
+  }
+
   // Default rule: session-start only (always-on baseline).
   // Other rules (engineering-discipline, context-economy, knowledge-verification) are opt-in:
   //   axis rules add <name>   (coming soon) or copy manually from the AXIS templates.
@@ -357,13 +379,19 @@ async function quickBootstrap(target, locale) {
       const src = path.join(rulesSrc, f);
       if (fs.existsSync(src)) fs.copyFileSync(src, path.join(target, '.ai', 'rules', f));
     }
+    // F10 — constitutional rules: heuristic pick from the free-form stack string
+    const cKind = constitutionalForStack(stack);
+    const cSrc = path.join(rulesSrc, `constitutional-${cKind}.md`);
+    if (fs.existsSync(cSrc)) {
+      fs.copyFileSync(cSrc, path.join(target, '.ai', 'rules', 'constitutional.md'));
+    }
   }
 
   // Self-maintenance scripts and hooks (F4B — zero axis dependency post-bootstrap)
   ensureDir(path.join(target, 'scripts'));
   const hooksSrc = path.join(TEMPLATES, 'hooks');
   if (fs.existsSync(hooksSrc)) {
-    for (const f of ['_lib.sh', 'post-spec-edit.sh', 'post-code-change.sh', 'session-start.sh', 'stop.sh']) {
+    for (const f of ['_lib.sh', 'post-spec-edit.sh', 'post-code-change.sh', 'session-start.sh', 'stop.sh', 'constitutional-check.sh']) {
       const hSrc = path.join(hooksSrc, f);
       if (fs.existsSync(hSrc)) {
         const hDst = path.join(target, 'scripts', f);
@@ -456,8 +484,15 @@ function presetTargetFiles(target, cfg) {
   const rulesSrc = path.join(TEMPLATES, 'rules');
   if (fs.existsSync(rulesSrc)) {
     for (const f of fs.readdirSync(rulesSrc)) {
-      if (f.endsWith('.md')) files.push(path.join(target, '.ai', 'rules', f));
+      // constitutional-<stack>.md are template variants picked one-of; the
+      // landed file is always .ai/rules/constitutional.md (handled below).
+      if (f.endsWith('.md') && !f.startsWith('constitutional-')) {
+        files.push(path.join(target, '.ai', 'rules', f));
+      }
     }
+  }
+  if (cfg.constitutional) {
+    files.push(path.join(target, '.ai', 'rules', 'constitutional.md'));
   }
   // documentation-guardian skill
   const guardianSrc = path.join(TEMPLATES, 'skills', 'documentation-guardian');
@@ -466,8 +501,30 @@ function presetTargetFiles(target, cfg) {
       files.push(path.join(target, '.ai', 'skills', 'documentation-guardian', f));
     }
   }
+  // F9 — axis-delta skill bundle (SKILL.md + references/)
+  const deltaTplSrc = path.join(TEMPLATES, 'delta-skill');
+  if (fs.existsSync(deltaTplSrc)) {
+    files.push(path.join(target, '.ai', 'skills', 'axis-delta', 'SKILL.md'));
+    const dRefs = path.join(deltaTplSrc, 'references');
+    if (fs.existsSync(dRefs)) {
+      for (const f of fs.readdirSync(dRefs)) {
+        files.push(path.join(target, '.ai', 'skills', 'axis-delta', 'references', f));
+      }
+    }
+  }
+  // F12 — axis-specify skill bundle (SKILL.md + references/)
+  const specifyTplSrc = path.join(TEMPLATES, 'specify-skill');
+  if (fs.existsSync(specifyTplSrc)) {
+    files.push(path.join(target, '.ai', 'skills', 'axis-specify', 'SKILL.md'));
+    const sRefs = path.join(specifyTplSrc, 'references');
+    if (fs.existsSync(sRefs)) {
+      for (const f of fs.readdirSync(sRefs)) {
+        files.push(path.join(target, '.ai', 'skills', 'axis-specify', 'references', f));
+      }
+    }
+  }
   // hooks and self-maint scripts
-  for (const f of ['post-spec-edit.sh', 'post-code-change.sh', '_lib.sh', 'session-start.sh', 'stop.sh']) {
+  for (const f of ['post-spec-edit.sh', 'post-code-change.sh', '_lib.sh', 'session-start.sh', 'stop.sh', 'constitutional-check.sh']) {
     if (fs.existsSync(path.join(TEMPLATES, 'hooks', f))) {
       files.push(path.join(target, 'scripts', f));
     }
@@ -598,6 +655,18 @@ async function presetBootstrap(target, locale, cfg, flags) {
     copyDir(guardianSrcP, path.join(target, '.ai', 'skills', 'documentation-guardian'));
   }
 
+  // F9 — axis-delta skill (always installed; activates on brownfield triggers)
+  const deltaSrcP = path.join(TEMPLATES, 'delta-skill');
+  if (fs.existsSync(deltaSrcP)) {
+    copyDir(deltaSrcP, path.join(target, '.ai', 'skills', 'axis-delta'));
+  }
+
+  // F12 — axis-specify skill (always installed; activates on greenfield triggers)
+  const specifySrcP = path.join(TEMPLATES, 'specify-skill');
+  if (fs.existsSync(specifySrcP)) {
+    copyDir(specifySrcP, path.join(target, '.ai', 'skills', 'axis-specify'));
+  }
+
   const rulesSrc = path.join(TEMPLATES, 'rules');
   const defaultRules = ['session-start.md'];
   if (fs.existsSync(rulesSrc)) {
@@ -606,13 +675,20 @@ async function presetBootstrap(target, locale, cfg, flags) {
       const src = path.join(rulesSrc, f);
       if (fs.existsSync(src)) fs.copyFileSync(src, path.join(target, '.ai', 'rules', f));
     }
+    // F10 — constitutional rules: preset declares which file to pick; null skips
+    if (cfg.constitutional) {
+      const cSrc = path.join(rulesSrc, `constitutional-${cfg.constitutional}.md`);
+      if (fs.existsSync(cSrc)) {
+        fs.copyFileSync(cSrc, path.join(target, '.ai', 'rules', 'constitutional.md'));
+      }
+    }
   }
 
   // Self-maintenance scripts and hooks (F4B)
   ensureDir(path.join(target, 'scripts'));
   const hooksSrcP = path.join(TEMPLATES, 'hooks');
   if (fs.existsSync(hooksSrcP)) {
-    for (const f of ['_lib.sh', 'post-spec-edit.sh', 'post-code-change.sh', 'session-start.sh', 'stop.sh']) {
+    for (const f of ['_lib.sh', 'post-spec-edit.sh', 'post-code-change.sh', 'session-start.sh', 'stop.sh', 'constitutional-check.sh']) {
       const hSrc = path.join(hooksSrcP, f);
       if (fs.existsSync(hSrc)) {
         const hDst = path.join(target, 'scripts', f);

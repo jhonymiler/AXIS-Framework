@@ -89,7 +89,33 @@ for f in SKILL.md PLANNER.md; do
     sync_fail=1
   fi
 done
-[ $sync_fail -eq 0 ] && pass "all skill + rule + hook + discoverer + specialist + rebootstrap files in sync — run scripts/sync-cli-templates.sh to fix drift"
+# axis-delta (F9 — brownfield change spec; full skill bundle)
+if ! diff -q .ai/skills/axis-delta/SKILL.md \
+              cli/templates/delta-skill/SKILL.md > /dev/null 2>&1; then
+  fail "axis-delta/SKILL.md drift between live and CLI templates"
+  sync_fail=1
+fi
+for f in DELTA-TEMPLATE.md ARCHIVE-PROCEDURE.md; do
+  if ! diff -q .ai/skills/axis-delta/references/$f \
+                cli/templates/delta-skill/references/$f > /dev/null 2>&1; then
+    fail "axis-delta/references/$f drift between live and CLI templates"
+    sync_fail=1
+  fi
+done
+# axis-specify (F12 — greenfield feature scaffolding; full skill bundle)
+if ! diff -q .ai/skills/axis-specify/SKILL.md \
+              cli/templates/specify-skill/SKILL.md > /dev/null 2>&1; then
+  fail "axis-specify/SKILL.md drift between live and CLI templates"
+  sync_fail=1
+fi
+for f in SPEC-FOLDER-LAYOUT.md; do
+  if ! diff -q .ai/skills/axis-specify/references/$f \
+                cli/templates/specify-skill/references/$f > /dev/null 2>&1; then
+    fail "axis-specify/references/$f drift between live and CLI templates"
+    sync_fail=1
+  fi
+done
+[ $sync_fail -eq 0 ] && pass "all skill + rule + hook + discoverer + specialist + rebootstrap + delta + specify files in sync — run scripts/sync-cli-templates.sh to fix drift"
 
 echo "[4/4] Root symlinks resolve"
 for f in CLAUDE.md AGENTS.md; do

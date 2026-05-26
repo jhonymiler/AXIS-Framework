@@ -119,6 +119,8 @@ Load **one** skill per request based on the trigger phrases below. If multiple m
 | Skill | Load when user request mentions / implies | Do NOT load for |
 | ----- | ----------------------------------------- | --------------- |
 | [`axis-bootstrap`](.ai/skills/axis-bootstrap/SKILL.md) | "bootstrap", "init project", "set up AI", "migrate CLAUDE.md", "audit AI infrastructure", missing `.ai/` structure | Editing an existing skill, single doc tweak |
+| [`axis-delta`](.ai/skills/axis-delta/SKILL.md) | "brownfield change", "ADDED/MODIFIED/REMOVED", "delta spec", change in an existing system touching ≥2 modules or a public contract | Greenfield feature, trivial single-file edit |
+| [`axis-specify`](.ai/skills/axis-specify/SKILL.md) | "new feature", "specify", "kick off feature", "scaffold spec", "start a new story" — greenfield work with no prior Canvas | Brownfield change (use axis-delta), single-file bugfix |
 | [`story-decompose`](.ai/skills/story-decompose/SKILL.md) | "break down requirement", "user stories", "INVEST", a blob of business text > 1 paragraph that needs slicing | Single well-defined feature, bugfix |
 | [`abstraction-first`](.ai/skills/abstraction-first/SKILL.md) | "design", "architecture", "entities/responsibilities", feature touching > 2 components, before writing Canvas E + A + S₁ | Single-file change, pure refactor |
 | [`alignment`](.ai/skills/alignment/SKILL.md) | "what's in/out of scope", "DoD", "acceptance", before writing Canvas O + N + S₂, ambiguous goal | Trivial request with obvious scope |

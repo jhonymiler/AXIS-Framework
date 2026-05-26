@@ -31,9 +31,34 @@ tests/
 └── …
 ```
 
+## C — Contracts
+```typescript
+// <Caller> → <Callee>
+interface <OperationInput> {
+  <field>: <type>;   // required because <reason>
+}
+interface <OperationOutput> {
+  <field>: <type>;
+}
+// Pre-condition:  <what must hold before the call>
+// Post-condition: <what is guaranteed on success>
+// Invariant:      <what never changes>  (optional)
+```
+> One block per public component named in S₁. Pre + post are mandatory.
+
 ## O — Operations
 - [ ] `<function or endpoint>(input) → output` — references AC #1
 - [ ] …
+
+## T — Test Scenarios
+| #   | Given          | When           | Then (observable assertion) | Type       |
+| --- | -------------- | -------------- | --------------------------- | ---------- |
+| 1   | <start state>  | <actor action> | <expected w/ numbers>       | happy path |
+| 2   | <invalid state>| <action>       | <error type + message>      | failure    |
+| 3   | <boundary>     | <action>       | <expected>                  | edge case  |
+
+> Minimum 1 happy + 1 failure + 1 edge case per story. `Then` must be observable —
+> no "should work correctly". Each row maps to one test in the suite.
 
 ## N — Norms
 - Naming: …

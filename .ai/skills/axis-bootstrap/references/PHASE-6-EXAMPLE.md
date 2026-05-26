@@ -63,6 +63,26 @@ Decision tree applied:
 - New migration: `migrations/0012_add_notified_at_to_tasks.sql`
 - New tests: `tests/unit/notifications/`, `tests/integration/scheduler/`
 
+## C — Contracts
+```typescript
+// DeadlineScheduler → NotificationService
+interface NotificationJob {
+  taskId: string;
+  recipientEmail: string;       // non-empty, RFC-5322
+  slackChannel?: string;        // optional; only set when AC4 applies
+  dueAt: ISODateString;
+}
+interface SendResult {
+  delivered: boolean;
+  attempts: number;             // 1..3
+  error?: { code: string; message: string };
+}
+// Pre-condition:  job.recipientEmail valid; dueAt > now()
+// Post-condition: delivered=true ⇒ NotificationService stamped notified_at upstream
+//                 delivered=false ⇒ attempts === 3 AND error is set
+// Invariant:      same job (taskId, dueAt) processed at most once per sweep
+```
+
 ## O — Out of scope
 - Push notifications (mobile) — deferred to v2
 - Customizable notification timing — hardcoded to 24 h for now
@@ -77,6 +97,15 @@ Decision tree applied:
 - Guard: `NotificationService` is interface-based; test suite uses an in-memory stub (no real SMTP in CI)
 - Guard: scheduler query must be idempotent — verified by `notified_at IS NULL` filter
 - Risk: clock skew between app servers → mitigated by using DB `now()` not application clock
+
+## T — Test Scenarios
+| #   | Given                                                | When                       | Then                                                                  | Type       |
+| --- | ---------------------------------------------------- | -------------------------- | --------------------------------------------------------------------- | ---------- |
+| 1   | task due in 18h, `notified_at=NULL`, status=`open`   | scheduler sweep runs       | 1 email dispatched; `notified_at = now()`; AC1 satisfied              | happy path |
+| 2   | task due in 18h, status=`done`                       | scheduler sweep runs       | zero emails dispatched; `notified_at` remains NULL (AC2)              | failure    |
+| 3   | SMTP rejects with 5xx three times                    | `NotificationService.send` | `SendResult.delivered=false`, `attempts=3`; `notified_at` stays NULL  | failure    |
+| 4   | task due in exactly 24h00m (boundary)                | scheduler sweep runs       | included in sweep; one email; `notified_at` stamped                   | edge case  |
+| 5   | two scheduler instances run concurrently on same row | parallel sweep             | exactly one email (DB `UPDATE … WHERE notified_at IS NULL` serializes)| edge case  |
 ```
 
 **Gate:** User reviews and confirms: *"Looks right. Add AC4: send a Slack message to the channel as well."*

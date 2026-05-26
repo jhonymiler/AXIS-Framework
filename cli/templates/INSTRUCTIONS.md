@@ -34,7 +34,10 @@
 
 | Skill | When to use |
 | ----- | ----------- |
-| (none yet — add skills under `.ai/skills/<name>/SKILL.md`) | |
+| `axis-delta` | Brownfield change in existing system: ≥2 modules touched or public contract changing (ADDED/MODIFIED/REMOVED). |
+| `axis-specify` | Greenfield feature kick-off: scaffolds `.ai/specs/<slug>/canvas.md` + `tasks.md` + optional branch. |
+| `documentation-guardian` | Spec-vs-code drift detected after a change; routine doc sweep before release. |
+| (add SPDD skills that were installed via the preset, e.g. `story-decompose`, `alignment`, `abstraction-first`, `iterative-review`) | |
 
 ## Conventions
 
