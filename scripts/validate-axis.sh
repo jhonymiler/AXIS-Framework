@@ -75,7 +75,14 @@ for d in business-rules-extractor flow-extractor architecture-mapper stack-profi
     sync_fail=1
   fi
 done
-[ $sync_fail -eq 0 ] && pass "all skill + rule + hook + discoverer files in sync — run scripts/sync-cli-templates.sh to fix drift"
+for s in business-rules-keeper flow-architect architecture-guardian conventions-keeper; do
+  if ! diff -q .ai/skills/axis-bootstrap/agents/specialists/$s.md \
+                cli/templates/bootstrap-skill/agents/specialists/$s.md > /dev/null 2>&1; then
+    fail "agents/specialists/$s.md drift between live and CLI templates"
+    sync_fail=1
+  fi
+done
+[ $sync_fail -eq 0 ] && pass "all skill + rule + hook + discoverer + specialist files in sync — run scripts/sync-cli-templates.sh to fix drift"
 
 echo "[4/4] Root symlinks resolve"
 for f in CLAUDE.md AGENTS.md; do

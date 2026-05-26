@@ -34,4 +34,21 @@ for hook in _lib session-start post-spec-edit stop; do
   cp .ai/hooks/$hook.sh cli/templates/hooks/$hook.sh
 done
 
-echo "Synced .ai/skills/ + .ai/rules/ + .ai/hooks/ → cli/templates/"
+# 4) Harness hooks (Claude Code SessionStart / PostToolUse / Stop).
+# Generic, Claude-specific (no other IDE consumes these yet).
+mkdir -p cli/templates/hooks
+for hook in _lib session-start post-spec-edit post-code-change stop; do
+  if [ -f ".ai/hooks/$hook.sh" ]; then
+    cp ".ai/hooks/$hook.sh" "cli/templates/hooks/$hook.sh"
+  elif [ -f "cli/templates/hooks/$hook.sh" ]; then
+    : # kept as project-agnostic template — no live counterpart in AXIS
+  fi
+done
+
+# 5) Specialists (agents created from discoverer output in Phase 4.5).
+mkdir -p cli/templates/bootstrap-skill/agents/specialists
+rsync -a --delete \
+  .ai/skills/axis-bootstrap/agents/specialists/ \
+  cli/templates/bootstrap-skill/agents/specialists/
+
+echo "Synced .ai/skills/ + .ai/rules/ + .ai/hooks/ + specialists → cli/templates/"

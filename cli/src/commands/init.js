@@ -25,11 +25,11 @@ const SPDD_SKILLS = [
 // Non-interactive presets — use with `axis init --preset <name>`.
 // Each preset captures the answers that the quick path would otherwise ask interactively.
 const PRESETS = {
-  node:    { stack: 'Node.js + TypeScript',  ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'] },
-  python:  { stack: 'Python',                ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'] },
-  go:      { stack: 'Go',                    ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'] },
-  docs:    { stack: '(non-software / docs)', ides: ['claude', 'agents'], spdd: ['alignment', 'iterative-review'] },
-  minimal: { stack: '',                      ides: ['claude'],           spdd: [] },
+  node: { stack: 'Node.js + TypeScript', ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'] },
+  python: { stack: 'Python', ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'] },
+  go: { stack: 'Go', ides: ['claude', 'agents'], spdd: ['story-decompose', 'alignment', 'abstraction-first', 'iterative-review'] },
+  docs: { stack: '(non-software / docs)', ides: ['claude', 'agents'], spdd: ['alignment', 'iterative-review'] },
+  minimal: { stack: '', ides: ['claude'], spdd: [] },
 };
 
 function parseFlags(argv) {
@@ -294,12 +294,42 @@ async function quickBootstrap(target, locale) {
     }
   }
 
+  // documentation-guardian skill (always installed — self-maintenance kit)
+  const guardianSrc = path.join(TEMPLATES, 'skills', 'documentation-guardian');
+  if (fs.existsSync(guardianSrc)) {
+    copyDir(guardianSrc, path.join(target, '.ai', 'skills', 'documentation-guardian'));
+  }
+
   // Universal always-on rules (behavioral baseline for every project)
   const rulesSrc = path.join(TEMPLATES, 'rules');
   if (fs.existsSync(rulesSrc)) {
     for (const f of fs.readdirSync(rulesSrc)) {
       if (f.endsWith('.md')) {
         fs.copyFileSync(path.join(rulesSrc, f), path.join(target, '.ai', 'rules', f));
+      }
+    }
+  }
+
+  // Self-maintenance scripts and hooks (F4B — zero axis dependency post-bootstrap)
+  ensureDir(path.join(target, 'scripts'));
+  const hooksSrc = path.join(TEMPLATES, 'hooks');
+  if (fs.existsSync(hooksSrc)) {
+    for (const f of ['_lib.sh', 'post-spec-edit.sh', 'post-code-change.sh', 'session-start.sh', 'stop.sh']) {
+      const hSrc = path.join(hooksSrc, f);
+      if (fs.existsSync(hSrc)) {
+        const hDst = path.join(target, 'scripts', f);
+        fs.copyFileSync(hSrc, hDst);
+        fs.chmodSync(hDst, 0o755);
+      }
+    }
+  }
+  const selfMaintSrc = path.join(TEMPLATES, 'scripts-self-maint');
+  if (fs.existsSync(selfMaintSrc)) {
+    for (const f of fs.readdirSync(selfMaintSrc)) {
+      if (f.endsWith('.sh')) {
+        const sDst = path.join(target, 'scripts', f);
+        fs.copyFileSync(path.join(selfMaintSrc, f), sDst);
+        fs.chmodSync(sDst, 0o755);
       }
     }
   }
@@ -373,6 +403,25 @@ function presetTargetFiles(target, cfg) {
       if (f.endsWith('.md')) files.push(path.join(target, '.ai', 'rules', f));
     }
   }
+  // documentation-guardian skill
+  const guardianSrc = path.join(TEMPLATES, 'skills', 'documentation-guardian');
+  if (fs.existsSync(guardianSrc)) {
+    for (const f of fs.readdirSync(guardianSrc)) {
+      files.push(path.join(target, '.ai', 'skills', 'documentation-guardian', f));
+    }
+  }
+  // hooks and self-maint scripts
+  for (const f of ['post-spec-edit.sh', 'post-code-change.sh', '_lib.sh', 'session-start.sh', 'stop.sh']) {
+    if (fs.existsSync(path.join(TEMPLATES, 'hooks', f))) {
+      files.push(path.join(target, 'scripts', f));
+    }
+  }
+  const selfMaintSrc = path.join(TEMPLATES, 'scripts-self-maint');
+  if (fs.existsSync(selfMaintSrc)) {
+    for (const f of fs.readdirSync(selfMaintSrc)) {
+      if (f.endsWith('.sh')) files.push(path.join(target, 'scripts', f));
+    }
+  }
   if (cfg.ides.includes('claude')) {
     files.push(path.join(target, '.claude', 'settings.json'));
   }
@@ -421,7 +470,7 @@ async function presetBootstrap(target, locale, cfg, flags) {
         ...fresh.map((p) => pc.green('  + ') + path.relative(target, p)),
         ...(collisions.length
           ? ['', pc.bold(pc.yellow(T('presetDryRunOverwrite') + `: ${collisions.length}`)),
-             ...collisions.map((p) => pc.yellow('  ! ') + path.relative(target, p))]
+            ...collisions.map((p) => pc.yellow('  ! ') + path.relative(target, p))]
           : []),
       ].join('\n'),
       T('presetDryRun')
@@ -487,10 +536,40 @@ async function presetBootstrap(target, locale, cfg, flags) {
     if (exists(src)) fs.copyFileSync(src, path.join(skillDir, 'SKILL.md'));
   }
 
+  // documentation-guardian skill (always installed — self-maintenance kit)
+  const guardianSrcP = path.join(TEMPLATES, 'skills', 'documentation-guardian');
+  if (fs.existsSync(guardianSrcP)) {
+    copyDir(guardianSrcP, path.join(target, '.ai', 'skills', 'documentation-guardian'));
+  }
+
   const rulesSrc = path.join(TEMPLATES, 'rules');
   if (fs.existsSync(rulesSrc)) {
     for (const f of fs.readdirSync(rulesSrc)) {
       if (f.endsWith('.md')) fs.copyFileSync(path.join(rulesSrc, f), path.join(target, '.ai', 'rules', f));
+    }
+  }
+
+  // Self-maintenance scripts and hooks (F4B)
+  ensureDir(path.join(target, 'scripts'));
+  const hooksSrcP = path.join(TEMPLATES, 'hooks');
+  if (fs.existsSync(hooksSrcP)) {
+    for (const f of ['_lib.sh', 'post-spec-edit.sh', 'post-code-change.sh', 'session-start.sh', 'stop.sh']) {
+      const hSrc = path.join(hooksSrcP, f);
+      if (fs.existsSync(hSrc)) {
+        const hDst = path.join(target, 'scripts', f);
+        fs.copyFileSync(hSrc, hDst);
+        fs.chmodSync(hDst, 0o755);
+      }
+    }
+  }
+  const selfMaintSrcP = path.join(TEMPLATES, 'scripts-self-maint');
+  if (fs.existsSync(selfMaintSrcP)) {
+    for (const f of fs.readdirSync(selfMaintSrcP)) {
+      if (f.endsWith('.sh')) {
+        const sDst = path.join(target, 'scripts', f);
+        fs.copyFileSync(path.join(selfMaintSrcP, f), sDst);
+        fs.chmodSync(sDst, 0o755);
+      }
     }
   }
 
@@ -520,10 +599,11 @@ async function presetBootstrap(target, locale, cfg, flags) {
     '.ai/INSTRUCTIONS.md',
     '.ai/CONVENTIONS.md',
     '.ai/docs/STATE.md',
-    `.ai/skills/ (${spdd.length} SPDD)`,
+    `.ai/skills/ (${spdd.length} SPDD + documentation-guardian)`,
     `.ai/rules/ (${fs.existsSync(rulesSrc) ? fs.readdirSync(rulesSrc).filter(f => f.endsWith('.md')).length : 0} always-on)`,
+    'scripts/ (hooks + self-maint kit)',
     'setup-ide-links.sh',
-    ...(ides.includes('claude') ? ['.claude/settings.json'] : []),
+    ...(ides.includes('claude') ? ['.claude/settings.json (hooks wired)'] : []),
     'AGENTS.md → .ai/INSTRUCTIONS.md',
     'CLAUDE.md → .ai/INSTRUCTIONS.md',
   ];

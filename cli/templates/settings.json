@@ -25,5 +25,22 @@
       "Bash(git push:*)",
       "Write(**)"
     ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/post-spec-edit.sh 2>/dev/null || true"
+          },
+          {
+            "type": "command",
+            "command": "bash scripts/post-code-change.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
   }
 }

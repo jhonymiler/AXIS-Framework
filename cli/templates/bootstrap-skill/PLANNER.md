@@ -65,11 +65,11 @@ Skip SPDD if the work is a single-file fix, a typo, a config tweak, or a tightly
 
 **Pipeline (each step has its own exit gate):**
 
-| # | Skill | Produces (REASONS Canvas section) | Why this order |
-| - | ----- | --------------------------------- | -------------- |
-| 1 | [`story-decompose`](../story-decompose/SKILL.md) | **R** — INVEST stories with G/W/T ACs + DoD | Cannot align on what is undefined |
-| 2 | [`alignment`](../alignment/SKILL.md) | **O** scope lock + **N** Norms + **S₂** Safeguards | Cannot design without governance bounds |
-| 3 | [`abstraction-first`](../abstraction-first/SKILL.md) | **E** Entities + **A** Approach + **S₁** System structure | Cannot generate code without object design |
+| #   | Skill                                                | Produces (REASONS Canvas section)                         | Why this order                             |
+| --- | ---------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------ |
+| 1   | [`story-decompose`](../story-decompose/SKILL.md)     | **R** — INVEST stories with G/W/T ACs + DoD               | Cannot align on what is undefined          |
+| 2   | [`alignment`](../alignment/SKILL.md)                 | **O** scope lock + **N** Norms + **S₂** Safeguards        | Cannot design without governance bounds    |
+| 3   | [`abstraction-first`](../abstraction-first/SKILL.md) | **E** Entities + **A** Approach + **S₁** System structure | Cannot generate code without object design |
 
 The artifact produced is the **REASONS Canvas** ([references/CANVAS-REASONS.md](references/CANVAS-REASONS.md)) — single page per feature. If it doesn't fit, return to step 1 and split smaller.
 
@@ -128,11 +128,40 @@ The artifact produced is the **REASONS Canvas** ([references/CANVAS-REASONS.md](
 
 ---
 
+## Phase 3.5 — Self-Maintenance Kit
+
+**Loads:** [references/PHASE-3-5-SELF-MAINTENANCE.md](references/PHASE-3-5-SELF-MAINTENANCE.md)
+
+**Input:** Phase 3 confirmed (settings.json + hooks in place)
+
+**Purpose:** Install the documentation-guardian infrastructure so the project can detect and repair doc drift **without ever calling `axis` again** — zero runtime CLI dependency.
+
+**8 artifacts to install:**
+
+| #     | Artifact                       | Destination                          |
+| ----- | ------------------------------ | ------------------------------------ |
+| 3.5.1 | Skill `documentation-guardian` | `.ai/skills/documentation-guardian/` |
+| 3.5.2 | Rule `documentation-sync.md`   | `.ai/rules/`                         |
+| 3.5.3 | Rule `skill-emergence.md`      | `.ai/rules/`                         |
+| 3.5.4 | Rule `state-curation.md`       | `.ai/rules/`                         |
+| 3.5.5 | Hook `post-spec-edit.sh`       | `scripts/` + wired in settings.json  |
+| 3.5.6 | Hook `post-code-change.sh`     | `scripts/` + wired in settings.json  |
+| 3.5.7 | Script `check-doc-drift.sh`    | `scripts/`                           |
+| 3.5.8 | Script `audit-docs.sh`         | `scripts/`                           |
+
+`axis init` copies these automatically. For manual bootstrap, see the step-by-step in [references/PHASE-3-5-SELF-MAINTENANCE.md](references/PHASE-3-5-SELF-MAINTENANCE.md).
+
+**Exit gate:**
+
+> Run `bash scripts/audit-docs.sh` — all 3 cold-start trials must pass. Ask: *"Self-maintenance kit installed. Does the audit output look correct? Any `SRC_ROOT` adjustment needed?"*
+
+---
+
 ## Phase 4 — Continuity Layer
 
 **Loads:** [references/PHASE-4-CONTINUITY.md](references/PHASE-4-CONTINUITY.md)
 
-**Input:** Phases 2 and 3 confirmed
+**Input:** Phases 2, 3, and 3.5 confirmed
 
 **Generation:**
 
@@ -142,6 +171,30 @@ The artifact produced is the **REASONS Canvas** ([references/CANVAS-REASONS.md](
 **Exit gate:**
 
 > Show generated content. Ask: *"Are there decisions already made, current blockers, or important context to record now before the first real session?"* Update `STATE.md` with what the user provides.
+
+---
+
+## Phase 4.5 — Discoverer-to-Specialist Transformation
+
+**Loads:** [references/PHASE-4-5-SPECIALIST.md](references/PHASE-4-5-SPECIALIST.md)
+
+**Input:** Phase 1 discoverer reports (in `.ai/.discovery/`) + Phase 4 confirmed
+
+**Purpose:** Transform the 5 transient discoverer reports into 3-4 persistent project-bound specialist agents with embedded knowledge tables. After this phase, the project has agents that answer domain questions without re-scanning the codebase.
+
+**Specialists created:**
+
+| Discoverer source          | Specialist agent                  | Opt-in?                                |
+| -------------------------- | --------------------------------- | -------------------------------------- |
+| `business-rules-extractor` | `<project>-business-rules-keeper` | No — always                            |
+| `flow-extractor`           | `<project>-flow-architect`        | No — always                            |
+| `architecture-mapper`      | `<project>-architecture-guardian` | No — always                            |
+| `conventions-detector`     | `<project>-conventions-keeper`    | Yes — if N > 5 non-trivial conventions |
+| `stack-profiler`           | *(no specialist)*                 | Stack lives in INSTRUCTIONS.md         |
+
+**Exit gate:**
+
+> Show list of created agents + first 3 rows of each embedded table. Ask: *"Do the embedded tables look accurate? Any row to correct before we continue?"*
 
 ---
 

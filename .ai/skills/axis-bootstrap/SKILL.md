@@ -19,11 +19,13 @@ Executable spec for bootstrapping projects with complete AI infrastructure. Orch
 
 | Phase | Focus | Exit Gate |
 | ----- | ----- | --------- |
-| **1 — Discovery** | Interview to understand the project | Summary confirmed by user |
+| **1 — Discovery** | Interview + 5 parallel discoverers | Project profile confirmed by user |
 | **1.5 — SPDD Pipeline** *(optional)* | `story-decompose` → `alignment` → `abstraction-first` produce REASONS Canvas | All 7 dimensions (R/E/A/S₁/O/N/S₂) filled and confirmed |
 | **2 — Spec Layer** | Generate INSTRUCTIONS, skills, rules, docs | `.ai/` structure populated and validated |
 | **3 — Harness Layer** | Configure settings, hooks, failure attribution, symlinks | Permissions and automation in effect |
+| **3.5 — Self-Maintenance Kit** | Install documentation-guardian + 3 rules + 2 hooks + 2 scripts | `bash scripts/audit-docs.sh` — 3 cold-start trials pass |
 | **4 — Continuity Layer** | Create STATE (playbook), CONVENTIONS | Curated continuity playbook ready for first session |
+| **4.5 — Specialist Transformation** | Discoverer reports → 3-4 persistent project-bound agents | Embedded knowledge tables confirmed by user |
 | **5 — Validation** | Quality gates, k-trial smoke test, handoff | Bootstrap delivered |
 | **6 — Iterative Review** *(per feature, post-bootstrap)* | `iterative-review` keeps Canvas ⇄ code in sync | Diff scoped, ACs green, STATE updated |
 
@@ -39,19 +41,13 @@ Detailed orchestration in [PLANNER.md](PLANNER.md). Final output contract in [PR
 
 ## References
 
-- [PLANNER.md](PLANNER.md) — phase orchestration and gate rules
-- [PROMPT-TEMPLATE.md](PROMPT-TEMPLATE.md) — expected final structure of the bootstrapped project
-- [references/QUICKSTART.md](references/QUICKSTART.md) — 5-minute path
-- [references/PHASE-1-DISCOVERY.md](references/PHASE-1-DISCOVERY.md) — discoverer sub-agents + interview
-- [agents/discoverers/](agents/discoverers/) — 5 read-only sub-agents dispatched in parallel during Phase 1
-- [references/PHASE-2-SPEC.md](references/PHASE-2-SPEC.md) — Spec Layer generation
-- [references/PHASE-3-HARNESS.md](references/PHASE-3-HARNESS.md) — Harness Layer configuration + failure attribution
-- [references/PHASE-4-CONTINUITY.md](references/PHASE-4-CONTINUITY.md) — Continuity Layer initialization + ACE principles
-- [references/PHASE-5-VALIDATION.md](references/PHASE-5-VALIDATION.md) — quality gates and handoff
-- [references/TEMPLATES.md](references/TEMPLATES.md) — all copy-paste templates
-- [references/PATTERNS.md](references/PATTERNS.md) — technical patterns (PD, KVC, ACE, k-trial)
-- [references/CANVAS-REASONS.md](references/CANVAS-REASONS.md) — REASONS Canvas template (SPDD artifact)
-- [references/UNIVERSAL-MAP.md](references/UNIVERSAL-MAP.md) — technical ↔ non-technical mapping
+- [PLANNER.md](PLANNER.md) · [PROMPT-TEMPLATE.md](PROMPT-TEMPLATE.md) · [QUICKSTART.md](references/QUICKSTART.md)
+- [PHASE-1-DISCOVERY.md](references/PHASE-1-DISCOVERY.md) · [agents/discoverers/](agents/discoverers/)
+- [PHASE-2-SPEC.md](references/PHASE-2-SPEC.md) · [PHASE-3-HARNESS.md](references/PHASE-3-HARNESS.md)
+- [PHASE-3-5-SELF-MAINTENANCE.md](references/PHASE-3-5-SELF-MAINTENANCE.md) — self-maintenance kit
+- [PHASE-4-CONTINUITY.md](references/PHASE-4-CONTINUITY.md) · [PHASE-4-5-SPECIALIST.md](references/PHASE-4-5-SPECIALIST.md) · [agents/specialists/](agents/specialists/)
+- [PHASE-5-VALIDATION.md](references/PHASE-5-VALIDATION.md) · [PHASE-6-EXAMPLE.md](references/PHASE-6-EXAMPLE.md)
+- [TEMPLATES.md](references/TEMPLATES.md) · [PATTERNS.md](references/PATTERNS.md) · [CANVAS-REASONS.md](references/CANVAS-REASONS.md) · [UNIVERSAL-MAP.md](references/UNIVERSAL-MAP.md)
 
 ## Final Validation (summary)
 
