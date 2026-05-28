@@ -5,12 +5,12 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jhonymiler/AXIS-Framework.git",
+    "url": "git+https://github.com/jhonymiler/axis-bootstrap.git",
     "directory": "cli"
   },
-  "homepage": "https://github.com/jhonymiler/AXIS-Framework#readme",
+  "homepage": "https://jhonymiler.github.io/axis-bootstrap",
   "bugs": {
-    "url": "https://github.com/jhonymiler/AXIS-Framework/issues"
+    "url": "https://github.com/jhonymiler/axis-bootstrap/issues"
   },
   "publishConfig": {
     "access": "public"

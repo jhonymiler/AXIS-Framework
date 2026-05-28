@@ -60,7 +60,7 @@ ${pc.bold('Examples:')}
   ${pc.dim('$')} axis spdd canvas pricing-quote
   ${pc.dim('$')} axis audit ./my-project
 
-${pc.dim('Docs:')} ${pc.underline('https://github.com/axis-framework')}
+${pc.dim('Docs:')} ${pc.underline('https://jhonymiler.github.io/axis-bootstrap')}
 `;
 
 const args = process.argv.slice(2);
