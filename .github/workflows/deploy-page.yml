@@ -1,0 +1,63 @@
+name: Deploy Landing Page
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'page/**'
+      - 'cli/package.json'
+      - '.github/workflows/deploy-page.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read CLI version
+        id: version
+        run: |
+          VERSION=$(jq -r .version cli/package.json)
+          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+            echo "Failed to read version from cli/package.json" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "CLI version: $VERSION"
+
+      - name: Inject version into page
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          find page -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' -o -name '*.jsx' \) \
+            -exec sed -i "s/{{VERSION}}/$VERSION/g" {} +
+          echo "Version $VERSION injected into page/"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: page/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
